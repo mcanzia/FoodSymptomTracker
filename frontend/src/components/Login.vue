@@ -157,15 +157,6 @@ export default {
                 this.errorMessage = error.message;
             }
         },
-        async addUserToDB() {
-            try {
-                await db.collection('users')
-                        .doc(this.auth.currentUser.uid)
-                        .set({})
-            } catch (error) {
-                console.log(error)
-            }
-        },
         onReset() {
             this.loginForm.email = '';
             this.loginForm.password = '';

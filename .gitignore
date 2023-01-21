@@ -24,3 +24,7 @@ pnpm-debug.log*
 *.sw?
 
 serviceAccountKey.json
+
+#firebase config files
+*firebase.js
+*firebase.ts

@@ -54,22 +54,6 @@ export default {
         }
     },
     async mounted() {
-        try {
-            await db.collection('users')
-                    .doc(this.auth.currentUser.uid)
-                    .collection('dateComponentValues')
-                    .where('componentId', '==', '2qxzyxX82GmiDOAHcJVs')
-                    .where('singleValue', '==', 'C')
-                    .get()
-                    .then(snapshot => {
-                        if (snapshot.empty) {
-                            return;
-                        }
-                        console.log("snapshot size --> " + snapshot.size);
-                    })
-        } catch (e) {
-            console.log(e);
-        }
     },
     props: {
     },
