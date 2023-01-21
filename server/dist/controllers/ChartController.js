@@ -11,7 +11,7 @@ class ChartController {
     async getAllCharts(request, response, next) {
         try {
             const chartDao = new ChartDao_1.ChartDao();
-            const userAuth = request.headers['user-auth'];
+            const userAuth = response.locals.userAuth;
             const charts = await chartDao.getAllCharts(userAuth);
             response.status(200).json(JSON.stringify(charts));
         }
@@ -23,7 +23,7 @@ class ChartController {
     async getChartById(request, response, next) {
         try {
             const chartDao = new ChartDao_1.ChartDao();
-            const userAuth = request.headers['user-auth'];
+            const userAuth = response.locals.userAuth;
             const chartId = request.params.chartId;
             const chart = await chartDao.getChartById(userAuth, chartId);
             response.status(200).json(JSON.stringify(chart));
@@ -36,7 +36,7 @@ class ChartController {
     async addCharts(request, response, next) {
         try {
             const chartDao = new ChartDao_1.ChartDao();
-            const userAuth = request.headers['user-auth'];
+            const userAuth = response.locals.userAuth;
             const charts = request.body;
             await chartDao.addCharts(userAuth, charts);
             response.status(200);
@@ -49,7 +49,7 @@ class ChartController {
     async updateChart(request, response, next) {
         try {
             const chartDao = new ChartDao_1.ChartDao();
-            const userAuth = request.headers['user-auth'];
+            const userAuth = response.locals.userAuth;
             const chartId = request.params.chartId;
             const chartData = request.body;
             await chartDao.updateChart(userAuth, chartId, chartData);
@@ -64,8 +64,10 @@ class ChartController {
         try {
             console.log('Average chart');
             const chartService = new ChartService_1.ChartService();
-            const userAuth = request.headers['user-auth'];
-            //await chartService.createAverageChart(userAuth);
+            const userAuth = response.locals.userAuth;
+            const chart = request.body;
+            chart.chartData = await chartService.createAverageChart(userAuth, chart.selectedComponent, chart.startDate, chart.endDate);
+            response.status(200).json(JSON.stringify(chart));
         }
         catch (error) {
             response.send(error);
@@ -75,30 +77,39 @@ class ChartController {
         try {
             console.log('Food Value chart');
             const chartService = new ChartService_1.ChartService();
-            const userAuth = request.headers['user-auth'];
-            //await chartService.createFoodValueChart(userAuth);
+            const userAuth = response.locals.userAuth;
+            const chart = request.body;
+            if (!chart.selectedFood) {
+                throw new Error('No food selected');
+            }
+            chart.chartData = await chartService.createFoodValueChart(userAuth, chart.selectedComponent, chart.selectedFood, chart.startDate, chart.endDate);
+            response.status(200).json(JSON.stringify(chart));
         }
         catch (error) {
             response.send(error);
         }
     }
-    async createComponentWeightByFoodChart(request, response, next) {
+    async createSingleValueComponentWeightByFoodChart(request, response, next) {
         try {
             console.log('Component weight by food chart');
             const chartService = new ChartService_1.ChartService();
-            const userAuth = request.headers['user-auth'];
-            //await chartService.createComponentWeightByFoodChart(userAuth);
+            const userAuth = response.locals.userAuth;
+            const chart = request.body;
+            chart.chartData = await chartService.createSingleValueComponentWeightByFoodChart(userAuth, chart.selectedComponent, chart.selectedFood, chart.startDate, chart.endDate);
+            response.status(200).json(JSON.stringify(chart));
         }
         catch (error) {
             response.send(error);
         }
     }
-    async createComponentWeightByAllFoodChart(request, response, next) {
+    async createMultiValueComponentWeightByFoodChart(request, response, next) {
         try {
             console.log('component weight by all food chart');
             const chartService = new ChartService_1.ChartService();
-            const userAuth = request.headers['user-auth'];
-            //await chartService.createComponentWeightByAllFoodChart(userAuth);
+            const userAuth = response.locals.userAuth;
+            const chart = request.body;
+            chart.chartData = await chartService.createMultiValueComponentWeightByFoodChart(userAuth, chart.selectedComponent, chart.selectedFood, chart.startDate, chart.endDate);
+            response.status(200).json(JSON.stringify(chart));
         }
         catch (error) {
             response.send(error);

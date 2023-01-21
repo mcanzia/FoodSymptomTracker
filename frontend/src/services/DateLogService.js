@@ -6,20 +6,18 @@ export class DateLogService {
     }
 
     async getAllDateLogs(userAuth) {
-        const allDateLogs = await this.dateLogController.getAllDateLogs(userAuth);
-        console.log(allDateLogs);
+        const allDateLogs = JSON.parse(await this.dateLogController.getAllDateLogs(userAuth));
         return allDateLogs;
     }
 
     async getDateLogById(userAuth, dateLogId) {
         const dateLog = await this.dateLogController.getDateLogById(userAuth, dateLogId);
-        console.log(dateLog);
         return dateLog;
     }
 
     async addDateLogs(userAuth, dateLogs) {
         const dateLog = await this.dateLogController.addDateLogs(userAuth, dateLogs);
-        console.log(dateLog);
+        return dateLog;
     }
 
     async updateDateLog(userAuth, dateLog) {

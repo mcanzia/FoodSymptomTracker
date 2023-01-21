@@ -18,10 +18,10 @@
         <b-row>
             <b-col cols="6">
               <b-button block variant="primary" @click="$bvModal.show('new-component-modal')">Add Component</b-button>
-              <b-card v-for="(component, index) in componentStore.availableComponents" :key="component.id">
+              <b-card v-for="(component) in availableComponents" :key="component.id">
                     <span class="change-icon">
                       <b-icon icon="plus-circle" class="bi right" variant="success"></b-icon>
-                      <b-icon icon="plus-circle-fill" class="bi right" variant="success" @click="moveToSelected(index)"></b-icon>
+                      <b-icon icon="plus-circle-fill" class="bi right" variant="success" @click="toggleSelected(component, true)"></b-icon>
                     </span>
                     <b-form v-if="component.typeId == 1">
                       <label for="component-range">{{component.name}}</label>
@@ -39,12 +39,10 @@
               <br />
             </b-col>
             <b-col cols="6">
-              <draggable v-model="selectedComponents">
-                 <transition-group>
-                      <b-card v-for="(component, index) in selectedComponents" :key="component.id">
+                      <b-card v-for="(component) in selectedComponents" :key="component.id">
                           <span class="change-icon">
                             <b-icon icon="dash-circle" class="bi right" variant="danger"></b-icon>
-                            <b-icon icon="dash-circle-fill" class="bi right" variant="danger" @click="moveToAvailable(index)"></b-icon>
+                            <b-icon icon="dash-circle-fill" class="bi right" variant="danger" @click="toggleSelected(component, false)"></b-icon>
                           </span>
                           <b-form v-if="component.typeId == 1">
                             <label for="component-range">{{component.name}}</label>
@@ -59,8 +57,6 @@
                             <b-form-checkbox-group id="component-checkbox" :options="component.selectOptions" text-field="text" value-field="value" disabled class="text-center"></b-form-checkbox-group>
                           </b-form>
                       </b-card>
-                  </transition-group>
-                </draggable>
                 <br />
             </b-col>
         </b-row>
@@ -91,29 +87,37 @@
 <script>
 import { useDateLogStore } from '../stores/dateLogStore';
 import { useComponentStore } from '../stores/componentStore';
+import { useUserStore } from '../stores/userStore';
+import { storeToRefs } from 'pinia';
 import { auth, db } from '../firebase';
-import draggable from 'vuedraggable';
 export default {
   setup() {
     const dateLogStore = useDateLogStore();
     const componentStore = useComponentStore();
+    const userStore = useUserStore();
+
+    const { availableComponents, selectedComponents } = storeToRefs(componentStore);
 
     return {
       dateLogStore,
       componentStore,
+      userStore,
+      availableComponents,
+      selectedComponents
     }
   },
-  created() {
-    this.initializeComponentLists();
-    this.getAllDateLogs();
+  async created() {
+    this.userAccessToken = await this.userStore.getAccessToken();
+    await this.componentStore.initializeComponentLists(this.userAccessToken);
+    await this.dateLogStore.initializeDateLogs(this.userAccessToken, this.currentDateString, this.componentStore.selectedComponents);
   },
   components: {
-    draggable,
   },
   data() {
     return {
       auth,
       db,
+      userAccessToken: null,
       componentTypes: [
         {label: 'Slider', typeId: 1},
         {label: 'Single Select', typeId: 2},
@@ -123,78 +127,21 @@ export default {
         name: "",
         id: -1,
         typeId: -1,
-        order: 0,
         selectOptions: [],
         selected: false
-      },
-      dateLogs: []
+      }
     }
   },
   computed: {
-    selectedComponents: {
-        get() {
-            return this.componentStore.selectedComponents
-        },
-        set(value) {
-            this.componentStore.selectedComponents = value;
-            this.updateOrder();
-        }
+    currentDateString() {
+        return new Date().toLocaleDateString();
     }
   },
   methods: {
-    async initializeComponentLists() {
-      try {
-        await db.collection('users')
-                .doc(this.auth.currentUser.uid)
-                .collection('components')
-                .get()
-                .then(snapshot => {
-                    if (snapshot.empty) {
-                        return;
-                    }
-                    this.componentStore.availableComponents = snapshot.docs.filter(selection => !isSelected(selection)).map(selection => setComponentData(selection));
-                    this.componentStore.selectedComponents = snapshot.docs.filter(selection => isSelected(selection)).map(selection => setComponentData(selection));
-                    this.componentStore.selectedComponents.sort((a,b) => a.order - b.order);
-                    
-                    function isSelected(component) {
-                      return component.data().selected;
-                    }
-
-                    function setComponentData(component) {
-                      let componentData = 
-                      {
-                        name: component.data().name,
-                        id: component.id,
-                        typeId: component.data().typeId,
-                        order: component.data().order,
-                        selectOptions: component.data().selectOptions,
-                        selected: component.data().selected
-                      }
-                      return componentData;
-                    }
-                })
-      } catch (error) {
-        console.log(error)
-      }
-    },
-    
     async addNewComponent() {
         try {
             this.newComponent.selectOptions.map((option) => { option.value = option.text});
-            await db.collection('users')
-                .doc(this.auth.currentUser.uid)
-                .collection('components')
-                .add({
-                    name: this.newComponent.name,
-                    typeId: this.newComponent.typeId,
-                    order: this.newComponent.order,
-                    selectOptions: this.newComponent.selectOptions,
-                    selected: false
-                })
-                .then(createdComponent => {
-                    this.newComponent.id = createdComponent.id;
-                    this.componentStore.availableComponents.push(this.newComponent);
-                })
+            await this.componentStore.addComponents(this.userAccessToken, new Array(this.newComponent));
         } catch (error) {
             console.log(error)
         }
@@ -206,47 +153,18 @@ export default {
         name: "",
         id: -1,
         typeId: -1,
-        order: 0,
         selectOptions: []
       }
     },
-    moveToSelected(index) {
-      const latestOrder = this.componentStore.selectedComponents.length + 1;
-      this.componentStore.availableComponents[index].selected = true;
-      this.componentStore.availableComponents[index].order = latestOrder;
-      this.componentStore.selectedComponents.push(this.componentStore.availableComponents[index]);
-      this.toggleSelectedField(this.componentStore.availableComponents[index], true, latestOrder);
-      this.componentStore.availableComponents.splice(index, 1);
+    async toggleSelected(component, isSelected) {
+      await this.componentStore.toggleSelectedField(this.userAccessToken, component, isSelected);
+      if (isSelected) {
+        await this.dateLogStore.addDateLogComponent(this.userAccessToken, component);
+      } else {
+        await this.dateLogStore.removeDateLogComponent(this.userAccessToken, component);
+      }
     },
-    moveToAvailable(index) {
-      this.componentStore.selectedComponents[index].selected = false;
-      this.componentStore.selectedComponents[index].order = 0;
-      this.componentStore.availableComponents.push(this.componentStore.selectedComponents[index]);
-      this.toggleSelectedField(this.componentStore.selectedComponents[index], false, 0);
-      this.componentStore.selectedComponents.splice(index, 1);
-    },
-    async toggleSelectedField(component, selectedValue, order) {
-        try {
-            await db.collection('users')
-                .doc(this.auth.currentUser.uid)
-                .collection('components')
-                .doc(component.id)
-                .update({
-                    selected: selectedValue,
-                    order: order
-                })
-                .then(() => {
-                    if (selectedValue) {
-                      this.addComponentDateLogs(component);
-                    } else {
-                      this.removeComponentDateLogs(component);
-                    }
-                    this.updateOrder();
-                })
-        } catch (error) {
-            console.log(error);
-        }
-    },
+    /*
     async addComponentDateLogs(component) {
       try {
       var batch = db.batch();
@@ -259,7 +177,6 @@ export default {
                     id: component.id,
                     name: component.name,
                     typeId: component.typeId,
-                    order: component.order,
                     selectOptions: component.selectOptions
                 }
                 switch (component.typeId) {
@@ -312,26 +229,7 @@ export default {
                   }
                 });
             });
-    },
-    async updateOrder() {
-      var batch = db.batch();
-      try {
-        this.componentStore.selectedComponents.map((component, index) => {
-          // Update in store
-          component.order = index + 1;
-
-          // Update in db
-          const componentDoc = db.collection('users').doc(this.auth.currentUser.uid)
-            .collection('components').doc(component.id);
-          
-          batch.update(componentDoc, component);
-          });
-
-        await batch.commit();
-      } catch (error) {
-        console.log(error);
-      }
-    },
+    },*/
     test() {
       console.log("This Works...");
     }

@@ -13,7 +13,7 @@
         <b-col></b-col>
         <b-col cols="8">
             <b-card>
-                <b-list-group v-for="item in dateLogStore.foodItems" :key="item.name">
+                <b-list-group v-for="item in dateLogStore.selectedDateLog.foodItems" :key="item.name">
                     <b-list-group-item>{{ item.name }}</b-list-group-item>
                 </b-list-group>
             </b-card>
@@ -23,14 +23,14 @@
     <b-row>
         <b-col></b-col>
         <b-col cols="8">
-            <b-card v-for="(component) in dateLogStore.components" :key="component.id">
+            <b-card v-for="(component) in dateLogStore.selectedDateLog.components" :key="component.id">
                 <b-form v-if="component.typeId == 1">
                     <label for="component-range">{{component.name}}</label>
-                    <b-form-input id="component-range" type="range" min="0" max="10" step="0.10" disabled class="text-center" v-model="component.value"></b-form-input>
+                    <b-form-input id="component-range" type="range" min="0" max="10" step="0.10" disabled class="text-center" v-model="component.values"></b-form-input>
                 </b-form>
                 <b-form v-if="component.typeId == 2">
                     <label for="component-radio">{{component.name}}</label>
-                    <b-form-radio-group id="component-radio" :options="component.selectOptions" text-field="text" value-field="value" disabled class="text-center" v-model="component.value"></b-form-radio-group>
+                    <b-form-radio-group id="component-radio" :options="component.selectOptions" text-field="text" value-field="value" disabled class="text-center" v-model="component.values"></b-form-radio-group>
                 </b-form>
                 <b-form v-if="component.typeId == 3">
                     <label for="component-checkbox">{{component.name}}</label>
@@ -53,7 +53,7 @@ export default {
 
         return {
             dateLogStore,
-            componentStore,
+            componentStore
         }
     },
     components: {
@@ -63,6 +63,7 @@ export default {
             selectedDay: 0,
         }
     },
+    props: ['foodItems', 'components'],
     methods: {
     }
 }

@@ -1,28 +1,34 @@
 <template>
   <div>
     <Navbar />
-    <User>
-      <template v-slot:user="{ user }">
-          <div v-if="user">
+      <template>
+          <div v-if="userStore.isLoggedIn">
               <router-view />
           </div>
           <Login v-else />
       </template>
-    </User>
-    
   </div>
 </template>
 
 <script>
-import User from './components/User.vue';
 import Login from './components/Login.vue';
 import Navbar from './components/Navbar.vue';
+import { useUserStore } from './stores/userStore';
 export default {
   name: 'App',
   components: {
-    User,
     Login,
     Navbar
+  },
+  setup() {
+    const userStore = useUserStore()
+
+    return {
+        userStore,
+    }
+  },
+  created() {
+    this.userStore.initalizeAuthListener();
   }
 }
 </script>

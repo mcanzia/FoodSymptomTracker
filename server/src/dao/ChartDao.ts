@@ -9,7 +9,8 @@ export class ChartDao {
             const documents = await db.collection('users').doc(authId).collection('charts').get();
             documents.forEach(document => {
                 console.log(document.data());
-                const chart : Chart = new Chart(document.id, document.data().chartTitle, document.data().chartType, document.data().chartData);
+                const chart : Chart = new Chart(document.id, document.data().chartTitle, document.data().chartType, document.data().chartData, 
+                    document.data().selectedComponent, document.data().selectedFood, document.data().startDate, document.data().endDate);
                 charts.push(chart);
             });
             return charts;
@@ -23,7 +24,8 @@ export class ChartDao {
         try {    
             const document = await db.collection('users').doc(authId).collection('charts').doc(chartId).get();
             const documentData : any = document.data();
-            const chart : Chart = new Chart(document.id, documentData.chartTitle, documentData.chartType, documentData.chartData);
+            const chart : Chart = new Chart(document.id, documentData.chartTitle, documentData.chartType, documentData.chartData,
+                documentData.selectedComponent, documentData.selectedFood, documentData.startDate, documentData.endDate);
             return chart;
         } catch (error) {
             console.log(error);
@@ -36,17 +38,12 @@ export class ChartDao {
             const existingCharts : Array<Chart> = await this.getAllCharts(authId);
             const batch = db.batch();
             for (const chart of charts) {
-                if (!chart.id) {
-                    const matchingChart = existingCharts.find(existingChart => existingChart.chartTitle === chart.chartTitle);
-                    if (matchingChart) {
-                        console.log('already exists');
-                        continue;
-                    }
-                    const document = db.collection('users').doc(authId).collection('charts').doc();
-                    let {id, ...newChart } = chart;
-                    console.log('new chart');
-                    batch.set(document, newChart);
-                }
+                const matchingChart = existingCharts.find(existingChart => existingChart.id === chart.id);
+                const document = matchingChart ?
+                    db.collection('users').doc(authId).collection('charts').doc(matchingChart.id) :
+                    db.collection('users').doc(authId).collection('charts').doc();
+                let {id, ...newChart } = chart;
+                batch.set(document, newChart);
             }
             await batch.commit();
         } catch (error) {

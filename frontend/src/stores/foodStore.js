@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { FoodService } from '../services/FoodService';
 
 export const useFoodStore = defineStore('foodStore', {
     state: () => ({
@@ -6,13 +7,16 @@ export const useFoodStore = defineStore('foodStore', {
       }),
     actions: {
         getExistingFood(foodName) {
-            for(const food of this.foods) {
-                if (food.name === foodName) {
-                    return food;
-                }
-            }
-            return null;
-    
+            return this.foods.find(food => food.name === foodName);
+        },
+        async initializeFoodList(userToken) {
+            const foodService = new FoodService();
+            this.foods = await foodService.getAllFoods(userToken);
+        },
+        async addFoods(userToken, foods) {
+            const foodService = new FoodService();
+            await foodService.addFoods(userToken, foods);
+            await this.initializeFoodList(userToken);
         }
     }
 })

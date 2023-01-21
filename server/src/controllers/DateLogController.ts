@@ -15,9 +15,9 @@ export class DateLogController {
     async getAllDateLogs(request : Request, response : Response, next : NextFunction) {
         try {
             const dateLogDao : DateLogDao = new DateLogDao();
-            const userAuth = request.headers['user-auth'];
-            //const dateLogs : Array<DateLog> = await dateLogDao.getAllDateLogs(userAuth);
-            const dateLogs : Array<DateLog> = await dateLogDao.getDateLogsWithFood(userAuth, new FoodItem('HriRbXuQ0Koa230LBtbf', 'Grape'));
+            const userAuth = response.locals.userAuth;
+            const dateLogs : Array<DateLog> = await dateLogDao.getAllDateLogs(userAuth);
+            //const dateLogs : Array<DateLog> = await dateLogDao.getDateLogsWithFood(userAuth, new FoodItem('HriRbXuQ0Koa230LBtbf', 'Grape'));
             response.status(200).json(JSON.stringify(dateLogs));
         } catch (error) {
             console.log(error);
@@ -28,7 +28,7 @@ export class DateLogController {
     async getDateLogById(request : Request, response : Response, next : NextFunction) {
         try {
             const dateLogDao : DateLogDao = new DateLogDao();
-            const userAuth = request.headers['user-auth'];
+            const userAuth = response.locals.userAuth;
             const dateLogId : string = request.params.dateLogId;
             const dateLog : DateLog = await dateLogDao.getDateLogById(userAuth, dateLogId);
             response.status(200).json(JSON.stringify(dateLog));
@@ -41,9 +41,8 @@ export class DateLogController {
     async addDateLogs(request : Request, response : Response, next : NextFunction) {
         try {
             const dateLogDao : DateLogDao = new DateLogDao();
-            const userAuth = request.headers['user-auth'];
+            const userAuth = response.locals.userAuth;
             const dateLogs : Array<DateLog> = request.body;
-            console.log(dateLogs);
             await dateLogDao.addDateLogs(userAuth, dateLogs);
             response.status(200);
         } catch (error) {
@@ -55,7 +54,7 @@ export class DateLogController {
     async updateDateLog(request : Request, response : Response, next : NextFunction) {
         try {
             const dateLogDao : DateLogDao = new DateLogDao();
-            const userAuth = request.headers['user-auth'];
+            const userAuth = response.locals.userAuth;
             const dateLogId : string = request.params.dateLogId;
             const dateLogData : DateLog = request.body;
             await dateLogDao.updateDateLogs(userAuth, dateLogId, dateLogData);

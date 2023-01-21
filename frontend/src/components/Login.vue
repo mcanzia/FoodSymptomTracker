@@ -11,7 +11,6 @@
                         v-if="!emailSignIn && !newUser"
                     >
                         <b-button @click="googleSignIn()" pill variant="outline-primary">Sign In with Google</b-button><br><br>
-                        <b-button @click="testFacebook()" pill variant="outline-primary">Sign In with Facebook</b-button><br><br>
                         <b-button @click="toggleEmailForm()" pill variant="outline-primary">Sign In with Email</b-button><br><br>
                         <b-button @click="signInAnonymously()" pill variant="outline-primary">Sign In Anonymously</b-button><br><br>
 
@@ -58,7 +57,6 @@
                         v-if="!emailSignIn && newUser"
                     >
                         <b-button @click="testGoogle()" pill variant="outline-primary">Sign Up with Google</b-button><br><br>
-                        <b-button @click="testFacebook()" pill variant="outline-primary">Sign Up with Facebook</b-button><br><br>
                         <b-button @click="toggleEmailForm()" pill variant="outline-primary">Sign Up with Email</b-button><br><br>
 
                         <a href="#" @click="newUser = false">Returning User?</a>
@@ -107,7 +105,7 @@
 </template>
 
 <script>
-import {auth, db, GoogleAuthProvider} from '../firebase';
+import {auth, db} from '../firebase';
 import { useUserStore } from '../stores/userStore';
 export default {
     setup() {
@@ -133,22 +131,16 @@ export default {
     },
     methods: {
         async signInAnonymously() {
-            await auth.signInAnonymously()
-                      .then(() => {
-                        this.addUserToDB();
-                      });
+            await this.userStore.loginUserAnonymously();
         },
         async signInOrCreateUser() {
             this.loading = true;
             this.errorMessage = '';
             try {
                 if (this.newUser) {
-                    await auth.createUserWithEmailAndPassword(this.loginForm.email, this.loginForm.password)
-                              .then(() => {
-                                    this.addUserToDB();
-                              });
+                    this.userStore.registerUser(this.loginForm.email, this.loginForm.password);
                 } else {
-                    await auth.signInWithEmailAndPassword(this.loginForm.email, this.loginForm.password);
+                    this.userStore.loginUser(this.loginForm.email, this.loginForm.password);
                 }
             } catch (error) {
                 this.errorMessage = error.message;
@@ -159,12 +151,8 @@ export default {
         async googleSignIn() {
             console.log('Google');
             this.errorMessage = '';
-            let provider = GoogleAuthProvider;
             try {
-                await auth.signInWithPopup(provider).then(function(result) {
-                    console.log('Logged in ' + result.user.uid);
-                    this.addUserToDB();
-                });
+                await this.userStore.loginUserGoogle();
             } catch (error) {
                 this.errorMessage = error.message;
             }
@@ -172,14 +160,11 @@ export default {
         async addUserToDB() {
             try {
                 await db.collection('users')
-                    .doc(this.auth.currentUser.uid)
-                    .set({})
+                        .doc(this.auth.currentUser.uid)
+                        .set({})
             } catch (error) {
                 console.log(error)
             }
-        },
-        testFacebook() {
-            console.log('Facebook');
         },
         onReset() {
             this.loginForm.email = '';

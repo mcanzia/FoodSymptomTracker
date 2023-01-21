@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DateLogController = void 0;
 const DateLogDao_1 = require("../dao/DateLogDao");
-const FoodItem_1 = require("../models/FoodItem");
 class DateLogController {
     // potentially look into dependency injection container frameworks
     constructor() {
@@ -11,9 +10,9 @@ class DateLogController {
     async getAllDateLogs(request, response, next) {
         try {
             const dateLogDao = new DateLogDao_1.DateLogDao();
-            const userAuth = request.headers['user-auth'];
-            //const dateLogs : Array<DateLog> = await dateLogDao.getAllDateLogs(userAuth);
-            const dateLogs = await dateLogDao.getDateLogsWithFood(userAuth, new FoodItem_1.FoodItem('HriRbXuQ0Koa230LBtbf', 'Grape'));
+            const userAuth = response.locals.userAuth;
+            const dateLogs = await dateLogDao.getAllDateLogs(userAuth);
+            //const dateLogs : Array<DateLog> = await dateLogDao.getDateLogsWithFood(userAuth, new FoodItem('HriRbXuQ0Koa230LBtbf', 'Grape'));
             response.status(200).json(JSON.stringify(dateLogs));
         }
         catch (error) {
@@ -24,7 +23,7 @@ class DateLogController {
     async getDateLogById(request, response, next) {
         try {
             const dateLogDao = new DateLogDao_1.DateLogDao();
-            const userAuth = request.headers['user-auth'];
+            const userAuth = response.locals.userAuth;
             const dateLogId = request.params.dateLogId;
             const dateLog = await dateLogDao.getDateLogById(userAuth, dateLogId);
             response.status(200).json(JSON.stringify(dateLog));
@@ -37,9 +36,8 @@ class DateLogController {
     async addDateLogs(request, response, next) {
         try {
             const dateLogDao = new DateLogDao_1.DateLogDao();
-            const userAuth = request.headers['user-auth'];
+            const userAuth = response.locals.userAuth;
             const dateLogs = request.body;
-            console.log(dateLogs);
             await dateLogDao.addDateLogs(userAuth, dateLogs);
             response.status(200);
         }
@@ -51,7 +49,7 @@ class DateLogController {
     async updateDateLog(request, response, next) {
         try {
             const dateLogDao = new DateLogDao_1.DateLogDao();
-            const userAuth = request.headers['user-auth'];
+            const userAuth = response.locals.userAuth;
             const dateLogId = request.params.dateLogId;
             const dateLogData = request.body;
             await dateLogDao.updateDateLogs(userAuth, dateLogId, dateLogData);

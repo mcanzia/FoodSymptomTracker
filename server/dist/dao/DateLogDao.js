@@ -3,11 +3,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DateLogDao = void 0;
 const firebase_1 = require("../configs/firebase");
 const DateLog_1 = require("../models/DateLog");
+const DateUtil_1 = require("../util/DateUtil");
 class DateLogDao {
     async getAllDateLogs(authId, startDate, endDate) {
         try {
             const dateLogs = new Array();
-            const documents = await firebase_1.db.collection('users').doc(authId).collection('dateLogs').orderBy('date').get();
+            const formattedStartDate = startDate ? new Date(startDate) : null;
+            const formattedEndDate = endDate ? new Date(endDate) : DateUtil_1.DateUtil.convertDateToUTC(new Date());
+            const documents = formattedStartDate && formattedEndDate ?
+                await firebase_1.db.collection('users').doc(authId).collection('dateLogs').where('dateValue', '>=', formattedStartDate.toISOString()).where('dateValue', '<=', formattedEndDate.toISOString()).orderBy('dateValue').get() :
+                await firebase_1.db.collection('users').doc(authId).collection('dateLogs').orderBy('dateValue').get();
             documents.forEach(document => {
                 const dateLog = new DateLog_1.DateLog(document.id, document.data().date, document.data().foodItems, document.data().components);
                 dateLogs.push(dateLog);
@@ -22,7 +27,13 @@ class DateLogDao {
     async getDateLogsWithFood(authId, food, startDate, endDate) {
         try {
             const dateLogs = new Array();
-            const documents = await firebase_1.db.collection('users').doc(authId).collection('dateLogs').where('foodItems', 'array-contains', { id: food.id, name: food.name }).orderBy('date').get();
+            const formattedStartDate = startDate ? new Date(startDate) : null;
+            const formattedEndDate = endDate ? new Date(endDate) : DateUtil_1.DateUtil.convertDateToUTC(new Date());
+            const documents = formattedStartDate && formattedEndDate ?
+                await firebase_1.db.collection('users').doc(authId).collection('dateLogs').where('foodItems', 'array-contains', { id: food.id, name: food.name })
+                    .where('dateValue', '>=', formattedStartDate.toISOString()).where('dateValue', '<=', formattedEndDate.toISOString()).orderBy('dateValue').get() :
+                await firebase_1.db.collection('users').doc(authId).collection('dateLogs').where('foodItems', 'array-contains', { id: food.id, name: food.name })
+                    .orderBy('date').get();
             documents.forEach(document => {
                 const dateLog = new DateLog_1.DateLog(document.id, document.data().date, document.data().foodItems, document.data().components);
                 dateLogs.push(dateLog);
@@ -51,19 +62,15 @@ class DateLogDao {
             const existingDateLogs = await this.getAllDateLogs(authId);
             const batch = firebase_1.db.batch();
             for (const dateLog of dateLogs) {
-                if (!dateLog.id) {
-                    const matchingDateLog = existingDateLogs.find(existingDateLog => existingDateLog.date === dateLog.date);
-                    if (matchingDateLog) {
-                        console.log('already exists');
-                        continue;
-                    }
-                    const document = firebase_1.db.collection('users').doc(authId).collection('dateLogs').doc();
-                    let { id, ...newDateLog } = dateLog;
-                    console.log('new dateLog');
-                    batch.set(document, newDateLog);
-                }
+                const matchingDateLog = existingDateLogs.find(existingDateLog => existingDateLog.date === dateLog.date);
+                const document = matchingDateLog ?
+                    firebase_1.db.collection('users').doc(authId).collection('dateLogs').doc(matchingDateLog.id) :
+                    firebase_1.db.collection('users').doc(authId).collection('dateLogs').doc();
+                let { id, ...newDateLog } = dateLog;
+                batch.set(document, newDateLog);
             }
             await batch.commit();
+            return;
         }
         catch (error) {
             console.log(error);

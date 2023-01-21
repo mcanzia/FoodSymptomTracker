@@ -11,15 +11,15 @@ class ChartService {
     constructor() {
         this.chartDao = new ChartDao_1.ChartDao();
     }
-    async createAverageChart(authId, startDate, endDate, selectedComponent) {
-        console.log('Average chart');
+    async createAverageChart(authId, selectedComponent, startDate, endDate) {
+        const chartData = new ChartData_1.ChartData();
+        chartData.datasets.push(new DataSet_1.DataSet([], "Average Value"));
         const foodDao = new FoodDao_1.FoodDao();
         const dateLogDao = new DateLogDao_1.DateLogDao();
         const foods = await foodDao.getAllFoods(authId);
-        const dateLogs = await dateLogDao.getAllDateLogs(authId);
-        const chartData = new ChartData_1.ChartData(startDate, endDate);
+        const dateLogs = await dateLogDao.getAllDateLogs(authId, startDate, endDate);
         foods.map(food => {
-            const filteredDateLogs = dateLogs.filter(dateLog => { return dateLog.foodItems.includes(food); });
+            const filteredDateLogs = dateLogs.filter(dateLog => { return dateLog.foodItems.some(foodItem => foodItem.id === food.id); });
             let average = 0;
             filteredDateLogs.map(filteredDateLog => {
                 const componentValue = Number(filteredDateLog.components.find(component => component.id === selectedComponent.id)?.values);
@@ -27,31 +27,80 @@ class ChartService {
                     average += componentValue;
                 }
             });
-            average = Number((average / filteredDateLogs.length).toFixed(2));
-            let chartDataSet = new DataSet_1.DataSet(new Array(average), food.name);
-            chartData.datasets.push(chartDataSet);
+            average = average !== 0 ? Number((average / filteredDateLogs.length).toFixed(2)) : 0;
+            chartData.datasets[0].data.push(average);
+            chartData.labels.push(food.name);
         });
         return chartData;
     }
-    async createFoodValueChart(authId, startDate, endDate, selectedComponent, selectedFood) {
-        console.log('Food Value chart');
+    async createFoodValueChart(authId, selectedComponent, selectedFood, startDate, endDate) {
+        const chartData = new ChartData_1.ChartData();
+        chartData.datasets.push(new DataSet_1.DataSet([], "Monthly Value - " + selectedFood.name));
         const dateLogDao = new DateLogDao_1.DateLogDao();
-        const dateLogs = await dateLogDao.getDateLogsWithFood(authId, selectedFood);
+        const dateLogs = await dateLogDao.getDateLogsWithFood(authId, selectedFood, startDate, endDate);
         const dateMonthFoodValueMap = new Map();
-        const chartData = new ChartData_1.ChartData(startDate, endDate);
         dateLogs.map(dateLog => {
-            const dateMonth = (0, date_fns_1.format)(new Date(dateLog.date), "MMM");
-            const dateYear = (0, date_fns_1.format)(new Date(dateLog.date), "Y");
-            const monthYear = dateMonth + "-" + dateYear;
+            const month = (0, date_fns_1.format)(new Date(dateLog.date), "MMM");
+            const year = (0, date_fns_1.format)(new Date(dateLog.date), "Y");
+            const monthYear = month + "-" + year;
             const componentWeight = Number(dateLog.components.find(component => component.id === selectedComponent.id)?.values);
+            if (!dateMonthFoodValueMap.has(monthYear)) {
+                dateMonthFoodValueMap.set(monthYear, [componentWeight]);
+            }
+            else {
+                dateMonthFoodValueMap.get(monthYear)?.push(componentWeight);
+            }
         });
-        console.log(dateLogs);
+        for (const [key, value] of dateMonthFoodValueMap.entries()) {
+            let average = 0;
+            average = value.reduce((prev, curr) => Number(prev) + Number(curr), average);
+            average = average !== 0 ? Number((average / value.length).toFixed(2)) : 0;
+            chartData.labels.push(key);
+            chartData.datasets[0].data.push(average);
+        }
+        return chartData;
     }
-    async createComponentWeightByFoodChart(authId) {
-        console.log('Component weight by food chart');
+    async createSingleValueComponentWeightByFoodChart(authId, selectedComponent, selectedFood, startDate, endDate) {
+        const dateLogDao = new DateLogDao_1.DateLogDao();
+        const dateLogs = selectedFood ?
+            await dateLogDao.getDateLogsWithFood(authId, selectedFood, startDate, endDate) :
+            await dateLogDao.getAllDateLogs(authId, startDate, endDate);
+        // Map (keys are the select options of the selected component and values are count of how many times that option was chosen within the date range)
+        const weightValueMap = new Map(selectedComponent.selectOptions.map(selectOption => [selectOption.value, 0]));
+        dateLogs.map(dateLog => {
+            const componentValue = String(dateLog.components.find(component => component.id === selectedComponent.id)?.values);
+            if (componentValue !== undefined && componentValue != "") {
+                weightValueMap.set(componentValue, Number(weightValueMap.get(componentValue)) + 1);
+            }
+        });
+        const chartLabel = selectedFood ? "Component Value Weight - " + selectedFood.name : "Component Value Weight";
+        return this.setChartData(weightValueMap, chartLabel);
     }
-    async createComponentWeightByAllFoodChart(authId) {
-        console.log('component weight by all food chart');
+    async createMultiValueComponentWeightByFoodChart(authId, selectedComponent, selectedFood, startDate, endDate) {
+        const dateLogDao = new DateLogDao_1.DateLogDao();
+        const dateLogs = selectedFood ?
+            await dateLogDao.getDateLogsWithFood(authId, selectedFood, startDate, endDate) :
+            await dateLogDao.getAllDateLogs(authId, startDate, endDate);
+        const weightValueMap = new Map(selectedComponent.selectOptions.map(selectOption => [selectOption.value, 0]));
+        dateLogs.map(dateLog => {
+            const componentValues = dateLog.components.find(component => component.id === selectedComponent.id)?.values ?? new Array();
+            componentValues.map(componentValue => {
+                if (componentValue !== undefined && componentValue != "") {
+                    weightValueMap.set(componentValue, Number(weightValueMap.get(componentValue)) + 1);
+                }
+            });
+        });
+        const chartLabel = selectedFood ? "Component Value Weight - " + selectedFood.name : "Component Value Weight";
+        return this.setChartData(weightValueMap, chartLabel);
+    }
+    setChartData(weightValueMap, chartLabel) {
+        const chartData = new ChartData_1.ChartData();
+        chartData.datasets.push(new DataSet_1.DataSet([], chartLabel));
+        for (const [key, value] of weightValueMap.entries()) {
+            chartData.labels.push(key);
+            chartData.datasets[0].data.push(value);
+        }
+        return chartData;
     }
 }
 exports.ChartService = ChartService;

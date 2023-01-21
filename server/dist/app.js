@@ -7,12 +7,24 @@ const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const cors_1 = __importDefault(require("cors"));
 const index_1 = __importDefault(require("./routes/index"));
+const AuthService_1 = require("./services/AuthService");
 const app = (0, express_1.default)();
 const port = process.env.PORT || 8000;
 // Middleware
 app.set('view engine', 'ejs');
 app.set('views', path_1.default.join(__dirname, 'views'));
 app.use((0, cors_1.default)());
+// User Authorization
+app.use(async (request, response, next) => {
+    try {
+        const userUID = await AuthService_1.AuthService.validateAuthToken(request.headers.authorization);
+        response.locals.userAuth = userUID;
+        next();
+    }
+    catch (error) {
+        return response.status(403).json({ error: 'User is not authorized to perform this action' });
+    }
+});
 //Routes Definitions
 app.use('/api', index_1.default);
 /*

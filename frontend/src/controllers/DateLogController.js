@@ -1,10 +1,11 @@
 export class DateLogController {
-    async getAllDateLogs(userAuth) {
+    async getAllDateLogs(userAuthToken) {
         try {
+            const bearer = 'Bearer ' + userAuthToken;
             const response = await fetch('http://localhost:7000/api/datelogs', {
                     method: 'GET',
                     headers: {
-                        'user-auth': userAuth.uid
+                        'Authorization': bearer
                     }
                 })
             return response.json();
@@ -13,12 +14,13 @@ export class DateLogController {
         }
     }
 
-    async getDateLogById(userAuth, dateLogId) {
+    async getDateLogById(userAuthToken, dateLogId) {
         try {
+            const bearer = 'Bearer ' + userAuthToken;
             const response = await fetch('http://localhost:7000/api/datelogs/' + dateLogId, {
                     method: 'GET',
                     headers: {
-                        'user-auth': userAuth.uid
+                        'Authorization': bearer
                     }
                 })
             return response.json();
@@ -27,29 +29,30 @@ export class DateLogController {
         }
     }
 
-    async addDateLogs(userAuth, dateLogs) {
+    async addDateLogs(userAuthToken, dateLogs) {
         try {
+            const bearer = 'Bearer ' + userAuthToken;
             const response = await fetch('http://localhost:7000/api/datelogs', {
                 method: 'POST',
                 headers: {
-                    'user-auth': userAuth.uid,
-                    'Accept': 'application/json',
+                    'Authorization': bearer,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(dateLogs)
             })
-            console.log(response.json());
+            return response;
         } catch (error) {
             console.log(error);
         }
     }
 
-    async updateDateLog(userAuth, dateLogId, dateLog) {
+    async updateDateLog(userAuthToken, dateLogId, dateLog) {
         try {
+            const bearer = 'Bearer ' + userAuthToken;
             const response = await fetch('http://localhost:7000/api/datelogs/' + dateLogId, {
                 method: 'PUT',
                 headers: {
-                    'user-auth': userAuth.uid,
+                    'Authorization': bearer,
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },

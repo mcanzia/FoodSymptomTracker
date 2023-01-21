@@ -6,20 +6,17 @@ export class FoodService {
     }
 
     async getAllFoods(userAuth) {
-        const allFoods = await this.foodController.getAllFoods(userAuth);
-        console.log(allFoods);
+        const allFoods = JSON.parse(await this.foodController.getAllFoods(userAuth));
         return allFoods;
     }
 
     async getFoodById(userAuth, foodId) {
         const food = await this.foodController.getFoodById(userAuth, foodId);
-        console.log(food);
         return food;
     }
 
     async addFoods(userAuth, foodItems) {
         const food = await this.foodController.addFoods(userAuth, foodItems);
-        console.log(food);
-
+        return food;
     }
 }

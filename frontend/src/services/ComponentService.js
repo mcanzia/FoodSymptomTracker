@@ -6,8 +6,7 @@ export class ComponentService {
     }
 
     async getAllComponents(userAuth) {
-        const allComponents = await this.componentController.getAllComponents(userAuth);
-        console.log(allComponents);
+        const allComponents = JSON.parse(await this.componentController.getAllComponents(userAuth));
         return allComponents;
     }
 
@@ -18,11 +17,13 @@ export class ComponentService {
     }
 
     async addComponents(userAuth, components) {
-        await this.componentController.addComponents(userAuth, components);
+        const component = await this.componentController.addComponents(userAuth, components);
+        return component;
     }
 
     async updateComponent(userAuth, component) {
         const { id, ...componentUpdate } = component;
         await this.componentController.updateComponent(userAuth, id, componentUpdate);
+        return;
     }
 }

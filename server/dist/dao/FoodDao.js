@@ -36,19 +36,15 @@ class FoodDao {
             const existingFoodItems = await this.getAllFoods(authId);
             const batch = firebase_1.db.batch();
             for (const foodItem of foodItems) {
-                if (!foodItem.id) {
-                    const matchingFoodItem = existingFoodItems.find(existingFoodItem => existingFoodItem.name === foodItem.name);
-                    if (matchingFoodItem) {
-                        console.log('already exists');
-                        continue;
-                    }
-                    const document = firebase_1.db.collection('users').doc(authId).collection('foods').doc();
-                    console.log('new food');
-                    let { id, ...newFoodItem } = foodItem;
-                    batch.set(document, newFoodItem);
-                }
+                const matchingFoodItem = existingFoodItems.find(existingFoodItem => existingFoodItem.name === foodItem.name);
+                const document = matchingFoodItem ?
+                    firebase_1.db.collection('users').doc(authId).collection('foods').doc(matchingFoodItem.id) :
+                    firebase_1.db.collection('users').doc(authId).collection('foods').doc();
+                let { id, ...newFoodItem } = foodItem;
+                batch.set(document, newFoodItem);
             }
             await batch.commit();
+            return;
         }
         catch (error) {
             console.log(error);

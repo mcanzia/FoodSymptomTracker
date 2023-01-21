@@ -10,7 +10,7 @@ class ComponentController {
     async getAllComponents(request, response, next) {
         try {
             const componentDao = new ComponentDao_1.ComponentDao();
-            const userAuth = request.headers['user-auth'];
+            const userAuth = response.locals.userAuth;
             const components = await componentDao.getAllComponents(userAuth);
             response.status(200).json(JSON.stringify(components));
         }
@@ -22,7 +22,7 @@ class ComponentController {
     async getComponentById(request, response, next) {
         try {
             const componentDao = new ComponentDao_1.ComponentDao();
-            const userAuth = request.headers['user-auth'];
+            const userAuth = response.locals.userAuth;
             const componentId = request.params.componentId;
             const component = await componentDao.getComponentById(userAuth, componentId);
             response.status(200).json(JSON.stringify(component));
@@ -35,10 +35,10 @@ class ComponentController {
     async addComponents(request, response, next) {
         try {
             const componentDao = new ComponentDao_1.ComponentDao();
-            const userAuth = request.headers['user-auth'];
+            const userAuth = response.locals.userAuth;
             const components = request.body;
             await componentDao.addComponents(userAuth, components);
-            response.status(200);
+            response.status(200).send('Success');
         }
         catch (error) {
             console.log(error);
@@ -48,10 +48,11 @@ class ComponentController {
     async updateComponent(request, response, next) {
         try {
             const componentDao = new ComponentDao_1.ComponentDao();
-            const userAuth = request.headers['user-auth'];
+            const userAuth = response.locals.userAuth;
             const componentId = request.params.componentId;
             const componentData = request.body;
             await componentDao.updateComponent(userAuth, componentId, componentData);
+            response.status(200).send('Success');
         }
         catch (error) {
             console.log(error);

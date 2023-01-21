@@ -1,10 +1,11 @@
 export class ComponentController {
-    async getAllComponents(userAuth) {
+    async getAllComponents(userAuthToken) {
         try {
+            const bearer = 'Bearer ' + userAuthToken;
             const response = await fetch('http://localhost:7000/api/components', {
                     method: 'GET',
                     headers: {
-                        'user-auth': userAuth.uid
+                        'Authorization': bearer
                     }
                 })
             return response.json();
@@ -13,12 +14,13 @@ export class ComponentController {
         }
     }
 
-    async getComponentById(userAuth, componentId) {
+    async getComponentById(userAuthToken, componentId) {
         try {
+            const bearer = 'Bearer ' + userAuthToken;
             const response = await fetch('http://localhost:7000/api/components/' + componentId, {
                     method: 'GET',
                     headers: {
-                        'user-auth': userAuth.uid
+                        'Authorization': bearer
                     }
                 })
             return response.json();
@@ -27,35 +29,35 @@ export class ComponentController {
         }
     }
 
-    async addComponents(userAuth, components) {
+    async addComponents(userAuthToken, components) {
         try {
+            const bearer = 'Bearer ' + userAuthToken;
             const response = await fetch('http://localhost:7000/api/components', {
                 method: 'POST',
                 headers: {
-                    'user-auth': userAuth.uid,
-                    'Accept': 'application/json',
+                    'Authorization': bearer,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(components)
-            })
-            console.log(response.json());
+            });
+            return response;
         } catch (error) {
             console.log(error);
         }
     }
 
-    async updateComponent(userAuth, componentId, component) {
+    async updateComponent(userAuthToken, componentId, component) {
         try {
+            const bearer = 'Bearer ' + userAuthToken;
             const response = await fetch('http://localhost:7000/api/components/' + componentId, {
                 method: 'PUT',
                 headers: {
-                    'user-auth': userAuth.uid,
-                    'Accept': 'application/json',
+                    'Authorization': bearer,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(component)
             })
-            console.log(response.json());
+            return response;
         } catch (error) {
             console.log(error);
         }

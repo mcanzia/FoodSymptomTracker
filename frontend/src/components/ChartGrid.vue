@@ -1,12 +1,12 @@
 <template>
     <b-container fluid class="remove-all-margin-padding background-gray display-table">
         <b-row no-gutters v-for="r in numberOfRows" :key="r">
-            <b-col cols="4" v-for="(chart, index) in chartStore.charts.slice(chartStartIndex(r), chartEndIndex(r))" :key="index">
+            <b-col cols="4" v-for="(chart, index) in chartStore.displayCharts.slice(chartStartIndex(r), chartEndIndex(r))" :key="index">
                 <div class="chart-slot">
                     <Chart :chart-details="chart" />
                 </div>
             </b-col>
-            <b-col cols="4" v-if="chartEndIndex(r) === chartStore.charts.length" class="parent">
+            <b-col cols="4" v-if="chartEndIndex(r) === chartStore.displayCharts.length && !chartStore.chartPanelOpen" class="parent">
                 <div class="empty-chart-slot">                    
                     <span class="change-icon" v-if="!newChartToggle">
                         <b-icon name="addNewChart" icon="plus-circle" class="bi h1" variant="dark"></b-icon>
@@ -48,12 +48,12 @@ export default {
             newChartToggle: false
         }
     },
-    props: ["newChart"],
     components: {
         Chart
     },
     created() {
-        this.getChartData();
+    },
+    destroyed() {
     },
     mounted() {
     },
@@ -65,39 +65,12 @@ export default {
             return 3 * (row - 1);
         },
         chartEndIndex(row) {
-            return this.chartStore.charts.length - this.chartStartIndex(row);
-        },
-        async getChartData() {
-            try {
-                await db.collection('users')
-                        .doc(this.auth.currentUser.uid)
-                        .collection('charts')
-                        .get()
-                        .then(snapshot => {
-                            if (snapshot.empty) {
-                                return;
-                            }
-                            this.chartStore.charts = snapshot.docs.map(value => {
-                                    let chartData =
-                                        {
-                                            id: value.id,
-                                            chartData: value.data().chartData,
-                                            title: value.data().title,
-                                            type: value.data().type,
-                                            building: false
-                                        }
-                                        return chartData;
-                                    });
-                        })
-                            
-            } catch (error) {
-                console.log(error)
-            }
+            return this.chartStore.displayCharts.length - this.chartStartIndex(row);
         }
     },
     computed: {
         numberOfRows() {
-            return Math.floor(this.chartStore.charts.length / 3) + 1;
+            return Math.floor(this.chartStore.displayCharts.length / 3) + 1;
         }
     },
 }

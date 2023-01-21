@@ -10,7 +10,7 @@ class ChartDao {
             const documents = await firebase_1.db.collection('users').doc(authId).collection('charts').get();
             documents.forEach(document => {
                 console.log(document.data());
-                const chart = new Chart_1.Chart(document.id, document.data().chartTitle, document.data().chartType, document.data().chartData);
+                const chart = new Chart_1.Chart(document.id, document.data().chartTitle, document.data().chartType, document.data().chartData, document.data().selectedComponent, document.data().selectedFood, document.data().startDate, document.data().endDate);
                 charts.push(chart);
             });
             return charts;
@@ -24,7 +24,7 @@ class ChartDao {
         try {
             const document = await firebase_1.db.collection('users').doc(authId).collection('charts').doc(chartId).get();
             const documentData = document.data();
-            const chart = new Chart_1.Chart(document.id, documentData.chartTitle, documentData.chartType, documentData.chartData);
+            const chart = new Chart_1.Chart(document.id, documentData.chartTitle, documentData.chartType, documentData.chartData, documentData.selectedComponent, documentData.selectedFood, documentData.startDate, documentData.endDate);
             return chart;
         }
         catch (error) {
@@ -37,17 +37,12 @@ class ChartDao {
             const existingCharts = await this.getAllCharts(authId);
             const batch = firebase_1.db.batch();
             for (const chart of charts) {
-                if (!chart.id) {
-                    const matchingChart = existingCharts.find(existingChart => existingChart.chartTitle === chart.chartTitle);
-                    if (matchingChart) {
-                        console.log('already exists');
-                        continue;
-                    }
-                    const document = firebase_1.db.collection('users').doc(authId).collection('charts').doc();
-                    let { id, ...newChart } = chart;
-                    console.log('new chart');
-                    batch.set(document, newChart);
-                }
+                const matchingChart = existingCharts.find(existingChart => existingChart.id === chart.id);
+                const document = matchingChart ?
+                    firebase_1.db.collection('users').doc(authId).collection('charts').doc(matchingChart.id) :
+                    firebase_1.db.collection('users').doc(authId).collection('charts').doc();
+                let { id, ...newChart } = chart;
+                batch.set(document, newChart);
             }
             await batch.commit();
         }

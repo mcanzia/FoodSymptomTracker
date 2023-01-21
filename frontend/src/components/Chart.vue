@@ -7,7 +7,6 @@
 <script>
 import { auth, db } from '../firebase';
 import Chart from "chart.js/auto";
-import { bus } from '../main';
 export default {
     setup() {
         return {
@@ -26,16 +25,20 @@ export default {
         }
     },
     created() {
-        bus.$on('chart-update', () => {
-            this.chart.destroy();
-            this.chartDetails.chartOptions.scales = {};
-            this.createChartContext();
-        });
+    },
+    destroyed() {
     },
     mounted() {
         this.createChartContext();
     },
     components: {
+    },
+    watch: { 
+        chartDetails: function() {
+          this.chart.destroy();
+          this.chartDetails.chartOptions.scales = {};
+          this.createChartContext();
+        }
     },
     methods: {
         createChartContext() {

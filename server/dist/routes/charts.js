@@ -13,6 +13,6 @@ router.post('/', chartController.addCharts);
 router.put('/:chartId', chartController.updateChart);
 router.post('/average', chartController.createAverageChart);
 router.post('/food-value', chartController.createFoodValueChart);
-router.post('/component-weight-by-food', chartController.createComponentWeightByFoodChart);
-router.post('/component-weight-by-all-food', chartController.createComponentWeightByAllFoodChart);
+router.post('/single-value-component-weight-by-food', chartController.createSingleValueComponentWeightByFoodChart);
+router.post('/multi-value-component-weight-by-food', chartController.createMultiValueComponentWeightByFoodChart);
 exports.default = router;

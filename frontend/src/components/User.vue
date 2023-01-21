@@ -11,7 +11,7 @@ export default {
     setup() {
         const user = ref(null);
         const unsubscribe = auth.onAuthStateChanged(
-            firebaseUser => user.value = firebaseUser
+            userCred => user.value = userCred
         );
 
         return {

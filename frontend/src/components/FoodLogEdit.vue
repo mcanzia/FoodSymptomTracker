@@ -18,7 +18,7 @@
         <b-col></b-col>
         <b-col cols="8">
             <b-card>
-                <b-list-group v-for="item in dateLogStore.foodItems" :key="item.name">
+                <b-list-group v-for="item in dateLogStore.selectedDateLog.foodItems" :key="item.name">
                     <b-list-group-item>
                         {{ item.name }} 
                         <span class="change-icon">
@@ -34,15 +34,15 @@
     <b-row>
         <b-col></b-col>
         <b-col cols="8">
-            <b-card v-for="(component) in dateLogStore.components" :key="component.id">
+            <b-card v-for="(component) in dateLogStore.selectedDateLog.components" :key="component.id">
                 <b-form v-if="component.typeId == 1">
                     <label :for="component.id">{{component.name}}</label>
-                    <b-form-input :id="component.id" type="range" min="0" max="10" step="0.10" class="text-center" v-model="component.value"></b-form-input>
+                    <b-form-input :id="component.id" type="range" min="0" max="10" step="0.10" class="text-center" v-model="component.values"></b-form-input>
                     <div class="mt-2">Value: {{ component.value }}</div>   
                 </b-form>
                 <b-form v-if="component.typeId == 2">
                     <label :for="component.id">{{component.name}}</label>
-                    <b-form-radio-group :id="component.id" :name="component.name" :options="component.selectOptions" v-model="component.value" text-field="text" value-field="value" class="text-center"></b-form-radio-group>
+                    <b-form-radio-group :id="component.id" :name="component.name" :options="component.selectOptions" v-model="component.values" text-field="text" value-field="value" class="text-center"></b-form-radio-group>
                 </b-form>
                 <b-form v-if="component.typeId == 3">
                     <label :for="component.id">{{component.name}}</label>
@@ -89,19 +89,19 @@ export default {
             if (this.dateLogStore.containsFoodDuplicate(this.foodItem)) {
                 return console.log("This food is already in the list");
             }
-
+            
             const newFoodItem = {
                 id: null,
                 name: this.foodItem
             }
 
-            this.dateLogStore.foodItems.push(newFoodItem);
+            this.dateLogStore.selectedDateLog.foodItems.push(newFoodItem);
             this.foodItem = "";
         },
         removeFoodItem(item) {
-            const index = this.dateLogStore.foodItems.indexOf(item);
+            const index = this.dateLogStore.selectedDateLog.foodItems.indexOf(item);
             if (index > -1) {
-                this.dateLogStore.foodItems.splice(index, 1); 
+                this.dateLogStore.selectedDateLog.foodItems.splice(index, 1); 
             }
             
         }

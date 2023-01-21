@@ -1,44 +1,46 @@
 export class FoodController {
-    async getAllFoods(userAuth) {
+    async getAllFoods(userAuthToken) {
         try {
+            const bearer = 'Bearer ' + userAuthToken;
             const response = await fetch('http://localhost:7000/api/foods', {
                     method: 'GET',
                     headers: {
-                        'user-auth': userAuth.uid
+                        'Authorization': bearer
                     }
-                })
+                });
             return response.json();
         } catch (error) {
             console.log(error);
         }
     }
 
-    async getFoodById(userAuth, foodId) {
+    async getFoodById(userAuthToken, foodId) {
         try {
+            const bearer = 'Bearer ' + userAuthToken;
             const response = await fetch('http://localhost:7000/api/foods/' + foodId, {
                     method: 'GET',
                     headers: {
-                        'user-auth': userAuth.uid
+                        'Authorization': bearer
                     }
-                })
+                });
             return response.json();
         } catch (error) {
             console.log(error);
         }
     }
 
-    async addFoods(userAuth, foods) {
+    async addFoods(userAuthToken, foods) {
         try {
+            const bearer = 'Bearer ' + userAuthToken;
             const response = await fetch('http://localhost:7000/api/foods', {
                 method: 'POST',
                 headers: {
-                    'user-auth': userAuth.uid,
-                    'Accept': 'application/json',
+                    'Authorization': bearer,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(foods)
-            })
-            console.log(response.json());
+            });
+            return response;
         } catch (error) {
             console.log(error);
         }

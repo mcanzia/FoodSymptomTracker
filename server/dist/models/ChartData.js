@@ -2,9 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChartData = void 0;
 class ChartData {
-    constructor(startDate, endDate, datasets, labels) {
-        this.startDate = startDate;
-        this.endDate = endDate;
+    constructor(datasets, labels) {
         this.datasets = datasets ? datasets : new Array;
         this.labels = labels ? labels : new Array;
     }
