@@ -109,7 +109,7 @@ export default {
   async created() {
     this.userAccessToken = await this.userStore.getAccessToken();
     await this.componentStore.initializeComponentLists(this.userAccessToken);
-    await this.dateLogStore.initializeDateLogs(this.userAccessToken, this.currentDateString, this.componentStore.selectedComponents);
+    await this.dateLogStore.initializeStore(this.userAccessToken, this.currentDateString, this.componentStore.selectedComponents);
   },
   components: {
   },

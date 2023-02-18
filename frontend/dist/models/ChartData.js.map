@@ -1,0 +1,1 @@
+{"version":3,"file":"ChartData.js","sourceRoot":"","sources":["../../src/models/ChartData.ts"],"names":[],"mappings":"AAEA,MAAM,OAAO,SAAS;IAKlB,YAAY,QAAyB,EAAE,MAAsB;QACzD,IAAI,CAAC,QAAQ,GAAG,QAAQ,CAAC;QACzB,IAAI,CAAC,MAAM,GAAG,MAAM,CAAC;IACzB,CAAC;CAGJ"}

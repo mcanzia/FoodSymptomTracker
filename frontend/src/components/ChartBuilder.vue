@@ -4,7 +4,7 @@
         <b-sidebar ref="chart-build-sidebar" id="chart-build-sidebar" v-model="sidebarVisible" :title="chartStore.newChartDetails.chartType" @shown="createTempChart" @hidden="closeChartPanel" shadow :right="chartPanelDirectionRight">
             <b-form class="form-style">
                 <label for="chart-title">Chart Title</label>
-                <b-form-input id="chart-title" v-model="chartStore.newChartDetails.chartTitle" @blur="updateTempChartDetails"></b-form-input>
+                <b-form-input id="chart-title" v-model="chartStore.newChartDetails.chartTitle" @blur="updateTempChartTitle"></b-form-input>
                 <br />
                 <label for="chart-type-select">Chart Type</label>
                 <b-form-select id="chart-type-select" v-model="chartStore.newChartDetails.chartType" @change="updateTempChartDetails">
@@ -51,6 +51,8 @@ import { useFoodStore } from '../stores/foodStore';
 import { useChartStore } from '../stores/chartStore';
 import { useUserStore } from '../stores/userStore';
 import ChartGrid from './ChartGrid.vue';
+import { Chart } from '../models/Chart';
+import { ChartOptions } from '../models/ChartOptions';
 export default {
     setup() {
         const componentStore = useComponentStore();
@@ -122,32 +124,27 @@ export default {
             this.chartStore.chartPanelOpen = true;
         },
         createTempChart() {
-            this.chartStore.newChartDetails.id = db.collection('users').doc(this.auth.currentUser.uid).collection('charts').doc().id;
-            this.chartStore.newChartDetails.chartTitle = "New Chart - " + (this.chartStore.charts.length + 1);
+            const id = db.collection('users').doc(this.auth.currentUser.uid).collection('charts').doc().id;
+            const defaultTitle = "New Chart - " + (this.chartStore.charts.length + 1);
+            this.chartStore.newChartDetails = new Chart(id, defaultTitle, this.chartStore.newChartDetails.chartType, null, new ChartOptions(defaultTitle), null, null, "", "");
             this.chartStore.charts.push(this.chartStore.newChartDetails);
-            this.chartStore.updateDisplayCharts();
         },
         removeTempChart() {
             this.chartStore.charts.pop();
-            this.chartStore.displayCharts.pop();
-            this.chartStore.newChartDetails = {
-                id: null,
-                chartTitle : "",
-                chartType : "",
-                chartData : null,
-                selectedComponent : null,
-                selectedFood : null,
-                startDate : "",
-                endDate : ""
-            }
+            this.chartStore.newChartDetails = new Chart(null, "", "", null, null, null, null, "", "");
         },
         closeChartPanel() {
             this.removeTempChart();
             this.chartStore.chartPanelOpen = false;
         },
+        updateTempChartTitle() {
+            this.chartStore.charts[this.chartStoreLastIndex] = this.chartStore.newChartDetails;
+            this.chartStore.charts[this.chartStoreLastIndex].chartOptions = new ChartOptions(this.chartStore.newChartDetails.chartTitle);
+            this.chartStore.charts = this.chartStore.charts.filter(chart => chart);
+        },
         updateTempChartDetails() {
             this.chartStore.charts[this.chartStoreLastIndex] = this.chartStore.newChartDetails;
-            this.chartStore.updateDisplayCharts();
+            this.chartStore.charts = this.chartStore.charts.filter(chart => chart);
         },
         async updateTempChartComponent() {
             if (this.chartStore.newChartDetails.selectedComponent === null) {
@@ -178,14 +175,14 @@ export default {
                 }
             }
             this.chartStore.charts[this.chartStoreLastIndex] = this.chartStore.newChartDetails;
-            this.chartStore.updateDisplayCharts();
+            this.chartStore.charts = this.chartStore.charts.filter(chart => chart);
         },
         async saveChart() {
             await this.chartStore.addCharts(this.userAccessToken);
             (this.chartStore.charts.length + 1) % 3 === 0 ? this.chartPanelDirectionRight = false : this.chartPanelDirectionRight = true;
         },
-        resetChartForm() {
-            this.chartStore.resetNewChartDetails();
+        async resetChartForm() {
+            await this.chartStore.resetNewChartDetails();
             this.updateTempChartDetails();
         }
     }

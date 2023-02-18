@@ -2,6 +2,12 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/firestore';
 import 'firebase/compat/auth';
 import 'firebase/compat/storage';
+import admin, { ServiceAccount } from 'firebase-admin';
+import serviceKey from './serviceAccountKey.json';
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceKey as ServiceAccount)
+});
 
 const firebaseConfig = {
     apiKey: process.env.FIREBASE_API_KEY,
@@ -19,3 +25,4 @@ export const db = firebase.firestore();
 export const auth = firebase.auth();
 export const storage = firebase.storage();
 export const GoogleAuthProvider = new firebase.auth.GoogleAuthProvider();
+export const firebaseAdmin = admin;

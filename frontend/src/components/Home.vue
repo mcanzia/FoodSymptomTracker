@@ -69,7 +69,7 @@ export default {
     async created() {
         this.userAccessToken = await this.userStore.getAccessToken();
         await this.componentStore.initializeComponentLists(this.userAccessToken);
-        await this.dateLogStore.initializeDateLogs(this.userAccessToken, this.currentDateString, this.componentStore.selectedComponents);
+        await this.dateLogStore.initializeStore(this.userAccessToken, this.currentDateString, this.componentStore.selectedComponents);
         await this.foodStore.initializeFoodList(this.userAccessToken);
         //this.testEndpoints()
     },
@@ -96,9 +96,6 @@ export default {
         },
         currentDate() {
             return new Date();
-        },
-        selectedDate() {
-            return new Date(this.dateLogStore.selectedDateLog.date);
         }
     },
     methods: {
