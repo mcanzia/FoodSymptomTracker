@@ -34,10 +34,24 @@ export default {
     components: {
     },
     watch: { 
-        chartDetails: function() {
+        // Fix this with Vue 3
+        'chartDetails.chartData': function() {
+          console.log('lemon');
           this.chart.destroy();
-          this.chartDetails.chartOptions.scales = {};
+          this.chartDetails.chartOptions.scales = this.chartDetails.chartOptions ? {} : null;
           this.createChartContext();
+        },
+        'chartDetails.chartOptions': function() {
+            console.log('orange');
+            this.chart.destroy();
+            this.chartDetails.chartOptions.scales = this.chartDetails.chartOptions ? {} : null;
+            this.createChartContext();
+        },
+        'chartDetails.chartType': function() {
+            console.log('lime');
+            this.chart.destroy();
+            this.chartDetails.chartOptions.scales = this.chartDetails.chartOptions ? {} : null;
+            this.createChartContext();
         }
     },
     methods: {

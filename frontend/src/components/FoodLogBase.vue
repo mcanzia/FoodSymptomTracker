@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="dateLogStore.selectedDateLog">
     <b-row>
         <b-col></b-col>
         <b-col cols="8">
@@ -13,8 +13,8 @@
         <b-col></b-col>
         <b-col cols="8">
             <b-card>
-                <b-list-group v-for="item in dateLogStore.selectedDateLog.foodItems" :key="item.name">
-                    <b-list-group-item>{{ item.name }}</b-list-group-item>
+                <b-list-group v-for="foodItem in dateLogStore.selectedDateLog.foodItems" :key="foodItem.name">
+                    <b-list-group-item>{{ foodItem.name }}</b-list-group-item>
                 </b-list-group>
             </b-card>
         </b-col>
@@ -23,7 +23,7 @@
     <b-row>
         <b-col></b-col>
         <b-col cols="8">
-            <b-card v-for="(component) in dateLogStore.selectedDateLog.components" :key="component.id">
+            <b-card v-for="component in dateLogStore.selectedDateLog.components" :key="component.id">
                 <b-form v-if="component.typeId == 1">
                     <label for="component-range">{{component.name}}</label>
                     <b-form-input id="component-range" type="range" min="0" max="10" step="0.10" disabled class="text-center" v-model="component.values"></b-form-input>

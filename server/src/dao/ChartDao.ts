@@ -10,7 +10,8 @@ export class ChartDao {
             documents.forEach(document => {
                 console.log(document.data());
                 const chart : Chart = new Chart(document.id, document.data().chartTitle, document.data().chartType, document.data().chartData, 
-                    document.data().selectedComponent, document.data().selectedFood, document.data().startDate, document.data().endDate);
+                    document.data().chartOptions, document.data().selectedComponent, document.data().selectedFood, document.data().startDate, 
+                    document.data().endDate);
                 charts.push(chart);
             });
             return charts;
@@ -25,7 +26,8 @@ export class ChartDao {
             const document = await db.collection('users').doc(authId).collection('charts').doc(chartId).get();
             const documentData : any = document.data();
             const chart : Chart = new Chart(document.id, documentData.chartTitle, documentData.chartType, documentData.chartData,
-                documentData.selectedComponent, documentData.selectedFood, documentData.startDate, documentData.endDate);
+                documentData.chartOptions, documentData.selectedComponent, documentData.selectedFood, documentData.startDate, 
+                documentData.endDate);
             return chart;
         } catch (error) {
             console.log(error);
