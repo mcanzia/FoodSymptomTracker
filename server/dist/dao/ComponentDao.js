@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ComponentDao = void 0;
 const firebase_1 = require("../configs/firebase");
 const Component_1 = require("../models/Component");
+const CustomError_1 = require("../util/error/CustomError");
 class ComponentDao {
     async getAllComponents(authId) {
         try {
@@ -15,8 +16,7 @@ class ComponentDao {
             return components;
         }
         catch (error) {
-            console.log(error);
-            throw error;
+            throw new CustomError_1.DatabaseError("Could not retrieve components from database");
         }
     }
     async getComponentById(authId, componentId) {
@@ -27,8 +27,7 @@ class ComponentDao {
             return component;
         }
         catch (error) {
-            console.log(error);
-            throw error;
+            throw new CustomError_1.DatabaseError("Could not retrieve component from database");
         }
     }
     async addComponents(authId, components) {
@@ -47,8 +46,7 @@ class ComponentDao {
             return;
         }
         catch (error) {
-            console.log(error);
-            throw error;
+            throw new CustomError_1.DatabaseError("Could not add component to database");
         }
     }
     async updateComponent(authId, componentId, componentData) {
@@ -56,8 +54,7 @@ class ComponentDao {
             await firebase_1.db.collection('users').doc(authId).collection('components').doc(componentId).update(componentData);
         }
         catch (error) {
-            console.log(error);
-            throw error;
+            throw new CustomError_1.DatabaseError("Could not retrieve update component in database");
         }
     }
 }

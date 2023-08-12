@@ -2,7 +2,7 @@ export class ComponentController {
     async getAllComponents(userAuthToken) {
         try {
             const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7000/api/components', {
+            const response = await fetch('http://localhost:7500/api/components', {
                 method: 'GET',
                 headers: {
                     'Authorization': bearer
@@ -17,7 +17,7 @@ export class ComponentController {
     async getComponentById(userAuthToken, componentId) {
         try {
             const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7000/api/components/' + componentId, {
+            const response = await fetch('http://localhost:7500/api/components/' + componentId, {
                 method: 'GET',
                 headers: {
                     'Authorization': bearer
@@ -32,7 +32,7 @@ export class ComponentController {
     async addComponents(userAuthToken, components) {
         try {
             const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7000/api/components', {
+            const response = await fetch('http://localhost:7500/api/components', {
                 method: 'POST',
                 headers: {
                     'Authorization': bearer,
@@ -49,7 +49,7 @@ export class ComponentController {
     async updateComponent(userAuthToken, component) {
         try {
             const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7000/api/components/' + component.id, {
+            const response = await fetch('http://localhost:7500/api/components/' + component.id, {
                 method: 'PUT',
                 headers: {
                     'Authorization': bearer,

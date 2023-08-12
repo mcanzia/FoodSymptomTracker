@@ -3,6 +3,7 @@ import util from 'util';
 import { DateLog } from '../models/DateLog';
 import { DateUtil } from '../util/DateUtil';
 import { FoodItem } from '../models/FoodItem';
+import { DatabaseError } from '../util/error/CustomError';
 
 export class DateLogDao {
 
@@ -20,8 +21,7 @@ export class DateLogDao {
             });
             return dateLogs;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not retrieve date logs from database");
         }
     }
 
@@ -41,8 +41,7 @@ export class DateLogDao {
             });
             return dateLogs;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not retrieve date logs from database");
         }
     }
 
@@ -53,8 +52,7 @@ export class DateLogDao {
             const dateLog : DateLog = new DateLog(document.id, documentData.date, documentData.foodItems, documentData.components);
             return dateLog;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not retrieve date log from database");
         }
     }
 
@@ -73,8 +71,7 @@ export class DateLogDao {
             await batch.commit();
             return;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not add date log to database");
         }
     }
 
@@ -82,8 +79,7 @@ export class DateLogDao {
         try {
             await db.collection('users').doc(authId).collection('dateLogs').doc(dateLogId).update(dateLogData);
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not update date log in database");
         }
     }
 

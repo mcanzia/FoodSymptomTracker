@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FoodDao = void 0;
 const firebase_1 = require("../configs/firebase");
 const FoodItem_1 = require("../models/FoodItem");
+const CustomError_1 = require("../util/error/CustomError");
 class FoodDao {
     async getAllFoods(authId) {
         try {
@@ -15,8 +16,7 @@ class FoodDao {
             return foodItems;
         }
         catch (error) {
-            console.log(error);
-            throw error;
+            throw new CustomError_1.DatabaseError("Could not retrieve food items from database");
         }
     }
     async getFoodById(authId, foodId) {
@@ -27,8 +27,7 @@ class FoodDao {
             return foodItem;
         }
         catch (error) {
-            console.log(error);
-            throw error;
+            throw new CustomError_1.DatabaseError("Could not retrieve food item from database");
         }
     }
     async addFoods(authId, foodItems) {
@@ -47,8 +46,7 @@ class FoodDao {
             return;
         }
         catch (error) {
-            console.log(error);
-            throw error;
+            throw new CustomError_1.DatabaseError("Could not add food item to database");
         }
     }
 }

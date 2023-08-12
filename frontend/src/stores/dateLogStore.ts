@@ -1,5 +1,5 @@
-import { Component } from '@/models/Component';
-import { DateLog } from '@/models/DateLog';
+import { Component } from '../models/Component';
+import { DateLog } from '../models/DateLog';
 import { defineStore } from 'pinia'
 import { DateLogService } from '../services/DateLogService';
 import { DateUtil } from '../util/DateUtil';

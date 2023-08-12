@@ -1,5 +1,6 @@
 import { db } from '../configs/firebase';
 import { Chart } from '../models/Chart';
+import { DatabaseError } from '../util/error/CustomError';
 
 export class ChartDao {
     
@@ -8,7 +9,6 @@ export class ChartDao {
             const charts : Array<Chart> =  new Array<Chart>();    
             const documents = await db.collection('users').doc(authId).collection('charts').get();
             documents.forEach(document => {
-                console.log(document.data());
                 const chart : Chart = new Chart(document.id, document.data().chartTitle, document.data().chartType, document.data().chartData, 
                     document.data().chartOptions, document.data().selectedComponent, document.data().selectedFood, document.data().startDate, 
                     document.data().endDate);
@@ -16,8 +16,7 @@ export class ChartDao {
             });
             return charts;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not retrieve charts from database");
         }
     }
 
@@ -30,8 +29,7 @@ export class ChartDao {
                 documentData.endDate);
             return chart;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not retrieve chart from database");
         }
     }
 
@@ -49,8 +47,7 @@ export class ChartDao {
             }
             await batch.commit();
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not add chart to database");
         }
     }
 
@@ -58,8 +55,7 @@ export class ChartDao {
         try {
             await db.collection('users').doc(authId).collection('charts').doc(chartId).update(chartData);
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not update chart in database");
         }
     }
     

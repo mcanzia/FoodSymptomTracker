@@ -1,112 +1,94 @@
 <template>
     <div>
-    <b-row>
-        <b-col></b-col>
-        <b-col cols="8">
-            <b-card>
-                <b-card-title>What did you eat today?</b-card-title>
-                <b-form inline>
-                    <b-form-input list="existing-food-items" id="food-item-search" v-model="foodItem" placeholder="Search" class="mr-2 w-75"></b-form-input>
-                    <b-datalist id="existing-food-items" :options="existingFoodItems"></b-datalist>
-                    <b-button @click="addFoodItem()">Add</b-button>
-                </b-form>
-            </b-card>
-        </b-col>
-        <b-col></b-col>
-    </b-row>
-    <b-row>
-        <b-col></b-col>
-        <b-col cols="8">
-            <b-card>
-                <b-list-group v-for="item in dateLogStore.selectedDateLog.foodItems" :key="item.name">
-                    <b-list-group-item>
-                        {{ item.name }} 
-                        <span class="change-icon">
-                            <b-icon icon="dash-circle" class="bi right mt-1" variant="danger"></b-icon>
-                            <b-icon icon="dash-circle-fill" class="bi right mt-1" variant="danger" @click="removeFoodItem(item)"></b-icon>
-                        </span>
-                    </b-list-group-item>
-                </b-list-group>
-            </b-card>
-        </b-col>
-        <b-col></b-col>
-    </b-row>
-    <b-row>
-        <b-col></b-col>
-        <b-col cols="8">
-            <b-card v-for="(component) in dateLogStore.selectedDateLog.components" :key="component.id">
-                <b-form v-if="component.typeId == 1">
-                    <label :for="component.id">{{component.name}}</label>
-                    <b-form-input :id="component.id" type="range" min="0" max="10" step="0.10" class="text-center" v-model="component.values"></b-form-input>
-                    <div class="mt-2">Value: {{ component.value }}</div>   
-                </b-form>
-                <b-form v-if="component.typeId == 2">
-                    <label :for="component.id">{{component.name}}</label>
-                    <b-form-radio-group :id="component.id" :name="component.name" :options="component.selectOptions" v-model="component.values" text-field="text" value-field="value" class="text-center"></b-form-radio-group>
-                </b-form>
-                <b-form v-if="component.typeId == 3">
-                    <label :for="component.id">{{component.name}}</label>
-                    <b-form-checkbox-group :id="component.id" :name="component.name" :options="component.selectOptions" v-model="component.values" text-field="text" value-field="value" class="text-center"></b-form-checkbox-group>
-                </b-form>
-            </b-card>
-        </b-col>
-        <b-col></b-col>
-    </b-row>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">What you ate today:</h3>
+                        <input class="form-control mr-2 w-75" list="existing-food-items" id="food-item-search" placeholder="Type to search...">
+                        <datalist id="existing-food-items" :options="existingFoodItems">
+                            <option v-for="existingFoodItem in existingFoodItems" :key="existingFoodItem" :value="existingFoodItem"></option>
+                        </datalist>
+                        <button @click="addFoodItem()">Add</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-8">
+                <div class="card">
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item" v-for="foodItem in dateLogStore.selectedDateLog.foodItems" :key="foodItem.name">
+                                {{ foodItem.name }}
+                                <span class="change-icon">
+                                    <ion-icon name="remove-circle-outline" class="bi right mt-1"></ion-icon>
+                                    <ion-icon name="remove-circle" class="bi right mt-1" @click="removeFoodItem(item)"></ion-icon>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-8">
+                <div class="card" v-for="component in dateLogStore.selectedDateLog.components" :key="component.id">
+                    <div class="card-body">
+                        <ComponentDisplay :component="component" :disabled="false" />
+                    </div>
+                </div>
+            </div>
+            <div class="col"></div>
+        </div>
     </div>
 </template>
 
-<script>
+<script setup>
 import { useDateLogStore } from '../stores/dateLogStore';
 import { useComponentStore } from '../stores/componentStore';
 import { useFoodStore } from '../stores/foodStore';
-export default {
-    setup() {
-        const dateLogStore = useDateLogStore();
-        const componentStore = useComponentStore();
-        const foodStore = useFoodStore();
+import ComponentDisplay from './ComponentDisplay.vue';
 
-        return {
-            dateLogStore,
-            componentStore,
-            foodStore
-        }
-    },
-    components: {
-    },
-    data() {
-        return {
-            foodItem: "",
-            existingFoodItems: ['Apple', 'Banana', 'Grape', 'Kiwi', 'Orange'],
-            selectedDay: 0,
-        }
-    },
-    methods: {
-        addFoodItem() {
-            if (this.foodItem == "") {
-                return;
-            }
+const dateLogStore = useDateLogStore();
+const componentStore = useComponentStore();
+const foodStore = useFoodStore();
 
-            if (this.dateLogStore.containsFoodDuplicate(this.foodItem)) {
-                return console.log("This food is already in the list");
-            }
-            
-            const newFoodItem = {
-                id: null,
-                name: this.foodItem
-            }
+let foodItem = "";
+let existingFoodItems = ['Apple', 'Banana', 'Grape', 'Kiwi', 'Orange'];
+let selectedDay = 0;
 
-            this.dateLogStore.selectedDateLog.foodItems.push(newFoodItem);
-            this.foodItem = "";
-        },
-        removeFoodItem(item) {
-            const index = this.dateLogStore.selectedDateLog.foodItems.indexOf(item);
-            if (index > -1) {
-                this.dateLogStore.selectedDateLog.foodItems.splice(index, 1); 
-            }
-            
-        }
+function addFoodItem() {
+    if (foodItem == "") {
+        return;
     }
+
+    if (dateLogStore.containsFoodDuplicate(foodItem)) {
+        return console.log("This food is already in the list");
+    }
+    
+    const newFoodItem = {
+        id: null,
+        name: foodItem
+    }
+
+    dateLogStore.selectedDateLog.foodItems.push(newFoodItem);
+    foodItem = "";
 }
+
+function removeFoodItem(item) {
+    const index = dateLogStore.selectedDateLog.foodItems.indexOf(item);
+    if (index > -1) {
+        dateLogStore.selectedDateLog.foodItems.splice(index, 1); 
+    }
+    
+}
+
 </script>
 
 <style scoped>

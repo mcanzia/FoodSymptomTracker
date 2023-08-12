@@ -4,6 +4,7 @@ exports.DateLogDao = void 0;
 const firebase_1 = require("../configs/firebase");
 const DateLog_1 = require("../models/DateLog");
 const DateUtil_1 = require("../util/DateUtil");
+const CustomError_1 = require("../util/error/CustomError");
 class DateLogDao {
     async getAllDateLogs(authId, startDate, endDate) {
         try {
@@ -20,8 +21,7 @@ class DateLogDao {
             return dateLogs;
         }
         catch (error) {
-            console.log(error);
-            throw error;
+            throw new CustomError_1.DatabaseError("Could not retrieve date logs from database");
         }
     }
     async getDateLogsWithFood(authId, food, startDate, endDate) {
@@ -41,8 +41,7 @@ class DateLogDao {
             return dateLogs;
         }
         catch (error) {
-            console.log(error);
-            throw error;
+            throw new CustomError_1.DatabaseError("Could not retrieve date logs from database");
         }
     }
     async getDateLogById(authId, dateLogId) {
@@ -53,8 +52,7 @@ class DateLogDao {
             return dateLog;
         }
         catch (error) {
-            console.log(error);
-            throw error;
+            throw new CustomError_1.DatabaseError("Could not retrieve date log from database");
         }
     }
     async addDateLogs(authId, dateLogs) {
@@ -73,8 +71,7 @@ class DateLogDao {
             return;
         }
         catch (error) {
-            console.log(error);
-            throw error;
+            throw new CustomError_1.DatabaseError("Could not add date log to database");
         }
     }
     async updateDateLogs(authId, dateLogId, dateLogData) {
@@ -82,8 +79,7 @@ class DateLogDao {
             await firebase_1.db.collection('users').doc(authId).collection('dateLogs').doc(dateLogId).update(dateLogData);
         }
         catch (error) {
-            console.log(error);
-            throw error;
+            throw new CustomError_1.DatabaseError("Could not update date log in database");
         }
     }
 }

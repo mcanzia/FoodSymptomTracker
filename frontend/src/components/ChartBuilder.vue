@@ -1,200 +1,194 @@
 <template>
-    <b-container fluid class="remove-all-margin-padding">
-        <ChartGrid @add-new-chart="openBuildChartModal" />
-        <b-sidebar ref="chart-build-sidebar" id="chart-build-sidebar" v-model="sidebarVisible" :title="chartStore.newChartDetails.chartType" @shown="createTempChart" @hidden="closeChartPanel" shadow :right="chartPanelDirectionRight">
-            <b-form class="form-style">
-                <label for="chart-title">Chart Title</label>
-                <b-form-input id="chart-title" v-model="chartStore.newChartDetails.chartTitle" @blur="updateTempChartTitle"></b-form-input>
-                <br />
-                <label for="chart-type-select">Chart Type</label>
-                <b-form-select id="chart-type-select" v-model="chartStore.newChartDetails.chartType" @change="updateTempChartDetails">
+    <div class="form-container">
+        <div class="form-column">
+            <div class="form-column-item">
+                <h4>Chart Title: </h4>
+                <input class="add-chart-input" id="new-chart-title" v-model="chartStore.newChartDetails.chartTitle" @blur="updateTempChartTitle">
+            </div>
+            <div class="form-column-item">
+                <h4>Chart Type: </h4>
+                <select class="add-chart-dropdown" id="new-chart-type" v-model="chartStore.newChartDetails.chartType" @change="updateTempChartTitle">
                     <option v-for="option in typeSelectOptions" :key="option" :value="option">
                         {{ option }}
-                    </option>
-                </b-form-select>
-                <br />
-                <br />
-                <label for="chart-component-select">Chart Component</label>
-                <b-form-select id="chart-component-select" v-model="chartStore.newChartDetails.selectedComponent" @change="updateTempChartComponent">
+                    </option>    
+                </select>
+            </div>
+            <div class="form-column-item">
+                <h4>Chart Component: </h4>
+                <select class="add-chart-dropdown" id="new-chart-component" v-model="chartStore.newChartDetails.selectedComponent" @change="updateTempChartComponent">
                     <option v-for="option in componentStore.selectedComponents" :key="option.id" :value="option">
                         {{ option.name }}
-                    </option>
-                </b-form-select>
-                <br />
-                <br />
-                <label for="chart-start-date-select">Start Date</label>
-                <b-form-datepicker id="chart-start-date-select" v-model="chartStore.newChartDetails.startDate" @input="updateTempChartComponent"></b-form-datepicker>
-                <br />
-                <label for="chart-end-date-select">End Date</label>
-                <b-form-datepicker id="chart-end-date-select" v-model="chartStore.newChartDetails.endDate" @input="updateTempChartComponent"></b-form-datepicker>
-                <br />
-                <label for="target-food-select">Target Food</label>
-                <b-form-select id="target-food-select" v-model="chartStore.newChartDetails.selectedFood" @change="updateTempChartComponent">
+                    </option> 
+                </select>
+            </div>
+            <div class="form-column-item">
+                <h4>Start Date: </h4>
+                <input class="add-chart-input" id="new-chart-start-date" v-model="chartStore.newChartDetails.startDate" @input="updateTempChartComponent">
+            </div>
+            <div class="form-column-item">
+                <h4>End Date: </h4>
+                <input class="add-chart-input" id="new-chart-end-date" v-model="chartStore.newChartDetails.endDate" @input="updateTempChartComponent">
+            </div>
+            <div class="form-column-item">
+                <h4>Target Food: </h4>
+                <select class="add-chart-dropdown" id="new-chart-food-select" v-model="chartStore.newChartDetails.selectedFood" @change="updateTempChartComponent">
                     <option v-for="option in foodStore.foods" :key="option.id" :value="option">
                         {{ option.name }}
                     </option>
-                </b-form-select>
-                <br />
-                <br />
-                <b-button type="submit" variant="primary" @click="saveChart()">Save</b-button>
-                <b-button variant="danger" class="ml-2" @click="resetChartForm()">Reset</b-button>
-            </b-form>
-        </b-sidebar>
-    </b-container>
-    
+                </select>
+            </div>
+        </div>
+        <ChartComponent :chart-details="chartStore.newChartDetails" />
+        <FloatingButton saveType="Chart" :editMode="chartBuilderActive" @saveOrEdit="saveChart()" @closeEditMode="closeChartBuilder()"/>                        
+    </div>
 </template>
 
-<script>
-import { auth, db } from '../firebase';
+<script setup>
+import router from "../router/index";
 import { useComponentStore } from '../stores/componentStore';
 import { useFoodStore } from '../stores/foodStore';
 import { useChartStore } from '../stores/chartStore';
 import { useUserStore } from '../stores/userStore';
-import ChartGrid from './ChartGrid.vue';
+import FloatingButton from './FloatingButton.vue';
+import ChartComponent from './Chart.vue';
 import { Chart } from '../models/Chart';
 import { ChartOptions } from '../models/ChartOptions';
-export default {
-    setup() {
-        const componentStore = useComponentStore();
-        const foodStore = useFoodStore();
-        const chartStore = useChartStore();
-        const userStore = useUserStore();
-        return {
-            componentStore,
-            foodStore,
-            chartStore,
-            userStore
-        }
-    },
-    data() {
-    
-        return {
-            auth,
-            db,
-            dateLogs: [],
-            typeSelectOptions: ['bar', 'line', 'pie', 'doughnut', 'radar'],
-            sidebarVisible: false,
-            chartPanelDirectionRight: false,
-        }
-    },
-    components: {
-        ChartGrid
-    },
-    async created() {
-        this.userAccessToken = await this.userStore.getAccessToken();
-        await this.chartStore.initializeCharts(this.userAccessToken);
-        await this.componentStore.initializeComponentLists(this.userAccessToken);
-        await this.foodStore.initializeFoodList(this.userAccessToken);
-        (this.chartStore.charts.length + 1) % 3 === 0 ? this.chartPanelDirectionRight = false : this.chartPanelDirectionRight = true;
-    },
-    computed: {
-        maxStartDate() {
-            return this.endDate !== "" || this.endDate !== undefined ? new Date(this.endDate) : new Date('2970-01-01T00:00:00'); 
-        },
-        minEndDate() {
-            return this.startDate !== "" || this.startDate !== undefined ? new Date(this.startDate) : new Date('1970-01-01T00:00:00');
-        },
-        chartStoreLastIndex() {
-            return this.chartStore.charts.length - 1;
-        }
-    },
-    methods: {
-        openBuildChartModal : function(type) {
-            switch(type) {
-                case "bar":
-                    this.chartStore.newChartDetails.chartType = "bar";
-                    break;
-                case "line":
-                    this.chartStore.newChartDetails.chartType = "line";
-                    break;
-                case "pie":
-                    this.chartStore.newChartDetails.chartType = "pie";
-                    break;
-                case "doughnut":
-                    this.chartStore.newChartDetails.chartType = "doughnut";
-                    break;
-                case "radar":
-                    this.chartStore.newChartDetails.chartType = "radar";
-                    break;
-                default:
-                    this.chartStore.newChartDetails.chartType = "bar";
-                    break;
+import { onBeforeMount, computed, ref } from 'vue';
+
+const componentStore = useComponentStore();
+const foodStore = useFoodStore();
+const chartStore = useChartStore();
+const userStore = useUserStore();
+
+let userAccessToken = null;
+let chartBuilderActive = ref(true);
+const typeSelectOptions = ['bar', 'line', 'pie', 'doughnut', 'radar'];
+
+onBeforeMount(async() => {
+    console.log(chartStore.newChartDetails);
+    userAccessToken = await userStore.getAccessToken();
+    await componentStore.initializeComponentLists(userAccessToken);
+    await foodStore.initializeFoodList(userAccessToken);
+});
+
+let maxStartDate = computed(() => {
+    return endDate !== "" || endDate !== undefined ? new Date(endDate) : new Date('2970-01-01T00:00:00'); 
+});
+
+let minEndDate = computed(() => {
+    return startDate !== "" || startDate !== undefined ? new Date(startDate) : new Date('1970-01-01T00:00:00');
+});
+
+let chartStoreLastIndex = computed(() => {
+    return chartStore.charts.length - 1;
+});
+
+function updateTempChartTitle() {
+    chartStore.newChartDetails.chartOptions = new ChartOptions(chartStore.newChartDetails.chartTitle);
+    chartStore.newChartDetails.chartOptions.scales = chartStore.newChartDetails.chartOptions ? {} : null;
+}
+
+async function updateTempChartComponent() {
+    if (chartStore.newChartDetails.selectedComponent === null) {
+        return;
+    }
+    switch (chartStore.newChartDetails.selectedComponent.typeId) {
+        case 1: {
+            if (chartStore.newChartDetails.selectedFood === null) {
+                await chartStore.createAverageChart(userAccessToken, chartStore.newChartDetails);
+            } else {
+                await chartStore.createFoodValueChart(userAccessToken, chartStore.newChartDetails);
             }
-            this.sidebarVisible = !this.sidebarVisible;
-            this.chartStore.chartPanelOpen = true;
-        },
-        createTempChart() {
-            const id = db.collection('users').doc(this.auth.currentUser.uid).collection('charts').doc().id;
-            const defaultTitle = "New Chart - " + (this.chartStore.charts.length + 1);
-            this.chartStore.newChartDetails = new Chart(id, defaultTitle, this.chartStore.newChartDetails.chartType, null, new ChartOptions(defaultTitle), null, null, "", "");
-            this.chartStore.charts.push(this.chartStore.newChartDetails);
-        },
-        removeTempChart() {
-            this.chartStore.charts.pop();
-            this.chartStore.newChartDetails = new Chart(null, "", "", null, null, null, null, "", "");
-        },
-        closeChartPanel() {
-            this.removeTempChart();
-            this.chartStore.chartPanelOpen = false;
-        },
-        updateTempChartTitle() {
-            this.chartStore.charts[this.chartStoreLastIndex] = this.chartStore.newChartDetails;
-            this.chartStore.charts[this.chartStoreLastIndex].chartOptions = new ChartOptions(this.chartStore.newChartDetails.chartTitle);
-            this.chartStore.charts = this.chartStore.charts.filter(chart => chart);
-        },
-        updateTempChartDetails() {
-            this.chartStore.charts[this.chartStoreLastIndex] = this.chartStore.newChartDetails;
-            this.chartStore.charts = this.chartStore.charts.filter(chart => chart);
-        },
-        async updateTempChartComponent() {
-            if (this.chartStore.newChartDetails.selectedComponent === null) {
-                return;
-            }
-            switch (this.chartStore.newChartDetails.selectedComponent.typeId) {
-                case 1: {
-                    console.log("SCALE");
-                    if (this.chartStore.newChartDetails.selectedFood === null) {
-                        await this.chartStore.createAverageChart(this.userAccessToken, this.chartStore.newChartDetails);
-                    } else {
-                        await this.chartStore.createFoodValueChart(this.userAccessToken, this.chartStore.newChartDetails);
-                    }
-                    break;
-                }
-                case 2: {
-                    console.log("SINGLE");
-                    await this.chartStore.createSingleValueComponentWeightByFoodChart(this.userAccessToken, this.chartStore.newChartDetails);
-                    break;
-                }
-                case 3: {
-                    console.log("MULTI");
-                    await this.chartStore.createMultiValueComponentWeightByFoodChart(this.userAccessToken, this.chartStore.newChartDetails);
-                    break;
-                }
-                default: {
-                    break;
-                }
-            }
-            this.chartStore.charts[this.chartStoreLastIndex] = this.chartStore.newChartDetails;
-            this.chartStore.charts = this.chartStore.charts.filter(chart => chart);
-        },
-        async saveChart() {
-            await this.chartStore.addCharts(this.userAccessToken);
-            (this.chartStore.charts.length + 1) % 3 === 0 ? this.chartPanelDirectionRight = false : this.chartPanelDirectionRight = true;
-        },
-        async resetChartForm() {
-            await this.chartStore.resetNewChartDetails();
-            this.updateTempChartDetails();
+            break;
+        }
+        case 2: {
+            await chartStore.createSingleValueComponentWeightByFoodChart(userAccessToken, chartStore.newChartDetails);
+            break;
+        }
+        case 3: {
+            await chartStore.createMultiValueComponentWeightByFoodChart(userAccessToken, chartStore.newChartDetails);
+            break;
+        }
+        default: {
+            break;
         }
     }
+    chartStore.newChartDetails.chartOptions.scales = chartStore.newChartDetails.chartOptions ? {} : null;
 }
+
+async function resetChartForm() {
+    await chartStore.resetNewChartDetails();
+    updateTempChartDetails();
+}
+
+async function saveChart() {
+    chartStore.addCharts(userAccessToken);
+    resetNewChart();
+    await router.push({ name: 'summary'});
+}
+
+async function closeChartBuilder() {
+    resetNewChart();
+    await router.push({ name: 'summary'});
+}
+
+function resetNewChart() {
+    const id = "chart_" + (chartStore.charts.length + 1);
+    const defaultTitle = "New Chart - " + (chartStore.charts.length + 1);
+    chartStore.newChartDetails = new Chart(id, defaultTitle, "bar", null, new ChartOptions(defaultTitle), null, null, "", "");
+}
+
 </script>
 
 <style scoped>
-.remove-all-margin-padding{
-    margin:0 !important;
-    padding:0 !important;
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
 }
-.form-style {
-    padding: 10px !important;
+
+.form-container {
+  display: flex;
+  gap: 20px;
+}
+
+.form-column-item {
+  display: flex;
+  align-content: center;
+  padding: 10px;
+  gap: 10px;
+}
+
+.add-chart-input, .add-chart-dropdown {
+  flex-grow: 1;
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.add-chart-input:focus, .add-chart-dropdown:focus {
+  outline: none;
+  border-color: #4AAE9B;
+  box-shadow: 0 0 3px rgba(0, 184, 255, 0.3);
+}
+
+button {
+  padding: 8px 16px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #4AAE9B;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #4AAE9B;
 }
 </style>

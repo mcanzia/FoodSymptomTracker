@@ -1,21 +1,19 @@
 import { defineStore } from 'pinia'
 import { ChartService } from '../services/ChartService';
 import { Chart } from '../models/Chart';
-import { ChartTitle } from '@/models/ChartTitle';
-import { ChartPlugins } from '@/models/ChartPlugins';
-import { ChartOptions } from '@/models/ChartOptions';
+import { ChartTitle } from '../models/ChartTitle';
+import { ChartPlugins } from '../models/ChartPlugins';
+import { ChartOptions } from '../models/ChartOptions';
 
 interface IChartState {
   charts : Array<Chart>
   newChartDetails : Chart
-  chartPanelOpen : boolean
 }
 
 export const useChartStore = defineStore('chartStore', {
     state: () : IChartState => ({
         charts : [],
-        newChartDetails : new Chart(null, "", "", null, null, null, null, "", ""),
-        chartPanelOpen: false
+        newChartDetails : new Chart(null, "", "", null, null, null, null, "", "")
       }),
     actions: {
         async createAverageChart(userToken : any, chart : Chart) {
@@ -42,11 +40,19 @@ export const useChartStore = defineStore('chartStore', {
         async addCharts(userToken : any) {
           const chartService = new ChartService();
           const newCharts : Array<Chart> = [this.newChartDetails];
+          if (this.newChartDetails.id?.startsWith('chart')) {
+            await this.charts.push(this.newChartDetails);
+          } else {
+            this.charts = this.charts.map(chart => {
+              return chart.id === this.newChartDetails.id ? this.newChartDetails : chart; 
+            });
+          }
           await chartService.addCharts(userToken, newCharts);
         },
         async initializeCharts(userToken : any) {
           const chartService = new ChartService();
-          this.charts = await chartService.getAllCharts(userToken);
+          this.charts = [];
+          this.charts.push(...await chartService.getAllCharts(userToken));
         }
       },
     });

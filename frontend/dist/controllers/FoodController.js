@@ -2,7 +2,7 @@ export class FoodController {
     async getAllFoods(userAuthToken) {
         try {
             const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7000/api/foods', {
+            const response = await fetch('http://localhost:7500/api/foods', {
                 method: 'GET',
                 headers: {
                     'Authorization': bearer
@@ -17,7 +17,7 @@ export class FoodController {
     async getFoodById(userAuthToken, foodId) {
         try {
             const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7000/api/foods/' + foodId, {
+            const response = await fetch('http://localhost:7500/api/foods/' + foodId, {
                 method: 'GET',
                 headers: {
                     'Authorization': bearer
@@ -32,7 +32,7 @@ export class FoodController {
     async addFoods(userAuthToken, foods) {
         try {
             const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7000/api/foods', {
+            const response = await fetch('http://localhost:7500/api/foods', {
                 method: 'POST',
                 headers: {
                     'Authorization': bearer,

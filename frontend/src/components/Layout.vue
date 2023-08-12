@@ -1,182 +1,226 @@
 <template>
-    <b-container>
-      <br />
-        <b-row class="text-center">
-            <b-col>
-              <h3>Layout</h3>
-            </b-col>
-        </b-row>
-        <br />
-        <b-row class="text-center">
-            <b-col>
-              <h5>Available Components:</h5>
-            </b-col>
-            <b-col>
-              <h5>Selected Components:</h5>
-            </b-col>
-        </b-row>
-        <b-row>
-            <b-col cols="6">
-              <b-button block variant="primary" @click="$bvModal.show('new-component-modal')">Add Component</b-button>
-              <b-card v-for="(component) in availableComponents" :key="component.id">
-                    <span class="change-icon">
-                      <b-icon icon="plus-circle" class="bi right" variant="success"></b-icon>
-                      <b-icon icon="plus-circle-fill" class="bi right" variant="success" @click="toggleSelected(component, true)"></b-icon>
-                    </span>
-                    <b-form v-if="component.typeId == 1">
-                      <label for="component-range">{{component.name}}</label>
-                      <b-form-input id="component-range" type="range" min="0" max="10" step="0.10" disabled class="text-center"></b-form-input>
-                    </b-form>
-                    <b-form v-if="component.typeId == 2">
-                      <label for="component-radio">{{component.name}}</label>
-                      <b-form-radio-group id="component-radio" :options="component.selectOptions" text-field="text" value-field="value" disabled class="text-center"></b-form-radio-group>
-                    </b-form>
-                    <b-form v-if="component.typeId == 3">
-                      <label for="component-checkbox">{{component.name}}</label>
-                      <b-form-checkbox-group id="component-checkbox" :options="component.selectOptions" text-field="text" value-field="value" disabled class="text-center"></b-form-checkbox-group>
-                    </b-form>
-              </b-card>
-              <br />
-            </b-col>
-            <b-col cols="6">
-                      <b-card v-for="(component) in selectedComponents" :key="component.id">
-                          <span class="change-icon">
-                            <b-icon icon="dash-circle" class="bi right" variant="danger"></b-icon>
-                            <b-icon icon="dash-circle-fill" class="bi right" variant="danger" @click="toggleSelected(component, false)"></b-icon>
-                          </span>
-                          <b-form v-if="component.typeId == 1">
-                            <label for="component-range">{{component.name}}</label>
-                            <b-form-input id="component-range" type="range" min="0" max="10" step="0.10" disabled class="text-center"></b-form-input>
-                          </b-form>
-                          <b-form v-if="component.typeId == 2">
-                            <label for="component-radio">{{component.name}}</label>
-                            <b-form-radio-group id="component-radio" :options="component.selectOptions" text-field="text" value-field="value" disabled class="text-center"></b-form-radio-group>
-                          </b-form>
-                          <b-form v-if="component.typeId == 3">
-                            <label for="component-checkbox">{{component.name}}</label>
-                            <b-form-checkbox-group id="component-checkbox" :options="component.selectOptions" text-field="text" value-field="value" disabled class="text-center"></b-form-checkbox-group>
-                          </b-form>
-                      </b-card>
-                <br />
-            </b-col>
-        </b-row>
-        <b-modal 
-            id="new-component-modal" 
-            title="Build a Component:"
-            @ok="addNewComponent()"
-            @cancel="clearNewComponentForm()">
-            <b-form>
-              <label for="new-component-name">Name:</label>
-              <b-form-input id="new-component-name" v-model="newComponent.name" required placeholder="Enter a name"></b-form-input>
-              <br />
-              <label for="new-component-type">Type:</label>
-              <b-form-select id="new-component-type" v-model="newComponent.typeId" :options="componentTypes" value-field="typeId" text-field="label" required></b-form-select>
-              <br />
-              <b-form-group v-if="newComponent.typeId === 2 || newComponent.typeId === 3" label="Options:" label-for="new-component-options">
-                <div v-for="selectOption in newComponent.selectOptions" :key="selectOption.value">
-                  <b-form-input id="new-component-options" v-model="selectOption.text"></b-form-input>
-                </div>
-                <br />
-                <b-button variant="link" @click="newComponent.selectOptions.push({text: '', value: ''})" v-if="newComponent.selectOptions.length < 5">Add new option</b-button>
-              </b-form-group>
-            </b-form>
-        </b-modal>
-    </b-container>
+   <div class="container" @click.self="closeNewComponentModal()">
+        <div class="flex-column">
+            <h2>Available Components: </h2>
+            <ComponentDisplay
+              v-for="component in availableComponents"
+              :key="component.id"
+              :component="component"
+              :disabled="true"
+              :layout="true"
+              @toggleComponentSelection="toggleSelected(component)"
+            />
+
+        </div>
+        <div class="flex-column">
+            <h2>Selected Components: </h2>
+            <ComponentDisplay
+              v-for="component in selectedComponents"
+              :key="component.id"
+              :component="component"
+              :disabled="true"
+              :layout="true"
+              @toggleComponentSelection="toggleSelected(component)"
+            />
+        </div>
+        <Modal v-if="newComponentModalActive" class="modal" :headerActive="true" :bodyActive="true">
+          <template v-slot:header>
+              <h3>Add New Component</h3>
+          </template>
+          <template v-slot:body>
+            <div class="form-container">
+              <h4>Name: </h4>
+              <input 
+                  class="add-component-input" 
+                  id="new-component-name" 
+                  v-model="newComponent.name" 
+                  required 
+                  placeholder="Enter a name">
+            </div>
+            <div class="form-container">
+              <h4>Type: </h4>
+              <select 
+                  class="add-component-dropdown" 
+                  id="new-component-type" 
+                  v-model="newComponent.typeId" 
+                  required>
+                    <option v-for="componentType in componentTypes" :value="componentType.typeId" :key="componentType.typeId">
+                      {{ componentType.label }}
+                    </option>
+              </select>
+            </div>
+            <div v-if="newComponent.typeId === 2 || newComponent.typeId === 3">
+              <h4>Options: </h4>
+              <div v-for="selectOption in newComponent.selectOptions" :key="selectOption.value">
+                <input class="add-component-input" id="new-component-options" v-model="selectOption.text">
+              </div>
+              <button 
+                  v-if="newComponent.selectOptions.length < 5"    
+                  @click="addComponentOption()" 
+                  id="add-new-option-button">
+                    Add New Option
+              </button>
+            </div>
+          </template>
+        </Modal>
+        <FloatingButton saveType="Component" :editMode="newComponentModalActive" @saveOrEdit="toggleNewComponentModal()" @closeEditMode="closeNewComponentModal()"/>
+    </div>
 </template>
 
-<script>
+<script setup>
 import { useDateLogStore } from '../stores/dateLogStore';
 import { useComponentStore } from '../stores/componentStore';
 import { useUserStore } from '../stores/userStore';
 import { storeToRefs } from 'pinia';
-import { auth, db } from '../firebase';
-export default {
-  setup() {
-    const dateLogStore = useDateLogStore();
-    const componentStore = useComponentStore();
-    const userStore = useUserStore();
+import { onBeforeMount, computed, ref } from 'vue';
+import Modal from './Modal.vue';
+import ComponentDisplay from './ComponentDisplay.vue';
+import FloatingButton from './FloatingButton.vue';
 
-    const { availableComponents, selectedComponents } = storeToRefs(componentStore);
+const dateLogStore = useDateLogStore();
+const componentStore = useComponentStore();
+const userStore = useUserStore();
 
-    return {
-      dateLogStore,
-      componentStore,
-      userStore,
-      availableComponents,
-      selectedComponents
+const { availableComponents, selectedComponents } = storeToRefs(componentStore);
+
+onBeforeMount(async() => {
+  userAccessToken = await userStore.getAccessToken();
+  await componentStore.initializeComponentLists(userAccessToken);
+  await dateLogStore.initializeStore(userAccessToken, currentDateString.value, componentStore.selectedComponents);
+});
+
+const componentTypes = [
+  { label: 'Slider', typeId: 1},
+  { label: 'Single Select', typeId: 2},
+  { label: 'Multi Select', typeId: 3},
+];
+
+let userAccessToken = null;
+
+let newComponent = ref({
+  name: "",
+  id: -1,
+  typeId: -1,
+  selectOptions: [],
+  selected: false
+});
+
+let newComponentModalActive = ref(false);
+
+let currentDateString = computed(() => {
+  return new Date().toLocaleDateString();
+});
+
+// Functions
+async function addNewComponent() {
+    try {
+        newComponent.value.selectOptions.map((option) => { option.value = option.text});
+        await componentStore.addComponents(userAccessToken, new Array(newComponent));
+    } catch (error) {
+        console.log(error)
     }
-  },
-  async created() {
-    this.userAccessToken = await this.userStore.getAccessToken();
-    await this.componentStore.initializeComponentLists(this.userAccessToken);
-    await this.dateLogStore.initializeStore(this.userAccessToken, this.currentDateString, this.componentStore.selectedComponents);
-  },
-  components: {
-  },
-  data() {
-    return {
-      auth,
-      db,
-      userAccessToken: null,
-      componentTypes: [
-        {label: 'Slider', typeId: 1},
-        {label: 'Single Select', typeId: 2},
-        {label: 'Multi Select', typeId: 3},
-      ],
-      newComponent: {
-        name: "",
-        id: -1,
-        typeId: -1,
-        selectOptions: [],
-        selected: false
-      }
-    }
-  },
-  computed: {
-    currentDateString() {
-        return new Date().toLocaleDateString();
-    }
-  },
-  methods: {
-    async addNewComponent() {
-        try {
-            this.newComponent.selectOptions.map((option) => { option.value = option.text});
-            await this.componentStore.addComponents(this.userAccessToken, new Array(this.newComponent));
-        } catch (error) {
-            console.log(error)
-        }
-        this.clearNewComponentForm();
-    },
-    clearNewComponentForm() {
-      this.newComponent = 
-      {
-        name: "",
-        id: -1,
-        typeId: -1,
-        selectOptions: []
-      }
-    },
-    async toggleSelected(component, isSelected) {
-      await this.componentStore.toggleSelectedField(this.userAccessToken, component, isSelected);
-      if (isSelected) {
-        await this.dateLogStore.addDateLogComponent(this.userAccessToken, component);
-      } else {
-        await this.dateLogStore.removeDateLogComponent(this.userAccessToken, component);
-      }
-    }
+    clearNewComponentForm();
+}
+
+function clearNewComponentForm() {
+  newComponent.value = {
+    name: "",
+    id: -1,
+    typeId: -1,
+    selectOptions: []
   }
 }
+
+async function toggleSelected(component) {
+  const isSelected = !component.selected;
+  await componentStore.toggleSelectedField(userAccessToken, component, isSelected);
+  if (isSelected) {
+    await dateLogStore.addDateLogComponent(userAccessToken, component);
+  } else {
+    await dateLogStore.removeDateLogComponent(userAccessToken, component);
+  }
+}
+
+function toggleNewComponentModal() {
+  if (newComponentModalActive.value) {
+    addNewComponent();
+  }
+  newComponentModalActive.value = !newComponentModalActive.value;
+}
+
+function openNewComponentModal() {
+  newComponentModalActive.value = true;
+}
+
+function closeNewComponentModal() {
+  clearNewComponentForm();
+  newComponentModalActive.value = false;
+}
+
+function addComponentOption() {
+  newComponent.value.selectOptions.push({text: '', value: ''});
+}
+
 </script>
 
 <style scoped>
-  .change-icon > .bi + .bi,
-  .change-icon:hover > .bi {
-    display: none;
-  }
-  .change-icon:hover > .bi + .bi {
-    display: inherit;
-  }
-  .right {
-    float: right;
-  }
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.flex-column {
+  flex-basis: calc(50% - 2rem);
+}
+
+h2 {
+    font-family: garamond;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+.form-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.add-component-input, .add-component-dropdown {
+  flex-grow: 1;
+  padding: 8px 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  background-color: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.add-component-input:focus, .add-component-dropdown:focus {
+  outline: none;
+  border-color: #4AAE9B;
+  box-shadow: 0 0 3px rgba(0, 184, 255, 0.3);
+}
+
+button {
+  padding: 8px 16px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #4AAE9B;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #4AAE9B;
+}
+
 </style>

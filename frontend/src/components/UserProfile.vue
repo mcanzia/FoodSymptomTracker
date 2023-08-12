@@ -1,19 +1,27 @@
 <template>
-    <div>
-        Logged in as user
+    <div class="center">
+        <Spinner />
+        <p>Logged in as {{ auth.currentUser.displayName }}</p>
     </div>
 </template>
 
-<script>
+<script setup>
+
 import { auth } from "../firebase";
-export default {
-    data() {
-        return {
-            auth
-        }
-    },
-    props: ['user'],
-    components: {
-    }
-}
+import Spinner from "./Spinner.vue";
+
+const props = defineProps({
+    user: Object
+})
+
 </script>
+
+<style scoped>
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+</style>

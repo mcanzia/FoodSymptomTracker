@@ -2,7 +2,7 @@ export class DateLogController {
     async getAllDateLogs(userAuthToken) {
         try {
             const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7000/api/datelogs', {
+            const response = await fetch('http://localhost:7500/api/datelogs', {
                 method: 'GET',
                 headers: {
                     'Authorization': bearer
@@ -17,7 +17,7 @@ export class DateLogController {
     async getDateLogById(userAuthToken, dateLogId) {
         try {
             const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7000/api/datelogs/' + dateLogId, {
+            const response = await fetch('http://localhost:7500/api/datelogs/' + dateLogId, {
                 method: 'GET',
                 headers: {
                     'Authorization': bearer
@@ -32,7 +32,7 @@ export class DateLogController {
     async addDateLogs(userAuthToken, dateLogs) {
         try {
             const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7000/api/datelogs', {
+            const response = await fetch('http://localhost:7500/api/datelogs', {
                 method: 'POST',
                 headers: {
                     'Authorization': bearer,
@@ -49,7 +49,7 @@ export class DateLogController {
     async updateDateLog(userAuthToken, dateLog) {
         try {
             const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7000/api/datelogs/' + dateLog.id, {
+            const response = await fetch('http://localhost:7500/api/datelogs/' + dateLog.id, {
                 method: 'PUT',
                 headers: {
                     'Authorization': bearer,

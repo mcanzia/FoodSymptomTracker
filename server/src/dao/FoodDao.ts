@@ -1,5 +1,6 @@
 import { db } from '../configs/firebase';
 import { FoodItem } from '../models/FoodItem';
+import { DatabaseError } from '../util/error/CustomError';
 
 export class FoodDao {
 
@@ -13,8 +14,7 @@ export class FoodDao {
             });
             return foodItems;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not retrieve food items from database");
         }
     }
 
@@ -25,8 +25,7 @@ export class FoodDao {
             const foodItem : FoodItem = new FoodItem(document.id, documentData.name);
             return foodItem;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not retrieve food item from database");
         }
     }
 
@@ -45,8 +44,7 @@ export class FoodDao {
             await batch.commit();
             return;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not add food item to database");
         }
     }
 

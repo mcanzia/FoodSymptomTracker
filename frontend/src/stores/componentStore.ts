@@ -1,4 +1,4 @@
-import { Component } from '@/models/Component';
+import { Component } from '../models/Component';
 import { defineStore } from 'pinia'
 import { ComponentService } from '../services/ComponentService';
 

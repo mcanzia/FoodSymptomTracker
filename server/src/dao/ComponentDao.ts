@@ -1,5 +1,6 @@
 import { db } from '../configs/firebase';
 import { Component } from '../models/Component';
+import { DatabaseError } from '../util/error/CustomError';
 
 export class ComponentDao {
 
@@ -13,8 +14,7 @@ export class ComponentDao {
             });
             return components;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not retrieve components from database");
         }
     }
 
@@ -25,8 +25,7 @@ export class ComponentDao {
             const component : Component = new Component(document.id, documentData.name, documentData.selectOptions, documentData.selected, documentData.typeId, documentData.values);
             return component;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not retrieve component from database");
         }
     }
 
@@ -45,8 +44,7 @@ export class ComponentDao {
             await batch.commit();
             return;
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not add component to database");
         }
     }
 
@@ -54,8 +52,7 @@ export class ComponentDao {
         try {
             await db.collection('users').doc(authId).collection('components').doc(componentId).update(componentData);
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw new DatabaseError("Could not retrieve update component in database");
         }
     }
 

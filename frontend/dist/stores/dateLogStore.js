@@ -1,4 +1,4 @@
-import { DateLog } from '@/models/DateLog';
+import { DateLog } from '../models/DateLog';
 import { defineStore } from 'pinia';
 import { DateLogService } from '../services/DateLogService';
 export const useDateLogStore = defineStore('dateLogStore', {

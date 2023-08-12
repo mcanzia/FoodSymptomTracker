@@ -1,4 +1,4 @@
-import { FoodItem } from '@/models/FoodItem';
+import { FoodItem } from '../models/FoodItem';
 import { defineStore } from 'pinia'
 import { FoodService } from '../services/FoodService';
 
