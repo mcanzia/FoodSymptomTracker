@@ -63,5 +63,22 @@ export class ComponentController {
             console.log(error);
         }
     }
+    async deleteComponents(userAuthToken, components) {
+        try {
+            const bearer = 'Bearer ' + userAuthToken;
+            const response = await fetch('http://localhost:7500/api/components', {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': bearer,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(components)
+            });
+            return response;
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
 }
 //# sourceMappingURL=ComponentController.js.map

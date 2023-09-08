@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.firebaseAdmin = exports.GoogleAuthProvider = exports.storage = exports.auth = exports.db = void 0;
+exports.firebaseAdmin = exports.GoogleAuthProvider = exports.storage = exports.auth = exports.documentId = exports.db = void 0;
 const app_1 = __importDefault(require("firebase/compat/app"));
 require("firebase/compat/firestore");
 require("firebase/compat/auth");
@@ -14,7 +14,7 @@ firebase_admin_1.default.initializeApp({
     credential: firebase_admin_1.default.credential.cert(serviceAccountKey_json_1.default)
 });
 const firebaseConfig = {
-    apiKey: process.env.FIREBASE_API_KEY,
+    apiKey: process.env.VITE_FIREBASE_API_KEY,
     authDomain: "crohns-food-tracker.firebaseapp.com",
     projectId: "crohns-food-tracker",
     storageBucket: "crohns-food-tracker.appspot.com",
@@ -24,6 +24,7 @@ const firebaseConfig = {
 };
 app_1.default.initializeApp(firebaseConfig);
 exports.db = app_1.default.firestore();
+exports.documentId = app_1.default.firestore.FieldPath.documentId();
 exports.auth = app_1.default.auth();
 exports.storage = app_1.default.storage();
 exports.GoogleAuthProvider = new app_1.default.auth.GoogleAuthProvider();

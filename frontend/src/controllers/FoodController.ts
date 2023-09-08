@@ -46,4 +46,21 @@ export class FoodController {
             console.log(error);
         }
     }
+
+    async deleteFoods(userAuthToken : any, foods : Array<FoodItem>) {
+        try {
+            const bearer : string = 'Bearer ' + userAuthToken;
+            const response = await fetch('http://localhost:7500/api/foods', {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': bearer,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(foods)
+            });
+            return response;
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }

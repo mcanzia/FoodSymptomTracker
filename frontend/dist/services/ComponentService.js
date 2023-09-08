@@ -20,5 +20,9 @@ export class ComponentService {
         await this.componentController.updateComponent(userAuth, component);
         return;
     }
+    async deleteComponents(userAuth, components) {
+        const component = await this.componentController.deleteComponents(userAuth, components);
+        return component;
+    }
 }
 //# sourceMappingURL=ComponentService.js.map

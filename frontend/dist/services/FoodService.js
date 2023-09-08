@@ -15,5 +15,9 @@ export class FoodService {
         const food = await this.foodController.addFoods(userAuth, foodItems);
         return food;
     }
+    async deleteFoods(userAuth, foodItems) {
+        const food = await this.foodController.deleteFoods(userAuth, foodItems);
+        return food;
+    }
 }
 //# sourceMappingURL=FoodService.js.map

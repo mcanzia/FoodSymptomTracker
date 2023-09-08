@@ -3,6 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DateLog = void 0;
 const DateUtil_1 = require("../util/DateUtil");
 class DateLog {
+    id;
+    date;
+    dateValue;
+    foodItems;
+    components;
     constructor(id, date, foodItems, components) {
         this.id = id;
         this.date = date;

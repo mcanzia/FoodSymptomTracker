@@ -22,6 +22,12 @@ export const useFoodStore = defineStore('foodStore', {
             const foodService = new FoodService();
             await foodService.addFoods(userToken, foods);
             await this.initializeFoodList(userToken);
-        }
+        },
+        async deleteFoods(userToken : any, foodsToDelete : Array<FoodItem>) {
+            const foodService = new FoodService();
+            const foodIds = foodsToDelete.map(foodToDelete => foodToDelete.id);
+            this.foods = await this.foods.filter(food => !foodIds.includes(food.id));
+            await foodService.deleteFoods(userToken, foodsToDelete);
+        },
     }
 })

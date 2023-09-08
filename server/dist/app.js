@@ -8,10 +8,10 @@ const path_1 = __importDefault(require("path"));
 const cors_1 = __importDefault(require("cors"));
 const index_1 = __importDefault(require("./routes/index"));
 const logger_1 = __importDefault(require("./util/logs/logger"));
-const AuthService_1 = require("./services/AuthService");
 const ErrorHandler_1 = require("./util/error/ErrorHandler");
+const AuthServiceImpl_1 = require("./services/AuthServiceImpl");
 const app = (0, express_1.default)();
-const port = process.env.PORT || 8000;
+const port = process.env.VITE_PORT || 8000;
 // Middleware
 app.set('view engine', 'ejs');
 app.set('views', path_1.default.join(__dirname, 'views'));
@@ -19,7 +19,7 @@ app.use((0, cors_1.default)());
 // User Authorization
 app.use(async (request, response, next) => {
     try {
-        const userUID = await AuthService_1.AuthService.validateAuthToken(request.headers.authorization);
+        const userUID = await AuthServiceImpl_1.AuthServiceImpl.validateAuthToken(request.headers.authorization);
         response.locals.userAuth = userUID;
         next();
     }

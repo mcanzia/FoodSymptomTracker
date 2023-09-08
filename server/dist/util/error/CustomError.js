@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CustomError = exports.DatabaseError = exports.AuthorizationError = exports.InternalServerError = exports.NotFoundError = void 0;
 class CustomError extends Error {
+    statusCode;
     constructor(message, statusCode) {
         super(message);
         this.statusCode = statusCode || 400;

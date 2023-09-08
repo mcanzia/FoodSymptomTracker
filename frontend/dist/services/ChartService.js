@@ -20,6 +20,10 @@ export class ChartService {
         await this.chartController.updateChart(userAuth, chart);
         return;
     }
+    async deleteCharts(userAuth, charts) {
+        const chart = await this.chartController.deleteCharts(userAuth, charts);
+        return chart;
+    }
     async createAverageChart(userAuth, chart) {
         const createdChart = JSON.parse(await this.chartController.createAverageChart(userAuth, chart));
         return createdChart;

@@ -24,6 +24,12 @@ export const useComponentStore = defineStore('componentStore', {
         await componentService.addComponents(userToken, components);
         await this.initializeComponentLists(userToken);
       },
+      async deleteComponents(userToken : any, componentsToDelete : Array<Component>) {
+        const componentService = new ComponentService();
+        const componentIds = componentsToDelete.map(componentToDelete => componentToDelete.id);
+        this.availableComponents = await this.availableComponents.filter(component => !componentIds.includes(component.id));
+        await componentService.deleteComponents(userToken, componentsToDelete);
+      },
       async toggleSelectedField(userToken : any, component : Component, selected : boolean) {
         const componentService = new ComponentService();
         component.selected = selected;

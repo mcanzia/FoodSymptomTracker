@@ -4,23 +4,38 @@
             <span class="change-icon">
                 <ion-icon name="pencil" class="bi" @click="editChart(chart)" />
             </span>
+            <span>
+                <ion-icon name="trash-outline" class="bi" @click="deleteChart(chart)" />
+            </span>
           <Chart :chart-details="chart" />
       </div>
     </div>
   </template>
   
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onBeforeMount } from 'vue';
 import { useChartStore } from '../stores/chartStore';
+import { useUserStore } from '../stores/userStore';
 import router from "../router/index";
 import Chart from './Chart.vue';
 
+const userStore = useUserStore();
+let userAccessToken = null;
 const chartStore = useChartStore();
 let charts = computed(() => chartStore.charts);
+
+onBeforeMount(async() => {
+    userAccessToken = await userStore.getAccessToken();
+});
 
 function editChart(chart) {
     chartStore.newChartDetails = chart;
     router.push({ name: 'chart-builder'});
+}
+
+function deleteChart(chart) {
+  const chartsToDelete = [chart];
+  chartStore.deleteCharts(userAccessToken, chartsToDelete);
 }
 
 </script>

@@ -27,4 +27,9 @@ export class DateLogService {
     async updateDateLog(userAuth : any, dateLog : DateLog) {
         await this.dateLogController.updateDateLog(userAuth, dateLog);
     }
+
+    async deleteDateLogs(userAuth : any, dateLogs : Array<DateLog>) {
+        const dateLog = await this.dateLogController.deleteDateLogs(userAuth, dateLogs);
+        return dateLog;
+    }
 }

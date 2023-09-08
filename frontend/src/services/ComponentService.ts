@@ -29,4 +29,9 @@ export class ComponentService {
         await this.componentController.updateComponent(userAuth, component);
         return;
     }
+
+    async deleteComponents(userAuth : any, components : Array<Component>) {
+        const component = await this.componentController.deleteComponents(userAuth, components);
+        return component;
+    }
 }

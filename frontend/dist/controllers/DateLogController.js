@@ -64,5 +64,22 @@ export class DateLogController {
             console.log(error);
         }
     }
+    async deleteDateLogs(userAuthToken, dateLogs) {
+        try {
+            const bearer = 'Bearer ' + userAuthToken;
+            const response = await fetch('http://localhost:7500/api/dateLogs', {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': bearer,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dateLogs)
+            });
+            return response;
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
 }
 //# sourceMappingURL=DateLogController.js.map

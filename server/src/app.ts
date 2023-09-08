@@ -3,12 +3,12 @@ import path from 'path';
 import cors from 'cors';
 import routes from './routes/index';
 import Logger from './util/logs/logger';
-import { AuthService } from './services/AuthService';
 import { ErrorHandler } from './util/error/ErrorHandler';
 import { CustomError } from './util/error/CustomError';
+import { AuthServiceImpl } from './services/AuthServiceImpl';
 
 const app : Express = express();
-const port = process.env.PORT || 8000;
+const port = process.env.VITE_PORT || 8000;
 
 // Middleware
 app.set('view engine', 'ejs');
@@ -19,7 +19,7 @@ app.use(cors());
 // User Authorization
 app.use(async (request : Request, response : Response, next : NextFunction) => {
   try {
-    const userUID = await AuthService.validateAuthToken(request.headers.authorization)
+    const userUID = await AuthServiceImpl.validateAuthToken(request.headers.authorization)
     response.locals.userAuth = userUID;
     next();
   } catch(error) {

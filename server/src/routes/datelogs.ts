@@ -1,13 +1,14 @@
 import express from 'express';
-import { DateLogController } from '../controllers/DateLogController';
+import { DateLogControllerImpl } from '../controllers/DateLogControllerImpl';
 
 const router = express.Router();
-const dateLogController : DateLogController = new DateLogController();
+const dateLogController : DateLogControllerImpl = new DateLogControllerImpl();
 
 router.get('/', dateLogController.getAllDateLogs);
 router.get('/:dateLogId', dateLogController.getDateLogById);
 router.post('/', dateLogController.addDateLogs);
 router.put('/:dateLogId', dateLogController.updateDateLog);
+router.delete('/', dateLogController.deleteDateLogs);
 
 export default router;
 

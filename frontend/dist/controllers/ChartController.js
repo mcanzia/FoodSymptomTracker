@@ -63,6 +63,23 @@ export class ChartController {
             console.log(error);
         }
     }
+    async deleteCharts(userAuthToken, charts) {
+        try {
+            const bearer = 'Bearer ' + userAuthToken;
+            const response = await fetch('http://localhost:7500/api/charts', {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': bearer,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(charts)
+            });
+            return response;
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
     async createAverageChart(userAuthToken, chart) {
         try {
             const bearer = 'Bearer ' + userAuthToken;

@@ -42,6 +42,12 @@ export const useChartStore = defineStore('chartStore', {
             }
             await chartService.addCharts(userToken, newCharts);
         },
+        async deleteCharts(userToken, chartsToDelete) {
+            const chartService = new ChartService();
+            const chartIds = chartsToDelete.map(chartToDelete => chartToDelete.id);
+            this.charts = await this.charts.filter(chart => !chartIds.includes(chart.id));
+            await chartService.deleteCharts(userToken, chartsToDelete);
+        },
         async initializeCharts(userToken) {
             const chartService = new ChartService();
             this.charts = [];

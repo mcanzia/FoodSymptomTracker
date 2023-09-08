@@ -18,5 +18,9 @@ export class DateLogService {
     async updateDateLog(userAuth, dateLog) {
         await this.dateLogController.updateDateLog(userAuth, dateLog);
     }
+    async deleteDateLogs(userAuth, dateLogs) {
+        const dateLog = await this.dateLogController.deleteDateLogs(userAuth, dateLogs);
+        return dateLog;
+    }
 }
 //# sourceMappingURL=DateLogService.js.map

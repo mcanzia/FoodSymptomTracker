@@ -40,6 +40,12 @@ export const useDateLogStore = defineStore('dateLogStore', {
                 throw Error;
             }
         },
+        async deleteDateLogs(userToken, dateLogsToDelete) {
+            const dateLogService = new DateLogService();
+            const dateLogIds = dateLogsToDelete.map(dateLogToDelete => dateLogToDelete.id);
+            this.dateLogs = await this.dateLogs.filter(dateLog => !dateLogIds.includes(dateLog.id));
+            await dateLogService.deleteDateLogs(userToken, dateLogsToDelete);
+        },
         async selectDay(selectedDate) {
             await this.setSelectedDateLog(selectedDate);
             this.setDayTitle();

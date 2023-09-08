@@ -2,6 +2,15 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Chart = void 0;
 class Chart {
+    id;
+    chartTitle;
+    chartType;
+    chartData;
+    chartOptions;
+    selectedComponent;
+    selectedFood;
+    startDate;
+    endDate;
     constructor(id, chartTitle, chartType, chartData, chartOptions, selectedComponent, selectedFood, startDate, endDate) {
         this.id = id;
         this.chartTitle = chartTitle;

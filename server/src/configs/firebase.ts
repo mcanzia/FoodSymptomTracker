@@ -10,7 +10,7 @@ admin.initializeApp({
 });
 
 const firebaseConfig = {
-    apiKey: process.env.FIREBASE_API_KEY,
+    apiKey: process.env.VITE_FIREBASE_API_KEY,
     authDomain: "crohns-food-tracker.firebaseapp.com",
     projectId: "crohns-food-tracker",
     storageBucket: "crohns-food-tracker.appspot.com",
@@ -22,6 +22,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 export const db = firebase.firestore();
+export const documentId = firebase.firestore.FieldPath.documentId();
 export const auth = firebase.auth();
 export const storage = firebase.storage();
 export const GoogleAuthProvider = new firebase.auth.GoogleAuthProvider();

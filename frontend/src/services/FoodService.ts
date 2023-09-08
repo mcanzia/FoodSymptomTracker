@@ -23,4 +23,9 @@ export class FoodService {
         const food = await this.foodController.addFoods(userAuth, foodItems);
         return food;
     }
+
+    async deleteFoods(userAuth : any, foodItems : Array<FoodItem>) {
+        const food = await this.foodController.deleteFoods(userAuth, foodItems);
+        return food;
+    }
 }

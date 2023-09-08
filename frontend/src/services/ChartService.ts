@@ -30,6 +30,11 @@ export class ChartService {
         return;
     }
 
+    async deleteCharts(userAuth : any, charts : Array<Chart>) {
+        const chart = await this.chartController.deleteCharts(userAuth, charts);
+        return chart;
+    }
+
     async createAverageChart(userAuth : any, chart : Chart) {
         const createdChart = JSON.parse(await this.chartController.createAverageChart(userAuth, chart));
         return createdChart;
