@@ -139,16 +139,83 @@ const ChartServiceImpl_1 = require("../../services/ChartServiceImpl");
         (0, vitest_1.expect)(response.send).toBeCalledWith(mockError);
     });
     (0, vitest_1.describe)('creates average chart', () => {
+        const chartItemRequest = MockCharts_1.MockCharts.createChart();
+        const request = MockExpress_1.MockExpress.mockRequest({}, chartItemRequest);
+        const response = MockExpress_1.MockExpress.mockResponse();
+        const next = vitest_1.vi.fn();
         (0, vitest_1.it)('creates chart successfully', async () => {
-            const chartItemRequest = MockCharts_1.MockCharts.createChart();
-            const request = MockExpress_1.MockExpress.mockRequest({}, { chartItemRequest });
-            const response = MockExpress_1.MockExpress.mockResponse();
-            const next = vitest_1.vi.fn();
             const chartServiceMock = vitest_1.vi.spyOn(ChartServiceImpl_1.ChartServiceImpl.prototype, "createAverageChart");
-            chartServiceMock.mockImplementation(async () => await MockCharts_1.MockCharts.createChartData());
+            chartServiceMock.mockImplementation(async () => chartItemRequest.chartData);
             await chartController.createAverageChart(request, response, next);
             (0, vitest_1.expect)(response.status).toBeCalledWith(200);
             (0, vitest_1.expect)(response.json).toBeCalledWith(JSON.stringify(chartItemRequest));
+        });
+        (0, vitest_1.it)('handles errors gracefully', async () => {
+            const mockError = new CustomError_1.DatabaseError("Error Creating Charts");
+            const chartDaoMock = vitest_1.vi.spyOn(ChartServiceImpl_1.ChartServiceImpl.prototype, "createAverageChart");
+            chartDaoMock.mockRejectedValue(mockError);
+            await chartController.createAverageChart(request, response, next);
+            (0, vitest_1.expect)(response.send).toBeCalledWith(mockError);
+        });
+    });
+    (0, vitest_1.describe)('creates food value chart', () => {
+        const chartItemRequest = MockCharts_1.MockCharts.createChart();
+        const request = MockExpress_1.MockExpress.mockRequest({}, chartItemRequest);
+        const response = MockExpress_1.MockExpress.mockResponse();
+        const next = vitest_1.vi.fn();
+        (0, vitest_1.it)('creates chart successfully', async () => {
+            const chartServiceMock = vitest_1.vi.spyOn(ChartServiceImpl_1.ChartServiceImpl.prototype, "createFoodValueChart");
+            chartServiceMock.mockImplementation(async () => chartItemRequest.chartData);
+            await chartController.createFoodValueChart(request, response, next);
+            (0, vitest_1.expect)(response.status).toBeCalledWith(200);
+            (0, vitest_1.expect)(response.json).toBeCalledWith(JSON.stringify(chartItemRequest));
+        });
+        (0, vitest_1.it)('handles errors gracefully', async () => {
+            const mockError = new CustomError_1.DatabaseError("Error Creating Charts");
+            const chartDaoMock = vitest_1.vi.spyOn(ChartServiceImpl_1.ChartServiceImpl.prototype, "createFoodValueChart");
+            chartDaoMock.mockRejectedValue(mockError);
+            await chartController.createFoodValueChart(request, response, next);
+            (0, vitest_1.expect)(response.send).toBeCalledWith(mockError);
+        });
+    });
+    (0, vitest_1.describe)('creates single value component weight chart', () => {
+        const chartItemRequest = MockCharts_1.MockCharts.createChart();
+        const request = MockExpress_1.MockExpress.mockRequest({}, chartItemRequest);
+        const response = MockExpress_1.MockExpress.mockResponse();
+        const next = vitest_1.vi.fn();
+        (0, vitest_1.it)('creates chart successfully', async () => {
+            const chartServiceMock = vitest_1.vi.spyOn(ChartServiceImpl_1.ChartServiceImpl.prototype, "createSingleValueComponentWeightByFoodChart");
+            chartServiceMock.mockImplementation(async () => chartItemRequest.chartData);
+            await chartController.createSingleValueComponentWeightByFoodChart(request, response, next);
+            (0, vitest_1.expect)(response.status).toBeCalledWith(200);
+            (0, vitest_1.expect)(response.json).toBeCalledWith(JSON.stringify(chartItemRequest));
+        });
+        (0, vitest_1.it)('handles errors gracefully', async () => {
+            const mockError = new CustomError_1.DatabaseError("Error Creating Charts");
+            const chartDaoMock = vitest_1.vi.spyOn(ChartServiceImpl_1.ChartServiceImpl.prototype, "createSingleValueComponentWeightByFoodChart");
+            chartDaoMock.mockRejectedValue(mockError);
+            await chartController.createSingleValueComponentWeightByFoodChart(request, response, next);
+            (0, vitest_1.expect)(response.send).toBeCalledWith(mockError);
+        });
+    });
+    (0, vitest_1.describe)('creates multi value component weight chart', () => {
+        const chartItemRequest = MockCharts_1.MockCharts.createChart();
+        const request = MockExpress_1.MockExpress.mockRequest({}, chartItemRequest);
+        const response = MockExpress_1.MockExpress.mockResponse();
+        const next = vitest_1.vi.fn();
+        (0, vitest_1.it)('creates chart successfully', async () => {
+            const chartServiceMock = vitest_1.vi.spyOn(ChartServiceImpl_1.ChartServiceImpl.prototype, "createMultiValueComponentWeightByFoodChart");
+            chartServiceMock.mockImplementation(async () => chartItemRequest.chartData);
+            await chartController.createMultiValueComponentWeightByFoodChart(request, response, next);
+            (0, vitest_1.expect)(response.status).toBeCalledWith(200);
+            (0, vitest_1.expect)(response.json).toBeCalledWith(JSON.stringify(chartItemRequest));
+        });
+        (0, vitest_1.it)('handles errors gracefully', async () => {
+            const mockError = new CustomError_1.DatabaseError("Error Creating Charts");
+            const chartDaoMock = vitest_1.vi.spyOn(ChartServiceImpl_1.ChartServiceImpl.prototype, "createMultiValueComponentWeightByFoodChart");
+            chartDaoMock.mockRejectedValue(mockError);
+            await chartController.createMultiValueComponentWeightByFoodChart(request, response, next);
+            (0, vitest_1.expect)(response.send).toBeCalledWith(mockError);
         });
     });
     (0, vitest_1.afterEach)(() => {
