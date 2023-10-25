@@ -11,7 +11,7 @@ const CustomError_1 = require("../../util/error/CustomError");
     let componentController;
     (0, vitest_1.beforeEach)(async () => {
         componentController = new ComponentControllerImpl_1.ComponentControllerImpl();
-        firebase_1.auth.useEmulator("http://localhost:9099/");
+        firebase_1.testauth.useEmulator("http://localhost:9099/");
     });
     (0, vitest_1.it)('gets all components successfully', async () => {
         const request = MockExpress_1.MockExpress.mockRequest({});

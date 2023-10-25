@@ -1,5 +1,4 @@
 import { expect, beforeEach, afterEach, describe, it, vi } from 'vitest'
-import { auth } from '../../configs/firebase';
 import { FoodControllerImpl } from '../../controllers/FoodControllerImpl';
 import { FoodDaoImpl } from '../../dao/FoodDaoImpl';
 import { FoodItem } from '../../models/FoodItem';
@@ -13,7 +12,6 @@ describe('food controller method tests', () => {
 
   beforeEach(async () => {
     foodController = new FoodControllerImpl();
-    auth.useEmulator("http://localhost:9099/");
   })
 
   it('gets all foods successfully', async () => {    

@@ -28,4 +28,18 @@ export class Chart {
             this.startDate = startDate;
             this.endDate = endDate;
     }
+
+    toObject?() {
+        return {
+            id: this.id,
+            chartTitle: this.chartTitle,
+            chartType: this.chartType,
+            chartData: this.chartData.toObject ? this.chartData.toObject() : this.chartData,
+            chartOptions: this.chartOptions.toObject ? this.chartOptions.toObject() : this.chartOptions,
+            selectedComponent: this.selectedComponent.toObject ? this.selectedComponent.toObject() : this.selectedComponent,
+            selectedFood: this.selectedFood ? (this.selectedFood.toObject ? this.selectedFood.toObject() : this.selectedFood) : undefined,
+            startDate: this.startDate,
+            endDate: this.endDate
+        };
+    }
 }

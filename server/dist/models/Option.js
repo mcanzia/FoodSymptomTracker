@@ -8,5 +8,11 @@ class Option {
         this.text = text;
         this.value = value;
     }
+    toObject() {
+        return {
+            text: this.text,
+            value: this.value
+        };
+    }
 }
 exports.Option = Option;

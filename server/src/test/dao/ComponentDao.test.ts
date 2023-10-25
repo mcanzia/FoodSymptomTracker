@@ -6,7 +6,6 @@ import { MockComponents } from '../mockData/MockComponents'; // Assuming similar
 import { DatabaseError } from '../../util/error/CustomError';
 
 describe('component dao method tests', () => {
-  db.useEmulator("localhost", 8080);
   let componentDao: ComponentDaoImpl;
   let authId = "ABC123";
   let mockComponentData : Array<Component> = [];
@@ -14,10 +13,11 @@ describe('component dao method tests', () => {
   beforeEach(async () => {
     componentDao = new ComponentDaoImpl();
     mockComponentData = MockComponents.createComponentArray();
-    mockComponentData.forEach(async (component) => {
-        await db.collection('users').doc(authId).collection('components').doc(component.id).set(component);
-    });
-  })
+    await Promise.all(mockComponentData.map((component) => {
+        return db.collection('users').doc(authId).collection('components').doc(component.id).set(component);
+    }));
+  });
+
 
   describe('getAllComponents', () => {
     it('gets all components successfully', async () => {    

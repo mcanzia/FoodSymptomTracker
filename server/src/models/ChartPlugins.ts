@@ -8,5 +8,10 @@ export class ChartPlugins {
         this.title = title
     }
 
-
+    toObject?() {
+        return {
+            title: this.title.toObject ? this.title.toObject() : this.title
+        };
+    }
+    
 }

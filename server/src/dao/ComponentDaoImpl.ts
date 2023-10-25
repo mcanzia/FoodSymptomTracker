@@ -1,4 +1,4 @@
-import { db, documentId } from '../configs/firebase';
+import { db } from '../configs/firebase';
 import { Component } from '../models/Component';
 import { DatabaseError } from '../util/error/CustomError';
 import { ComponentDao } from './ComponentDao';
@@ -6,7 +6,7 @@ import { ComponentDao } from './ComponentDao';
 export class ComponentDaoImpl {
 
     async getAllComponents(authId : any) {   
-        try {     
+        try {  
             const components : Array<Component> =  new Array<Component>();    
             const documents = await db.collection('users').doc(authId).collection('components').orderBy('name').get();
             documents.forEach(document => {
@@ -15,6 +15,7 @@ export class ComponentDaoImpl {
             });
             return components;
         } catch (error) {
+            console.log(error);
             throw new DatabaseError("Could not retrieve components from database");
         }
     }
@@ -49,13 +50,15 @@ export class ComponentDaoImpl {
         }
     }
 
-    async updateComponent(authId : any, componentId : string, componentData : Component) {
+    async updateComponent(authId: any, componentId: string, componentData: Component) {
         try {
-            await db.collection('users').doc(authId).collection('components').doc(componentId).update(componentData);
+            const dataToUpdate = componentData.toObject ? componentData.toObject() : componentData as unknown as { [key: string]: any };
+            await db.collection('users').doc(authId).collection('components').doc(componentId).update(dataToUpdate);
         } catch (error) {
             throw new DatabaseError("Could not retrieve update component in database");
         }
     }
+    
 
     async deleteComponents(authId : any, componentIds : Array<string>) {
         try {

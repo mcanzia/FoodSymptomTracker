@@ -8,5 +8,11 @@ class ChartTitle {
         this.display = display;
         this.text = text;
     }
+    toObject() {
+        return {
+            display: this.display,
+            text: this.text
+        };
+    }
 }
 exports.ChartTitle = ChartTitle;

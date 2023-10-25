@@ -6,5 +6,10 @@ class ChartOptions {
     constructor(plugins) {
         this.plugins = plugins;
     }
+    toObject() {
+        return {
+            plugins: this.plugins.toObject ? this.plugins.toObject() : this.plugins
+        };
+    }
 }
 exports.ChartOptions = ChartOptions;

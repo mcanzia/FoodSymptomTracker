@@ -6,7 +6,6 @@ import { MockCharts } from '../mockData/MockCharts';
 import { DatabaseError } from '../../util/error/CustomError';
 
 describe('chart dao method tests', () => {
-  db.useEmulator("localhost", 8080);
   let chartDao: ChartDaoImpl;
   let authId = "ABC123";
   let mockChartData : Array<Chart> = [];
@@ -14,10 +13,11 @@ describe('chart dao method tests', () => {
   beforeEach(async () => {
     chartDao = new ChartDaoImpl();
     mockChartData = MockCharts.createChartArray();
-    mockChartData.forEach(async (chart, index) => {
-        await db.collection('users').doc(authId).collection('charts').doc(chart.id).set(chart);
-    });
-  })
+    await Promise.all(mockChartData.map((chart) => {
+        return db.collection('users').doc(authId).collection('charts').doc(chart.id).set(chart);
+    }));
+  });
+
 
   describe('getAllCharts', () => {
     it('gets all charts successfully', async () => {    

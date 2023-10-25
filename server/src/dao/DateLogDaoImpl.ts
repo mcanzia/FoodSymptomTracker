@@ -1,4 +1,4 @@
-import { db, documentId } from '../configs/firebase';
+import { db } from '../configs/firebase';
 import util from 'util';
 import { DateLog } from '../models/DateLog';
 import { DateUtil } from '../util/DateUtil';
@@ -76,13 +76,15 @@ export class DateLogDaoImpl {
         }
     }
 
-    async updateDateLogs(authId : any, dateLogId : string, dateLogData : DateLog) {
+    async updateDateLogs(authId: any, dateLogId: string, dateLogData: DateLog) {
         try {
-            await db.collection('users').doc(authId).collection('dateLogs').doc(dateLogId).update(dateLogData);
+            const dataToUpdate = dateLogData.toObject ? dateLogData.toObject() : dateLogData as unknown as { [key: string]: any };
+            await db.collection('users').doc(authId).collection('dateLogs').doc(dateLogId).update(dataToUpdate);
         } catch (error) {
             throw new DatabaseError("Could not update date log in database");
         }
     }
+    
 
     async deleteDateLogs(authId : any, dateLogIds : Array<string>) {
         try {

@@ -1,4 +1,4 @@
-import { db, documentId } from '../configs/firebase';
+import { db } from '../configs/firebase';
 import { Component } from '../models/Component';
 import { DatabaseError } from '../util/error/CustomError';
 

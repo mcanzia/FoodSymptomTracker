@@ -76,7 +76,8 @@ class DateLogDaoImpl {
     }
     async updateDateLogs(authId, dateLogId, dateLogData) {
         try {
-            await firebase_1.db.collection('users').doc(authId).collection('dateLogs').doc(dateLogId).update(dateLogData);
+            const dataToUpdate = dateLogData.toObject ? dateLogData.toObject() : dateLogData;
+            await firebase_1.db.collection('users').doc(authId).collection('dateLogs').doc(dateLogId).update(dataToUpdate);
         }
         catch (error) {
             throw new CustomError_1.DatabaseError("Could not update date log in database");

@@ -12,7 +12,7 @@ const ChartServiceImpl_1 = require("../../services/ChartServiceImpl");
     let chartController;
     (0, vitest_1.beforeEach)(async () => {
         chartController = new ChartControllerImpl_1.ChartControllerImpl();
-        firebase_1.auth.useEmulator("http://localhost:9099/");
+        firebase_1.testauth.useEmulator("http://localhost:9099/");
     });
     (0, vitest_1.it)('gets all charts successfully', async () => {
         const request = MockExpress_1.MockExpress.mockRequest({});

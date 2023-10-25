@@ -1,5 +1,5 @@
 import { expect, beforeEach, afterEach, describe, it, vi } from 'vitest'
-import { auth } from '../../configs/firebase';
+import { firebaseAdmin } from '../../configs/firebase';
 import { ChartControllerImpl } from '../../controllers/ChartControllerImpl';
 import { ChartDaoImpl } from '../../dao/ChartDaoImpl';
 import { Chart } from '../../models/Chart';
@@ -14,7 +14,6 @@ describe('chart controller method tests', () => {
 
   beforeEach(async () => {
     chartController = new ChartControllerImpl();
-    auth.useEmulator("http://localhost:9099/");
   })
 
   it('gets all charts successfully', async () => {    

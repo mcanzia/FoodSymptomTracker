@@ -1,4 +1,4 @@
-import { db, documentId } from '../configs/firebase';
+import { db } from '../configs/firebase';
 import util from 'util';
 import { DateLog } from '../models/DateLog';
 import { DateUtil } from '../util/DateUtil';

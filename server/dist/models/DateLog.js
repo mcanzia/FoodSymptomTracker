@@ -15,5 +15,14 @@ class DateLog {
         this.foodItems = foodItems;
         this.components = components;
     }
+    toObject() {
+        return {
+            id: this.id,
+            date: this.date,
+            dateValue: this.dateValue,
+            foodItems: this.foodItems.map(foodItem => foodItem.toObject ? foodItem.toObject() : foodItem),
+            components: this.components.map(component => component.toObject ? component.toObject() : component)
+        };
+    }
 }
 exports.DateLog = DateLog;

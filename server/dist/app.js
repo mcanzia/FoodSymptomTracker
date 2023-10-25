@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const cors_1 = __importDefault(require("cors"));
+const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
+const csurf_1 = __importDefault(require("csurf"));
 const index_1 = __importDefault(require("./routes/index"));
 const logger_1 = __importDefault(require("./util/logs/logger"));
 const ErrorHandler_1 = require("./util/error/ErrorHandler");
@@ -15,7 +17,13 @@ const port = process.env.VITE_PORT || 8000;
 // Middleware
 app.set('view engine', 'ejs');
 app.set('views', path_1.default.join(__dirname, 'views'));
+// Security
 app.use((0, cors_1.default)());
+const limiter = (0, express_rate_limit_1.default)({
+    windowMs: 15 * 60 * 1000,
+    max: 100 // limit each IP to 100 requests per 15 minutes
+});
+app.use(limiter);
 // User Authorization
 app.use(async (request, response, next) => {
     try {
@@ -34,6 +42,7 @@ app.use('/api', index_1.default);
 app.use((error, request, response, next) => {
     ErrorHandler_1.ErrorHandler.handleError(error, response);
 });
+app.use((0, csurf_1.default)());
 /*
 app.use((request : Request, response : Response, next : NextFunction) => {
   //response.status(404).sendFile(path.join(__dirname, 'views', '404.html'));

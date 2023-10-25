@@ -8,5 +8,11 @@ class FoodItem {
         this.id = id;
         this.name = name;
     }
+    toObject() {
+        return {
+            id: this.id,
+            name: this.name
+        };
+    }
 }
 exports.FoodItem = FoodItem;

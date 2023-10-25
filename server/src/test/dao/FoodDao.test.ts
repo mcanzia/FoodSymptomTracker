@@ -6,7 +6,6 @@ import { MockFoods } from '../mockData/MockFoods';
 import { DatabaseError } from '../../util/error/CustomError';
 
 describe('food dao method tests', () => {
-  db.useEmulator("localhost", 8080);
   let foodDao: FoodDaoImpl;
   let authId = "ABC123";
   let mockFoodData : Array<FoodItem> = [];
@@ -14,10 +13,10 @@ describe('food dao method tests', () => {
   beforeEach(async () => {
     foodDao = new FoodDaoImpl();
     mockFoodData = MockFoods.createFoodItemArray();
-    mockFoodData.forEach(async (food, index) => {
-        await db.collection('users').doc(authId).collection('foods').doc(food.id).set(food);
-    });
-  })
+    await Promise.all(mockFoodData.map((food) => {
+        return db.collection('users').doc(authId).collection('foods').doc(food.id).set(food);
+    }));
+  });
 
   describe('getAllFoods', () => {
     it('gets all foods successfully', async () => {    

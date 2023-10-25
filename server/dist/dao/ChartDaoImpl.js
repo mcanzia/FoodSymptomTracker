@@ -50,7 +50,8 @@ class ChartDaoImpl {
     }
     async updateChart(authId, chartId, chartData) {
         try {
-            await firebase_1.db.collection('users').doc(authId).collection('charts').doc(chartId).update(chartData);
+            const dataToUpdate = chartData.toObject ? chartData.toObject() : chartData;
+            await firebase_1.db.collection('users').doc(authId).collection('charts').doc(chartId).update(dataToUpdate);
         }
         catch (error) {
             throw new CustomError_1.DatabaseError("Could not update chart in database");

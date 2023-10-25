@@ -6,7 +6,7 @@ const FoodDaoImpl_1 = require("../../dao/FoodDaoImpl");
 const MockFoods_1 = require("../mockData/MockFoods");
 const CustomError_1 = require("../../util/error/CustomError");
 (0, vitest_1.describe)('food dao method tests', () => {
-    firebase_1.db.useEmulator("localhost", 8080);
+    firebase_1.testdb.useEmulator("localhost", 8080);
     let foodDao;
     let authId = "ABC123";
     let mockFoodData = [];
@@ -14,7 +14,7 @@ const CustomError_1 = require("../../util/error/CustomError");
         foodDao = new FoodDaoImpl_1.FoodDaoImpl();
         mockFoodData = MockFoods_1.MockFoods.createFoodItemArray();
         mockFoodData.forEach(async (food, index) => {
-            await firebase_1.db.collection('users').doc(authId).collection('foods').doc(food.id).set(food);
+            await firebase_1.testdb.collection('users').doc(authId).collection('foods').doc(food.id).set(food);
         });
     });
     (0, vitest_1.describe)('getAllFoods', () => {
@@ -25,7 +25,7 @@ const CustomError_1 = require("../../util/error/CustomError");
             (0, vitest_1.expect)(foods).toContainEqual(mockFoodData[1]);
         });
         (0, vitest_1.it)('handles errors gracefully', async () => {
-            const dbMock = vitest_1.vi.spyOn(firebase_1.db, "collection");
+            const dbMock = vitest_1.vi.spyOn(firebase_1.testdb, "collection");
             dbMock.mockImplementationOnce(() => { throw new Error("Error Retrieving Foods"); });
             await (0, vitest_1.expect)(foodDao.getAllFoods(authId)).rejects.toThrow(CustomError_1.DatabaseError);
         });
@@ -36,7 +36,7 @@ const CustomError_1 = require("../../util/error/CustomError");
             (0, vitest_1.expect)(food).toEqual(mockFoodData[0]);
         });
         (0, vitest_1.it)('handles errors gracefully', async () => {
-            const dbMock = vitest_1.vi.spyOn(firebase_1.db, "collection");
+            const dbMock = vitest_1.vi.spyOn(firebase_1.testdb, "collection");
             dbMock.mockImplementationOnce(() => { throw new Error("Error Retrieving Foods"); });
             await (0, vitest_1.expect)(foodDao.getFoodById(authId, mockFoodData[0].id)).rejects.toThrow(CustomError_1.DatabaseError);
         });
@@ -56,7 +56,7 @@ const CustomError_1 = require("../../util/error/CustomError");
             (0, vitest_1.expect)(foods).toContainEqual(mockFoodData[1]);
         });
         (0, vitest_1.it)('handles errors gracefully', async () => {
-            const dbMock = vitest_1.vi.spyOn(firebase_1.db, "collection");
+            const dbMock = vitest_1.vi.spyOn(firebase_1.testdb, "collection");
             dbMock.mockImplementationOnce(() => { throw new Error("Error Adding Foods"); });
             await (0, vitest_1.expect)(foodDao.addFoods(authId, newFoodData)).rejects.toThrow(CustomError_1.DatabaseError);
         });
@@ -74,20 +74,20 @@ const CustomError_1 = require("../../util/error/CustomError");
         });
         (0, vitest_1.it)('handles errors gracefully', async () => {
             const mockFoodDataIds = mockFoodData.map(food => food.id);
-            const dbMock = vitest_1.vi.spyOn(firebase_1.db, "batch");
+            const dbMock = vitest_1.vi.spyOn(firebase_1.testdb, "batch");
             dbMock.mockImplementationOnce(() => { throw new Error("Error Deleting Foods"); });
             await (0, vitest_1.expect)(foodDao.deleteFoods(authId, mockFoodDataIds)).rejects.toThrow(CustomError_1.DatabaseError);
         });
     });
     (0, vitest_1.afterEach)(async () => {
         vitest_1.vi.clearAllMocks();
-        const foodsRef = firebase_1.db.collection('users').doc(authId).collection('foods');
+        const foodsRef = firebase_1.testdb.collection('users').doc(authId).collection('foods');
         const snapshot = await foodsRef.get();
-        const batch = firebase_1.db.batch();
+        const batch = firebase_1.testdb.batch();
         snapshot.docs.forEach(doc => {
             batch.delete(doc.ref);
         });
         await batch.commit();
-        await firebase_1.db.collection('users').doc(authId).delete();
+        await firebase_1.testdb.collection('users').doc(authId).delete();
     });
 });

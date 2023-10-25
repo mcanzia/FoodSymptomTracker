@@ -6,5 +6,10 @@ class ChartPlugins {
     constructor(title) {
         this.title = title;
     }
+    toObject() {
+        return {
+            title: this.title.toObject ? this.title.toObject() : this.title
+        };
+    }
 }
 exports.ChartPlugins = ChartPlugins;

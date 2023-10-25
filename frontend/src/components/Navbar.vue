@@ -15,7 +15,7 @@
                 <div class="dropdown-content">
                   <ul>
                     <li><a @click="redirectToProfile()">Profile</a></li>
-                    <li><a @click="this.userStore.logoutUser">Sign Out</a></li>
+                    <li><a @click="logout()">Sign Out</a></li>
                   </ul>
                 </div>
               </li>
@@ -45,6 +45,10 @@ function redirectToLayout() {
 
 function redirectToSummary() {
   router.push({ name: 'summary'})
+}
+
+function logout() {
+  this.userStore.logoutUser();
 }
 
 </script>

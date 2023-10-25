@@ -16,6 +16,7 @@ class ComponentDaoImpl {
             return components;
         }
         catch (error) {
+            console.log(error);
             throw new CustomError_1.DatabaseError("Could not retrieve components from database");
         }
     }
@@ -51,7 +52,8 @@ class ComponentDaoImpl {
     }
     async updateComponent(authId, componentId, componentData) {
         try {
-            await firebase_1.db.collection('users').doc(authId).collection('components').doc(componentId).update(componentData);
+            const dataToUpdate = componentData.toObject ? componentData.toObject() : componentData;
+            await firebase_1.db.collection('users').doc(authId).collection('components').doc(componentId).update(dataToUpdate);
         }
         catch (error) {
             throw new CustomError_1.DatabaseError("Could not retrieve update component in database");

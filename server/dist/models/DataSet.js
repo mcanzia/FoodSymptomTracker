@@ -8,5 +8,11 @@ class DataSet {
         this.data = data;
         this.label = label;
     }
+    toObject() {
+        return {
+            data: [...this.data],
+            label: this.label
+        };
+    }
 }
 exports.DataSet = DataSet;

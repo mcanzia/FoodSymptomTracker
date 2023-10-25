@@ -1,5 +1,5 @@
 import { expect, beforeEach, afterEach, describe, it, vi, Mock, SpyInstance } from 'vitest'
-import { auth, firebaseAdmin } from '../../configs/firebase';
+import { firebaseAdmin } from '../../configs/firebase';
 import { AuthServiceImpl } from '../../services/AuthServiceImpl';
 import { AuthorizationError } from '../../util/error/CustomError';
 import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
@@ -7,7 +7,6 @@ import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 describe('auth service method tests', () => {
 
   beforeEach(async () => {
-    auth.useEmulator("http://localhost:9099/");
   })
 
   it('validates auth token successfully', async () => {    

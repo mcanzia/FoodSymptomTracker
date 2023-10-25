@@ -1,5 +1,4 @@
 import { expect, beforeEach, afterEach, describe, it, vi } from 'vitest'
-import { auth } from '../../configs/firebase';
 import { DateLogControllerImpl } from '../../controllers/DateLogControllerImpl';
 import { DateLogDaoImpl } from '../../dao/DateLogDaoImpl';
 import { DateLog } from '../../models/DateLog';
@@ -13,7 +12,6 @@ describe('dateLog controller method tests', () => {
 
   beforeEach(async () => {
     dateLogController = new DateLogControllerImpl();
-    auth.useEmulator("http://localhost:9099/");
   })
 
   it('gets all dateLogs successfully', async () => {    

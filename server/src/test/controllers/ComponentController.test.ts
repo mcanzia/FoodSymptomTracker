@@ -1,5 +1,4 @@
 import { expect, beforeEach, afterEach, describe, it, vi } from 'vitest'
-import { auth } from '../../configs/firebase';
 import { ComponentControllerImpl } from '../../controllers/ComponentControllerImpl';
 import { ComponentDaoImpl } from '../../dao/ComponentDaoImpl';
 import { Component } from '../../models/Component';
@@ -13,7 +12,6 @@ describe('component controller method tests', () => {
 
   beforeEach(async () => {
     componentController = new ComponentControllerImpl();
-    auth.useEmulator("http://localhost:9099/");
   })
 
   it('gets all components successfully', async () => {    

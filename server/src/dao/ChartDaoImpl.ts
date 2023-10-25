@@ -1,4 +1,4 @@
-import { db, documentId } from '../configs/firebase';
+import { db } from '../configs/firebase';
 import { Chart } from '../models/Chart';
 import { DatabaseError } from '../util/error/CustomError';
 import { ChartDao } from './ChartDao';
@@ -54,7 +54,8 @@ export class ChartDaoImpl {
 
     async updateChart(authId : any, chartId : string, chartData : Chart) {
         try {
-            await db.collection('users').doc(authId).collection('charts').doc(chartId).update(chartData);
+            const dataToUpdate = chartData.toObject ? chartData.toObject() : chartData as unknown as { [key: string]: any };
+            await db.collection('users').doc(authId).collection('charts').doc(chartId).update(dataToUpdate);
         } catch (error) {
             throw new DatabaseError("Could not update chart in database");
         }

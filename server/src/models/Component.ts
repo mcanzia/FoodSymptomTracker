@@ -17,4 +17,16 @@ export class Component {
         this.typeId = typeId;
         this.values = values;
     }
+
+    toObject?() {
+        return {
+            id: this.id,
+            name: this.name,
+            selectOptions: this.selectOptions.map(option => option.toObject ? option.toObject() : option),
+            selected: this.selected,
+            typeId: this.typeId,
+            values: [...this.values]
+        };
+    }
+    
 }

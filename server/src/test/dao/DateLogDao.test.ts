@@ -6,7 +6,6 @@ import { MockDateLogs } from '../mockData/MockDateLogs';
 import { DatabaseError } from '../../util/error/CustomError';
 
 describe('dateLog dao method tests', () => {
-  db.useEmulator("localhost", 8080);
   let dateLogDao: DateLogDaoImpl;
   let authId = "ABC123";
   let mockDateLogData : Array<DateLog> = [];
@@ -14,10 +13,11 @@ describe('dateLog dao method tests', () => {
   beforeEach(async () => {
     dateLogDao = new DateLogDaoImpl();
     mockDateLogData = MockDateLogs.createDateLogArray();
-    mockDateLogData.forEach(async (dateLog, index) => {
-        await db.collection('users').doc(authId).collection('dateLogs').doc(dateLog.id).set(dateLog);
-    });
-  })
+    await Promise.all(mockDateLogData.map((dateLog) => {
+      return db.collection('users').doc(authId).collection('dateLogs').doc(dateLog.id).set(dateLog);
+    }));
+  });
+  
 
   describe('getAllDateLogs', () => {
     it('gets all dateLogs successfully', async () => {    
