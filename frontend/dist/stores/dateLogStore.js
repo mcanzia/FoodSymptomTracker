@@ -1,12 +1,14 @@
 import { DateLog } from '../models/DateLog';
 import { defineStore } from 'pinia';
 import { DateLogService } from '../services/DateLogService';
+import { ErrorHandler } from '../util/error/ErrorHandler';
 export const useDateLogStore = defineStore('dateLogStore', {
     state: () => ({
         dateLogs: [],
         selectedDateLog: null,
+        dateLogCopy: null,
         dayTitle: "Today",
-        baseComponents: []
+        baseComponents: [],
     }),
     getters: {
         yesterdayDate: () => {
@@ -26,25 +28,38 @@ export const useDateLogStore = defineStore('dateLogStore', {
             this.initializeDateLogs(userToken, selectedDate);
         },
         async initializeDateLogs(userToken, selectedDate) {
-            const dateLogService = new DateLogService();
-            this.dateLogs = await dateLogService.getAllDateLogs(userToken);
-            this.setSelectedDateLog(selectedDate);
+            try {
+                const dateLogService = new DateLogService();
+                this.dateLogs = await dateLogService.getAllDateLogs(userToken);
+                this.setSelectedDateLog(selectedDate);
+            }
+            catch (error) {
+                ErrorHandler.displayGenericError();
+            }
         },
         async addDateLogs(userToken, dateLogs) {
-            const dateLogService = new DateLogService();
-            await dateLogService.addDateLogs(userToken, dateLogs);
-            if (this.selectedDateLog) {
-                await this.initializeDateLogs(userToken, this.selectedDateLog.date);
+            try {
+                const dateLogService = new DateLogService();
+                await dateLogService.addDateLogs(userToken, dateLogs);
+                if (this.selectedDateLog) {
+                    await this.initializeDateLogs(userToken, this.selectedDateLog.date);
+                }
+                this.dateLogCopy = null;
             }
-            else {
-                throw Error;
+            catch (error) {
+                ErrorHandler.displayGenericError();
             }
         },
         async deleteDateLogs(userToken, dateLogsToDelete) {
-            const dateLogService = new DateLogService();
-            const dateLogIds = dateLogsToDelete.map(dateLogToDelete => dateLogToDelete.id);
-            this.dateLogs = await this.dateLogs.filter(dateLog => !dateLogIds.includes(dateLog.id));
-            await dateLogService.deleteDateLogs(userToken, dateLogsToDelete);
+            try {
+                const dateLogService = new DateLogService();
+                const dateLogIds = dateLogsToDelete.map(dateLogToDelete => dateLogToDelete.id);
+                await dateLogService.deleteDateLogs(userToken, dateLogsToDelete);
+                this.dateLogs = await this.dateLogs.filter(dateLog => !dateLogIds.includes(dateLog.id));
+            }
+            catch (error) {
+                ErrorHandler.displayGenericError();
+            }
         },
         async selectDay(selectedDate) {
             await this.setSelectedDateLog(selectedDate);

@@ -10,28 +10,48 @@ export class ComponentService {
     }
 
     async getAllComponents(userAuth : any) {
-        const allComponents = JSON.parse(await this.componentController.getAllComponents(userAuth));
-        return allComponents;
+        try {
+            const response =  await this.componentController.getAllComponents(userAuth);
+            const allComponents = response ? JSON.parse(response) : [];
+            return allComponents;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async getComponentById(userAuth : any, componentId : string) {
-        const component = await this.componentController.getComponentById(userAuth, componentId);
-        console.log(component);
-        return component;
+        try {
+            const component = await this.componentController.getComponentById(userAuth, componentId);
+            return component;
+        } catch (error) {
+            throw error;
+        } 
     }
 
     async addComponents(userAuth : any, components : Array<Component>) {
-        const component = await this.componentController.addComponents(userAuth, components);
-        return component;
+        try {
+            const component = await this.componentController.addComponents(userAuth, components);
+            return component;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async updateComponent(userAuth : any, component : Component) {
-        await this.componentController.updateComponent(userAuth, component);
-        return;
+        try {
+            await this.componentController.updateComponent(userAuth, component);
+            return;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async deleteComponents(userAuth : any, components : Array<Component>) {
-        const component = await this.componentController.deleteComponents(userAuth, components);
-        return component;
+        try {
+            const component = await this.componentController.deleteComponents(userAuth, components);
+            return component;
+        } catch (error) {
+            throw error;
+        }
     }
 }

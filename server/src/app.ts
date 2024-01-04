@@ -2,7 +2,6 @@ import express, { Express, NextFunction, Request, Response } from 'express';
 import path from 'path';
 import cors from 'cors';
 import rateLimit from 'express-rate-limit';
-import csrf from 'csurf';
 import routes from './routes/index';
 import Logger from './util/logs/logger';
 import { ErrorHandler } from './util/error/ErrorHandler';
@@ -10,7 +9,7 @@ import { CustomError } from './util/error/CustomError';
 import { AuthServiceImpl } from './services/AuthServiceImpl';
 
 const app : Express = express();
-const port = process.env.VITE_PORT || 8000;
+const port = process.env.VITE_PORT || 7500;
 
 // Middleware
 app.set('view engine', 'ejs');
@@ -44,8 +43,6 @@ app.use((error : CustomError, request : Request, response : Response, next : Nex
   ErrorHandler.handleError(error, response);
 });
 
-app.use(csrf());
-
 /*
 app.use((request : Request, response : Response, next : NextFunction) => {
   //response.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
@@ -55,5 +52,5 @@ app.use((request : Request, response : Response, next : NextFunction) => {
 
 //Server Activation
 app.listen(port, () => {
-  console.log(`Listening to requests on http://localhost:${port}`);
+  Logger.info(`Listening to requests on http://localhost:${port}`);
 });

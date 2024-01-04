@@ -1,66 +1,45 @@
+import { ErrorHandler } from "../util/error/ErrorHandler";
+import { ObjectType } from "../models/ObjectType";
+import { RequestUtil } from "./RequestUtil";
 export class FoodController {
     async getAllFoods(userAuthToken) {
         try {
-            const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7500/api/foods', {
-                method: 'GET',
-                headers: {
-                    'Authorization': bearer
-                }
-            });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/foods`;
+            const response = await fetch(requestUrl, RequestUtil.GETRequestParams(userAuthToken));
             return response.json();
         }
         catch (error) {
-            console.log(error);
+            ErrorHandler.handleGetAllError(userAuthToken, ObjectType.FOODITEM, error);
         }
     }
     async getFoodById(userAuthToken, foodId) {
         try {
-            const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7500/api/foods/' + foodId, {
-                method: 'GET',
-                headers: {
-                    'Authorization': bearer
-                }
-            });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/foods/${foodId}`;
+            const response = await fetch(requestUrl, RequestUtil.GETRequestParams(userAuthToken));
             return response.json();
         }
         catch (error) {
-            console.log(error);
+            ErrorHandler.handleGetByIdError(userAuthToken, ObjectType.FOODITEM, foodId, error);
         }
     }
     async addFoods(userAuthToken, foods) {
         try {
-            const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7500/api/foods', {
-                method: 'POST',
-                headers: {
-                    'Authorization': bearer,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(foods)
-            });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/foods`;
+            const response = await fetch(requestUrl, RequestUtil.POSTRequestParams(userAuthToken, foods));
             return response;
         }
         catch (error) {
-            console.log(error);
+            ErrorHandler.handleAddError(userAuthToken, ObjectType.FOODITEM, foods, error);
         }
     }
     async deleteFoods(userAuthToken, foods) {
         try {
-            const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7500/api/foods', {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': bearer,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(foods)
-            });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/foods`;
+            const response = await fetch(requestUrl, RequestUtil.DELETERequestParams(userAuthToken, foods));
             return response;
         }
         catch (error) {
-            console.log(error);
+            ErrorHandler.handleDeleteError(userAuthToken, ObjectType.FOODITEM, foods, error);
         }
     }
 }

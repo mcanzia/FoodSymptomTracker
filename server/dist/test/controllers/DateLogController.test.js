@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vitest_1 = require("vitest");
-const firebase_1 = require("../../configs/firebase");
 const DateLogControllerImpl_1 = require("../../controllers/DateLogControllerImpl");
 const DateLogDaoImpl_1 = require("../../dao/DateLogDaoImpl");
 const MockDateLogs_1 = require("../mockData/MockDateLogs");
@@ -11,7 +10,6 @@ const CustomError_1 = require("../../util/error/CustomError");
     let dateLogController;
     (0, vitest_1.beforeEach)(async () => {
         dateLogController = new DateLogControllerImpl_1.DateLogControllerImpl();
-        firebase_1.testauth.useEmulator("http://localhost:9099/");
     });
     (0, vitest_1.it)('gets all dateLogs successfully', async () => {
         const request = MockExpress_1.MockExpress.mockRequest({});

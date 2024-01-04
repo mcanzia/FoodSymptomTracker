@@ -16,8 +16,7 @@ class ComponentDaoImpl {
             return components;
         }
         catch (error) {
-            console.log(error);
-            throw new CustomError_1.DatabaseError("Could not retrieve components from database");
+            throw new CustomError_1.DatabaseError("Could not retrieve components from database: " + error);
         }
     }
     async getComponentById(authId, componentId) {
@@ -28,7 +27,7 @@ class ComponentDaoImpl {
             return component;
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not retrieve component from database");
+            throw new CustomError_1.DatabaseError("Could not retrieve component from database: " + error);
         }
     }
     async addComponents(authId, components) {
@@ -47,7 +46,7 @@ class ComponentDaoImpl {
             return;
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not add component to database");
+            throw new CustomError_1.DatabaseError("Could not add component to database: " + error);
         }
     }
     async updateComponent(authId, componentId, componentData) {
@@ -56,7 +55,7 @@ class ComponentDaoImpl {
             await firebase_1.db.collection('users').doc(authId).collection('components').doc(componentId).update(dataToUpdate);
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not retrieve update component in database");
+            throw new CustomError_1.DatabaseError("Could not retrieve update component in database: " + error);
         }
     }
     async deleteComponents(authId, componentIds) {
@@ -69,7 +68,7 @@ class ComponentDaoImpl {
             await batch.commit();
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not delete components from database");
+            throw new CustomError_1.DatabaseError("Could not delete components from database: " + error);
         }
     }
 }

@@ -1,6 +1,7 @@
 import { db } from '../configs/firebase';
 import { Component } from '../models/Component';
 import { DatabaseError } from '../util/error/CustomError';
+import Logger from '../util/logs/logger';
 import { ComponentDao } from './ComponentDao';
 
 export class ComponentDaoImpl {
@@ -15,8 +16,7 @@ export class ComponentDaoImpl {
             });
             return components;
         } catch (error) {
-            console.log(error);
-            throw new DatabaseError("Could not retrieve components from database");
+            throw new DatabaseError("Could not retrieve components from database: " + error);
         }
     }
 
@@ -27,7 +27,7 @@ export class ComponentDaoImpl {
             const component : Component = new Component(document.id, documentData.name, documentData.selectOptions, documentData.selected, documentData.typeId, documentData.values);
             return component;
         } catch (error) {
-            throw new DatabaseError("Could not retrieve component from database");
+            throw new DatabaseError("Could not retrieve component from database: " + error);
         }
     }
 
@@ -46,7 +46,7 @@ export class ComponentDaoImpl {
             await batch.commit();
             return;
         } catch (error) {
-            throw new DatabaseError("Could not add component to database");
+            throw new DatabaseError("Could not add component to database: " + error);
         }
     }
 
@@ -55,7 +55,7 @@ export class ComponentDaoImpl {
             const dataToUpdate = componentData.toObject ? componentData.toObject() : componentData as unknown as { [key: string]: any };
             await db.collection('users').doc(authId).collection('components').doc(componentId).update(dataToUpdate);
         } catch (error) {
-            throw new DatabaseError("Could not retrieve update component in database");
+            throw new DatabaseError("Could not retrieve update component in database: " + error);
         }
     }
     
@@ -69,7 +69,7 @@ export class ComponentDaoImpl {
             }
             await batch.commit();
         } catch (error) {
-            throw new DatabaseError("Could not delete components from database");
+            throw new DatabaseError("Could not delete components from database: " + error);
         }
     }
 

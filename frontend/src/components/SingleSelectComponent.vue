@@ -18,11 +18,13 @@
             <div class="component-radio" v-for="(option, index) in component.selectOptions" :key="option">
                 <input 
                     type="radio" 
-                    name="btnradio_{{ index }}" 
-                    id="btnradio_{{ index }}" 
-                    :disabled="disabled" 
-                    :v-model="layout ? '' : component.values[index]">
-                <label for="btnradio_{{ index }}">{{ option.text }}</label>
+                    :name="'btnradio_' + component.id" 
+                    :id="'btnradio_' + index" 
+                    :disabled="disabled"
+                    :value="option.value"
+                    v-model="component.values"
+                    >
+                <label :for="'btnradio_' + index" >{{ option.text }}</label>
             </div>
         </div>
     </form>
@@ -44,23 +46,10 @@ function toggleComponentSelection(component) {
 </script>
 
 <style scoped>
-.component-box {
-    background-color: #f8f9fa;
-    width: 100%;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    list-style-type: none;
-}
-
-.component-box:hover {
-    background-color: #e9ecef;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.component-name, label {
+.component-name {
     font-size: 18px;
     font-weight: 500;
-    font-family: garamond;
+    font-family: Lato, sans-serif;
     color: #343a40;
 }
 
@@ -117,46 +106,11 @@ input[type='radio']:disabled:checked:after {
 
 label {
     padding-left: 5px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: Lato, sans-serif;
+    color: #343a40;
 }
 
-.content-wrapper {
-  display: flex;
-  position: relative;
-  justify-content: center;
-  gap: 5px;
-}
 
-.change-icon {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 5px;
-}
-
-.change-icon > .bi + .bi,
-.change-icon:hover > .bi {
-    display: none;
-}
-
-.change-icon:hover > .bi + .bi {
-    display: inherit;
-}
-
-.bi {   
-    cursor: pointer;
-}
-
-.red {
-    color: #dc3545;
-}
-.red:hover {
-    color: #c82333;
-}
-
-.green {
-    color: #006400;
-}
-.green:hover {
-    color: #006400;
-}
 </style>

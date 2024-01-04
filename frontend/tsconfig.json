@@ -16,7 +16,8 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "vite"
+      "vite",
+      "vite/client"
     ],
     "paths": {
       "@/*": [

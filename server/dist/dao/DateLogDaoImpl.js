@@ -21,7 +21,7 @@ class DateLogDaoImpl {
             return dateLogs;
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not retrieve date logs from database");
+            throw new CustomError_1.DatabaseError("Could not retrieve date logs from database: " + error);
         }
     }
     async getDateLogsWithFood(authId, food, startDate, endDate) {
@@ -41,7 +41,7 @@ class DateLogDaoImpl {
             return dateLogs;
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not retrieve date logs from database");
+            throw new CustomError_1.DatabaseError("Could not retrieve date logs from database: " + error);
         }
     }
     async getDateLogById(authId, dateLogId) {
@@ -52,7 +52,7 @@ class DateLogDaoImpl {
             return dateLog;
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not retrieve date log from database");
+            throw new CustomError_1.DatabaseError("Could not retrieve date log from database: " + error);
         }
     }
     async addDateLogs(authId, dateLogs) {
@@ -71,7 +71,7 @@ class DateLogDaoImpl {
             return;
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not add date log to database");
+            throw new CustomError_1.DatabaseError("Could not add date log to database: " + error);
         }
     }
     async updateDateLogs(authId, dateLogId, dateLogData) {
@@ -80,7 +80,7 @@ class DateLogDaoImpl {
             await firebase_1.db.collection('users').doc(authId).collection('dateLogs').doc(dateLogId).update(dataToUpdate);
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not update date log in database");
+            throw new CustomError_1.DatabaseError("Could not update date log in database: " + error);
         }
     }
     async deleteDateLogs(authId, dateLogIds) {
@@ -93,7 +93,7 @@ class DateLogDaoImpl {
             await batch.commit();
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not delete date logs from database");
+            throw new CustomError_1.DatabaseError("Could not delete date logs from database: " + error);
         }
     }
 }

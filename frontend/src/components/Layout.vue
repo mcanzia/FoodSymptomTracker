@@ -1,7 +1,15 @@
 <template>
    <div class="container" @click.self="closeNewComponentModal()">
-        <div class="flex-column">
-            <h2>Available Components: </h2>
+        <div class="flex-column component-container">
+            <div class="add-component-container">
+              <h2>Available Components: </h2>
+              <button @click="toggleNewComponentModal">Add Component</button>
+              <DropDown v-if="newComponentModalActive" class="add-component-dropdown">
+                <template v-slot:body>
+                  <AddComponent />
+                </template>
+              </DropDown>
+            </div>
             <ComponentDisplay
               v-for="component in availableComponents"
               :key="component.id"
@@ -12,7 +20,7 @@
             />
 
         </div>
-        <div class="flex-column">
+        <div class="flex-column component-container">
             <h2>Selected Components: </h2>
             <ComponentDisplay
               v-for="component in selectedComponents"
@@ -23,46 +31,6 @@
               @toggleComponentSelection="toggleSelected(component)"
             />
         </div>
-        <Modal v-if="newComponentModalActive" class="modal" :headerActive="true" :bodyActive="true">
-          <template v-slot:header>
-              <h3>Add New Component</h3>
-          </template>
-          <template v-slot:body>
-            <div class="form-container">
-              <h4>Name: </h4>
-              <input 
-                  class="add-component-input" 
-                  id="new-component-name" 
-                  v-model="newComponent.name" 
-                  required 
-                  placeholder="Enter a name">
-            </div>
-            <div class="form-container">
-              <h4>Type: </h4>
-              <select 
-                  class="add-component-dropdown" 
-                  id="new-component-type" 
-                  v-model="newComponent.typeId" 
-                  required>
-                    <option v-for="componentType in componentTypes" :value="componentType.typeId" :key="componentType.typeId">
-                      {{ componentType.label }}
-                    </option>
-              </select>
-            </div>
-            <div v-if="newComponent.typeId === 2 || newComponent.typeId === 3">
-              <h4>Options: </h4>
-              <div v-for="selectOption in newComponent.selectOptions" :key="selectOption.value">
-                <input class="add-component-input" id="new-component-options" v-model="selectOption.text">
-              </div>
-              <button 
-                  v-if="newComponent.selectOptions.length < 5"    
-                  @click="addComponentOption()" 
-                  id="add-new-option-button">
-                    Add New Option
-              </button>
-            </div>
-          </template>
-        </Modal>
         <FloatingButton saveType="Component" :editMode="newComponentModalActive" @saveOrEdit="toggleNewComponentModal()" @closeEditMode="closeNewComponentModal()"/>
     </div>
 </template>
@@ -73,7 +41,8 @@ import { useComponentStore } from '../stores/componentStore';
 import { useUserStore } from '../stores/userStore';
 import { storeToRefs } from 'pinia';
 import { onBeforeMount, computed, ref } from 'vue';
-import Modal from './Modal.vue';
+import DropDown from './DropDown.vue';
+import AddComponent from './AddComponent.vue';
 import ComponentDisplay from './ComponentDisplay.vue';
 import FloatingButton from './FloatingButton.vue';
 
@@ -81,7 +50,7 @@ const dateLogStore = useDateLogStore();
 const componentStore = useComponentStore();
 const userStore = useUserStore();
 
-const { availableComponents, selectedComponents } = storeToRefs(componentStore);
+const { availableComponents, selectedComponents, newComponent } = storeToRefs(componentStore);
 
 onBeforeMount(async() => {
   userAccessToken = await userStore.getAccessToken();
@@ -89,47 +58,15 @@ onBeforeMount(async() => {
   await dateLogStore.initializeStore(userAccessToken, currentDateString.value, componentStore.selectedComponents);
 });
 
-const componentTypes = [
-  { label: 'Slider', typeId: 1},
-  { label: 'Single Select', typeId: 2},
-  { label: 'Multi Select', typeId: 3},
-];
-
 let userAccessToken = null;
 
-let newComponent = ref({
-  name: "",
-  id: -1,
-  typeId: -1,
-  selectOptions: [],
-  selected: false
-});
-
-let newComponentModalActive = ref(false);
+const newComponentModalActive = ref(false);
 
 let currentDateString = computed(() => {
   return new Date().toLocaleDateString();
 });
 
 // Functions
-async function addNewComponent() {
-    try {
-        newComponent.value.selectOptions.map((option) => { option.value = option.text});
-        await componentStore.addComponents(userAccessToken, new Array(newComponent));
-    } catch (error) {
-        console.log(error)
-    }
-    clearNewComponentForm();
-}
-
-function clearNewComponentForm() {
-  newComponent.value = {
-    name: "",
-    id: -1,
-    typeId: -1,
-    selectOptions: []
-  }
-}
 
 async function toggleSelected(component) {
   const isSelected = !component.selected;
@@ -148,17 +85,23 @@ function toggleNewComponentModal() {
   newComponentModalActive.value = !newComponentModalActive.value;
 }
 
+async function addNewComponent() {
+    try {
+        newComponent.value.selectOptions.map((option) => { option.value = option.text});
+        await componentStore.addComponents(userAccessToken, new Array(newComponent.value));
+    } catch (error) {
+        console.log(error)
+    }
+    clearNewComponentForm();
+}
+
 function openNewComponentModal() {
   newComponentModalActive.value = true;
 }
 
 function closeNewComponentModal() {
-  clearNewComponentForm();
+  componentStore.clearNewComponentForm();
   newComponentModalActive.value = false;
-}
-
-function addComponentOption() {
-  newComponent.value.selectOptions.push({text: '', value: ''});
 }
 
 </script>
@@ -174,53 +117,40 @@ function addComponentOption() {
   flex-basis: calc(50% - 2rem);
 }
 
+.component-container > * {
+  margin-bottom: 20px;
+}
+
 h2 {
-    font-family: garamond;
+  font-family: Lato, sans-serif;
 }
 
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-}
-
-.form-container {
+.add-component-container {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  margin-bottom: 0;
 }
 
-.add-component-input, .add-component-dropdown {
-  flex-grow: 1;
-  padding: 8px 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+.add-component-container button {
+  padding: 8px;
   font-size: 16px;
-  background-color: #fff;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.add-component-input:focus, .add-component-dropdown:focus {
-  outline: none;
-  border-color: #4AAE9B;
-  box-shadow: 0 0 3px rgba(0, 184, 255, 0.3);
-}
-
-button {
-  padding: 8px 16px;
-  font-size: 16px;
-  color: #fff;
-  background-color: #4AAE9B;
+  font-family: Lato, sans-serif;
+  color: #000000;
   border: none;
-  border-radius: 4px;
+  border-radius: 10px;
+  margin-left: 10px;
+  margin-top: 20px;
+  height: 20%;
+  background-color: #846F91;
+  color: white;
   cursor: pointer;
-  transition: background-color 0.2s;
 }
 
-button:hover {
-  background-color: #4AAE9B;
-}
+.add-component-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 3%;
+    animation: fade 0.3s linear forwards;
+    z-index: 100;
+  }
 
 </style>

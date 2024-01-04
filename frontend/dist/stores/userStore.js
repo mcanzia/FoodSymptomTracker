@@ -1,9 +1,10 @@
 import { defineStore } from 'pinia';
 import { auth } from '../firebase';
+import { ErrorHandler } from '../util/error/ErrorHandler';
 export const useUserStore = defineStore('userStore', {
     state: () => ({
         user: null,
-        isLoading: false
+        isLoading: false,
     }),
     getters: {
         isLoggedIn: (state) => state.user !== null
@@ -17,24 +18,52 @@ export const useUserStore = defineStore('userStore', {
             });
         },
         async getAccessToken() {
-            return this.user ? await this.user.getIdToken() : null;
+            try {
+                return this.user ? await this.user.getIdToken() : null;
+            }
+            catch (error) {
+                ErrorHandler.handleUserAuthError(this.user, error);
+            }
         },
         async registerUser(email, password) {
-            await auth.createUserWithEmailAndPassword(auth, email, password);
+            try {
+                await auth.createUserWithEmailAndPassword(auth, email, password);
+            }
+            catch (error) {
+                ErrorHandler.handleUserAuthError(this.user, error);
+            }
         },
         async loginUser(email, password) {
-            await auth.signInWithEmailAndPassword(auth, email, password);
+            try {
+                await auth.signInWithEmailAndPassword(auth, email, password);
+            }
+            catch (error) {
+                ErrorHandler.handleUserAuthError(this.user, error);
+            }
         },
         async loginUserAnonymously() {
-            //await auth.signInAnonymously(auth);
-            await auth.signInAnonymously(auth);
+            try {
+                await auth.signInAnonymously(auth);
+            }
+            catch (error) {
+                ErrorHandler.handleUserAuthError(this.user, error);
+            }
         },
         async loginUserGoogle() {
-            await auth.signInWithPopup(auth, new auth.GoogleAuthProvider());
-            //await signInWithPopup(auth, new GoogleAuthProvider());
+            try {
+                await auth.signInWithPopup(auth, new auth.GoogleAuthProvider());
+            }
+            catch (error) {
+                ErrorHandler.handleUserAuthError(this.user, error);
+            }
         },
         async logoutUser() {
-            await auth.signOut();
+            try {
+                await auth.signOut();
+            }
+            catch (error) {
+                ErrorHandler.handleUserAuthError(this.user, error);
+            }
         }
     }
 });

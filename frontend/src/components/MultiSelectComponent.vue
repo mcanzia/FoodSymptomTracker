@@ -15,14 +15,14 @@
             </span>
         </div>
         <div class="component-options-container" id="component-checkbox">
-            <div class="component-checkbox" v-for="(option, index) in component.selectOptions" :key="option">
+            <div class="component-checkbox" v-for="(option, index) in component.selectOptions" :key="index">
                 <input 
                     type="checkbox" 
-                    name="btncheckbox_{{ index }}" 
-                    id="btncheckbox_{{ index }}" 
-                    :disabled="disabled" 
-                    :v-model="layout ? '' : component.values[index]">
-                <label for="btncheckbox_{{ index }}">{{ option.text }}</label>
+                    :name="'btncheckbox_' + component.id"
+                    :id="'btncheckbox_' + index" 
+                    :disabled="disabled"
+                    v-model="component.values[index]">
+                <label :for="'btncheckbox_' + index" >{{ option.text }}</label>
             </div>
         </div>
     </form>
@@ -44,23 +44,10 @@ function toggleComponentSelection(component) {
 </script>
 
 <style scoped>
-.component-box {
-    background-color: #f8f9fa;
-    width: 100%;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    list-style-type: none;
-  }
-
-.component-box:hover {
-    background-color: #e9ecef;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.component-name, label {
+.component-name {
     font-size: 18px;
     font-weight: 500;
-    font-family: garamond;
+    font-family: Lato, sans-serif;
     color: #343a40;
 }
 
@@ -75,6 +62,10 @@ function toggleComponentSelection(component) {
 
 label {
     padding-left: 5px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: Lato, sans-serif;
+    color: #343a40;
 }
 
 input[type='checkbox']:after {
@@ -114,46 +105,5 @@ input[type='checkbox']:disabled:checked:after {
     display: inline-block;
     visibility: visible;
     border: 1px solid #d1d3d1;
-}
-
-.content-wrapper {
-  display: flex;
-  position: relative;
-  justify-content: center;
-  gap: 5px;
-}
-
-.change-icon {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 5px;
-}
-
-.change-icon > .bi + .bi,
-.change-icon:hover > .bi {
-    display: none;
-}
-
-.change-icon:hover > .bi + .bi {
-    display: inherit;
-}
-
-.bi {   
-    cursor: pointer;
-}
-
-.red {
-    color: #dc3545;
-}
-.red:hover {
-    color: #c82333;
-}
-
-.green {
-    color: #006400;
-}
-.green:hover {
-    color: #006400;
 }
 </style>

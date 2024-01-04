@@ -1,66 +1,47 @@
+import { ErrorHandler } from "../util/error/ErrorHandler";
 import { FoodItem } from "../models/FoodItem";
+import { ObjectType } from "../models/ObjectType";
+import { RequestUtil } from "./RequestUtil";
+
 export class FoodController {
-    async getAllFoods(userAuthToken : any) {
+    
+    async getAllFoods(userAuthToken: any) {
         try {
-            const bearer : string = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7500/api/foods', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': bearer
-                    }
-                });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/foods`;
+            const response = await fetch(requestUrl, RequestUtil.GETRequestParams(userAuthToken));
             return response.json();
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            ErrorHandler.handleGetAllError<FoodItem>(userAuthToken, ObjectType.FOODITEM, error);
         }
     }
 
-    async getFoodById(userAuthToken : any, foodId : string) {
+    async getFoodById(userAuthToken: any, foodId: string) {
         try {
-            const bearer : string = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7500/api/foods/' + foodId, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': bearer
-                    }
-                });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/foods/${foodId}`;
+            const response = await fetch(requestUrl, RequestUtil.GETRequestParams(userAuthToken));
             return response.json();
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            ErrorHandler.handleGetByIdError<FoodItem>(userAuthToken, ObjectType.FOODITEM, foodId, error);
         }
     }
 
-    async addFoods(userAuthToken : any, foods : Array<FoodItem>) {
+    async addFoods(userAuthToken: any, foods: Array<FoodItem>) {
         try {
-            const bearer : string = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7500/api/foods', {
-                method: 'POST',
-                headers: {
-                    'Authorization': bearer,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(foods)
-            });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/foods`;
+            const response = await fetch(requestUrl, RequestUtil.POSTRequestParams(userAuthToken, foods));
             return response;
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            ErrorHandler.handleAddError<FoodItem>(userAuthToken, ObjectType.FOODITEM, foods, error);
         }
     }
 
-    async deleteFoods(userAuthToken : any, foods : Array<FoodItem>) {
+    async deleteFoods(userAuthToken: any, foods: Array<FoodItem>) {
         try {
-            const bearer : string = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7500/api/foods', {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': bearer,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(foods)
-            });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/foods`;
+            const response = await fetch(requestUrl, RequestUtil.DELETERequestParams(userAuthToken, foods));
             return response;
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            ErrorHandler.handleDeleteError<FoodItem>(userAuthToken, ObjectType.FOODITEM, foods, error);
         }
     }
 }

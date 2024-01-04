@@ -31,31 +31,25 @@ function removeFoodItem(item) {
 </script>
 
 <style scoped>
-  .food-item {
+.food-item {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 10px 15px;
-  margin-bottom: 10px;
-  background-color: #ffffff;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.2s;
-}
-
-.food-item:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  background-color: #E8DED9;
 }
 
 .content-wrapper {
   display: flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
 }
 
 .food-item-name {
-  font-size: 18px;
+  font-size: 19px;
   font-weight: 500;
+  font-family: Lato, sans-serif;
   margin: 0;
 }
 

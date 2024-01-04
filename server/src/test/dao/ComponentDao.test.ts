@@ -23,7 +23,6 @@ describe('component dao method tests', () => {
     it('gets all components successfully', async () => {    
         const components : Array<Component> = await componentDao.getAllComponents(authId);
         expect(components.length).toBe(3);
-        console.log(components);
         expect(components).toContainEqual(mockComponentData[0]);
         expect(components).toContainEqual(mockComponentData[1]);
         expect(components).toContainEqual(mockComponentData[2]);

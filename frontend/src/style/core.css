@@ -1,0 +1,134 @@
+.primary-background-color {
+    background-color: #143542;
+}
+
+.secondary-background-color {
+    background-color: #D9D9D9;
+}
+
+.accent-color {
+    color: #846F91;
+}
+
+.text-color-light {
+    color: #FFFFFF;
+}
+
+.text-color-dark {
+    color: #090608;
+}
+
+.default-button {
+    height: 50px;
+    width: 250px;
+    border-radius: 25px;
+    background-color: #846F91;
+    border: solid #846F91;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+.default-button:hover {
+    background-color: #423748;
+    border: #423748;
+}
+
+.accent-button {
+    height: 50px;
+    width: 250px;
+    border-radius: 25px;
+    border: solid #846F91;
+    background: none;
+    color: #FFFFFF;
+    cursor: pointer;
+}
+
+.accent-button:hover {
+    background-color: #423748;
+    border: #423748;
+}
+
+.flex-column {
+    flex-basis: calc(50%);
+}
+
+label {
+    color: #FFFFFF;
+}
+
+a:link, a:visited, a:hover, a:active {
+    text-decoration: none;
+}
+
+/* Component Toggle Buttons */
+.component-box {
+    background-color: #E8DED9;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    list-style-type: none;
+    border: 2px #846F91 solid;
+}
+
+.component-box:hover {
+    background-color: #e9ecef;
+}
+
+.component-box:hover .change-icon {
+    opacity: 1;
+}
+
+.content-wrapper {
+    display: flex;
+    position: relative;
+    justify-content: left;
+    margin-left: 20px;
+    gap: 5px;
+  }
+
+.change-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px;
+  }
+  
+  .change-icon > .bi + .bi,
+  .change-icon:hover > .bi {
+      display: none;
+  }
+  
+  .change-icon:hover > .bi + .bi {
+      display: inherit;
+  }
+  
+  .bi {   
+      cursor: pointer;
+  }
+  
+  .red {
+      color: #dc3545;
+  }
+  .red:hover {
+      color: #c82333;
+  }
+  
+  .green {
+      color: #143542;
+  }
+  .green:hover {
+      color: #143542;
+  }
+
+/* Calendar */  
+@keyframes fade {
+    from {
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+    }
+    to { 
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+  }

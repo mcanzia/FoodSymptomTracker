@@ -1,12 +1,26 @@
 <template>
     <div class="form-container">
         <div class="form-column">
+            <div class="form-column-item date-picker-container">
+                <button id="chart-date-picker" @click="toggleDatePicker()">
+                    <ion-icon name="calendar-outline"></ion-icon>
+                    <span>{{ dateString }}</span>
+                </button>
+                <button id="clear-date-selection" v-if="datePickerActive" @click="clearDateSelection()">
+                    <ion-icon name="close"></ion-icon>
+                </button>
+                <DropDown class="date-dropdown" v-if="datePickerActive" role="dialog" aria-modal="true">
+                    <template v-slot:body>
+                        <air-date-range @date-input="setDateRange"></air-date-range>
+                    </template>
+                </DropDown>
+            </div>
             <div class="form-column-item">
-                <h4>Chart Title: </h4>
+                <label for="new-chart-title">Chart Title:</label>
                 <input class="add-chart-input" id="new-chart-title" v-model="chartStore.newChartDetails.chartTitle" @blur="updateTempChartTitle">
             </div>
             <div class="form-column-item">
-                <h4>Chart Type: </h4>
+                <label for="new-chart-type">Chart Type:</label>
                 <select class="add-chart-dropdown" id="new-chart-type" v-model="chartStore.newChartDetails.chartType" @change="updateTempChartTitle">
                     <option v-for="option in typeSelectOptions" :key="option" :value="option">
                         {{ option }}
@@ -14,7 +28,7 @@
                 </select>
             </div>
             <div class="form-column-item">
-                <h4>Chart Component: </h4>
+                <label for="new-chart-component">Chart Component:</label>
                 <select class="add-chart-dropdown" id="new-chart-component" v-model="chartStore.newChartDetails.selectedComponent" @change="updateTempChartComponent">
                     <option v-for="option in componentStore.selectedComponents" :key="option.id" :value="option">
                         {{ option.name }}
@@ -22,15 +36,7 @@
                 </select>
             </div>
             <div class="form-column-item">
-                <h4>Start Date: </h4>
-                <input class="add-chart-input" id="new-chart-start-date" v-model="chartStore.newChartDetails.startDate" @input="updateTempChartComponent">
-            </div>
-            <div class="form-column-item">
-                <h4>End Date: </h4>
-                <input class="add-chart-input" id="new-chart-end-date" v-model="chartStore.newChartDetails.endDate" @input="updateTempChartComponent">
-            </div>
-            <div class="form-column-item">
-                <h4>Target Food: </h4>
+                <label for="new-chart-food-select">Target Food:</label>
                 <select class="add-chart-dropdown" id="new-chart-food-select" v-model="chartStore.newChartDetails.selectedFood" @change="updateTempChartComponent">
                     <option v-for="option in foodStore.foods" :key="option.id" :value="option">
                         {{ option.name }}
@@ -51,6 +57,8 @@ import { useChartStore } from '../stores/chartStore';
 import { useUserStore } from '../stores/userStore';
 import FloatingButton from './FloatingButton.vue';
 import ChartComponent from './Chart.vue';
+import DropDown from "./DropDown.vue";
+import AirDateRange from "./AirDateRange.vue";
 import { Chart } from '../models/Chart';
 import { ChartOptions } from '../models/ChartOptions';
 import { onBeforeMount, computed, ref } from 'vue';
@@ -61,7 +69,8 @@ const chartStore = useChartStore();
 const userStore = useUserStore();
 
 let userAccessToken = null;
-let chartBuilderActive = ref(true);
+const chartBuilderActive = ref(true);
+const datePickerActive = ref(false);
 const typeSelectOptions = ['bar', 'line', 'pie', 'doughnut', 'radar'];
 
 onBeforeMount(async() => {
@@ -77,6 +86,23 @@ let maxStartDate = computed(() => {
 
 let minEndDate = computed(() => {
     return startDate !== "" || startDate !== undefined ? new Date(startDate) : new Date('1970-01-01T00:00:00');
+});
+
+let dateString = computed(() => {
+    if (chartStore.dateRange.length === 0) {
+        return "All Time";
+    }
+
+    const startDate = new Date(chartStore.dateRange[0]).toLocaleDateString();
+
+    if (chartStore.dateRange.length === 1) {
+        return `${startDate} - `;
+    }
+
+    const endDate = new Date(chartStore.dateRange[1]).toLocaleDateString();
+
+    return `${startDate} - ${endDate}`;
+
 });
 
 let chartStoreLastIndex = computed(() => {
@@ -122,13 +148,12 @@ async function resetChartForm() {
 }
 
 async function saveChart() {
-    chartStore.addCharts(userAccessToken);
-    resetNewChart();
-    await router.push({ name: 'summary'});
+    await chartStore.addCharts(userAccessToken);
+    this.closeChartBuilder();
 }
 
 async function closeChartBuilder() {
-    resetNewChart();
+    // resetNewChart();
     await router.push({ name: 'summary'});
 }
 
@@ -138,34 +163,88 @@ function resetNewChart() {
     chartStore.newChartDetails = new Chart(id, defaultTitle, "bar", null, new ChartOptions(defaultTitle), null, null, "", "");
 }
 
+function toggleDatePicker() {
+    if (chartStore.dateRange.length !== 1) {
+        datePickerActive.value = !datePickerActive.value;
+    }
+}
+
+function clearDateSelection() {
+    chartStore.dateRange = [];
+    datePickerActive.value = false;
+}
+
+
+function setDateRange(selectedDateRange) {
+    chartStore.dateRange = selectedDateRange;
+    if (selectedDateRange.length === 2) {
+        datePickerActive.value = false;
+    }
+}
+
 </script>
 
 <style scoped>
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
+
+.date-picker-container {
+    position: relative;
+    display: flex;
 }
+
+#clear-date-selection {
+    margin-left: 5px;
+    background-color: #846F91;
+    color: white;
+}
+
+#chart-date-picker {
+    display: flex;
+}
+
+#chart-date-picker ion-icon{
+    align-content: baseline;
+    padding-top: 2px;
+}
+
+#chart-date-picker span {
+    margin-left: 5px;
+    padding-bottom: 2px;
+}
+
+.date-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 3%;
+    animation: fade 0.3s linear forwards;
+    z-index: 100;
+  }
 
 .form-container {
   display: flex;
   gap: 20px;
 }
 
-.form-column-item {
+.form-column-item:not(:first-child) {
   display: flex;
-  align-content: center;
-  padding: 10px;
-  gap: 10px;
+  flex-direction: column;
+}
+
+.form-column-item {
+    padding: 10px;
+}
+
+.form-column-item label {
+    font-size: 15px;
+    color: black;
+    font-family: Lato, sans-serif;
+    margin-bottom: 5px;
 }
 
 .add-chart-input, .add-chart-dropdown {
   flex-grow: 1;
   padding: 8px 16px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 10px;
   font-size: 16px;
   background-color: #fff;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -173,22 +252,16 @@ function resetNewChart() {
 
 .add-chart-input:focus, .add-chart-dropdown:focus {
   outline: none;
-  border-color: #4AAE9B;
   box-shadow: 0 0 3px rgba(0, 184, 255, 0.3);
 }
 
 button {
   padding: 8px 16px;
   font-size: 16px;
-  color: #fff;
-  background-color: #4AAE9B;
+  font-family: Lato, sans-serif;
+  color: #000000;
   border: none;
-  border-radius: 4px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-button:hover {
-  background-color: #4AAE9B;
 }
 </style>

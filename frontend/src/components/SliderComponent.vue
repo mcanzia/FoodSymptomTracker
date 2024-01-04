@@ -1,7 +1,7 @@
 <template>
     <form class="component-box">
         <div class="content-wrapper">
-            <h3 class="component-name">{{component.name}}</h3>
+            <h3 :id="'component-name-'+component.id" class="component-name">{{component.name}}</h3>
             <span class="change-icon" v-if="layout">
                 <ion-icon 
                     :name="component.selected ? 'remove-circle-outline' : 'add-circle-outline'" 
@@ -21,9 +21,11 @@
             max="10" 
             step="0.10" 
             v-if="layout"
+            class="layout-slider"
             :disabled="disabled" 
             v-model="defaultValues" 
-            style="background: linear-gradient(90deg, #999999 50%, #d1d3d1 50%)">
+            style="background: linear-gradient(90deg, #999999 50%, #d1d3d1 50%)"
+            :aria-labelledby="'component-name-'+component.id">
         <input 
             type="range" 
             id="component-range" 
@@ -33,7 +35,8 @@
             v-else
             :disabled="disabled" 
             v-model="component.values" 
-            :style="sliderGradient">
+            :style="sliderGradient"
+            :aria-labelledby="'component-name-'+component.id">
         <h4 v-if="!layout">Value: {{ component.values }}</h4>
     </form>
 </template>
@@ -70,24 +73,22 @@ function toggleComponentSelection(component) {
 
 <style scoped>
 .component-box {
-    background-color: #f8f9fa;
-    width: 100%;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    list-style-type: none;
     text-align: center;
 }
 
 .component-box:hover {
     background-color: #e9ecef;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .component-name, label {
     font-size: 18px;
     font-weight: 500;
-    font-family: garamond;
+    font-family: Lato, sans-serif;
     color: #343a40;
+}
+
+.layout-slider {
+    margin-bottom: 20px;
 }
 
 input[type=range] {
@@ -135,48 +136,10 @@ input[type='range']:disabled::-moz-range-thumb {
 }
 
 h4 {
-    padding-bottom: 10px;
-}
-
-.content-wrapper {
-  display: flex;
-  position: relative;
-  justify-content: center;
-  gap: 5px;
-}
-
-.change-icon {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 5px;
-}
-
-.change-icon > .bi + .bi,
-.change-icon:hover > .bi {
-    display: none;
-}
-
-.change-icon:hover > .bi + .bi {
-    display: inherit;
-}
-
-.bi {   
-    cursor: pointer;
-}
-
-.red {
-    color: #dc3545;
-}
-.red:hover {
-    color: #c82333;
-}
-
-.green {
-    color: #006400;
-}
-.green:hover {
-    color: #006400;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: Lato, sans-serif;
+    color: #343a40;
 }
 
 </style>

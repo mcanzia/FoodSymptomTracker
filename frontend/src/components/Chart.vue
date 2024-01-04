@@ -23,6 +23,7 @@ function createChartContextAlt() {
         data: props.chartDetails.chartData,
         options: props.chartDetails.chartOptions
     });
+
 }
 
 function isChartEmpty() {

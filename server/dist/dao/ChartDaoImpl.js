@@ -16,7 +16,7 @@ class ChartDaoImpl {
             return charts;
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not retrieve charts from database");
+            throw new CustomError_1.DatabaseError("Could not retrieve charts from database: " + error);
         }
     }
     async getChartById(authId, chartId) {
@@ -27,7 +27,7 @@ class ChartDaoImpl {
             return chart;
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not retrieve chart from database");
+            throw new CustomError_1.DatabaseError("Could not retrieve chart from database: " + error);
         }
     }
     async addCharts(authId, charts) {
@@ -45,7 +45,7 @@ class ChartDaoImpl {
             await batch.commit();
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not add chart to database");
+            throw new CustomError_1.DatabaseError("Could not add chart to database: " + error);
         }
     }
     async updateChart(authId, chartId, chartData) {
@@ -54,7 +54,7 @@ class ChartDaoImpl {
             await firebase_1.db.collection('users').doc(authId).collection('charts').doc(chartId).update(dataToUpdate);
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not update chart in database");
+            throw new CustomError_1.DatabaseError("Could not update chart in database: " + error);
         }
     }
     async deleteCharts(authId, chartIds) {
@@ -67,7 +67,7 @@ class ChartDaoImpl {
             await batch.commit();
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not delete charts from database");
+            throw new CustomError_1.DatabaseError("Could not delete charts from database: " + error);
         }
     }
 }

@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vitest_1 = require("vitest");
-const firebase_1 = require("../../configs/firebase");
 const ComponentControllerImpl_1 = require("../../controllers/ComponentControllerImpl");
 const ComponentDaoImpl_1 = require("../../dao/ComponentDaoImpl");
 const MockComponents_1 = require("../mockData/MockComponents");
@@ -11,7 +10,6 @@ const CustomError_1 = require("../../util/error/CustomError");
     let componentController;
     (0, vitest_1.beforeEach)(async () => {
         componentController = new ComponentControllerImpl_1.ComponentControllerImpl();
-        firebase_1.testauth.useEmulator("http://localhost:9099/");
     });
     (0, vitest_1.it)('gets all components successfully', async () => {
         const request = MockExpress_1.MockExpress.mockRequest({});

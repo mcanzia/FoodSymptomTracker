@@ -1,5 +1,10 @@
 import { DateUtil } from "../util/DateUtil";
 export class DateLog {
+    id;
+    date;
+    dateValue;
+    foodItems;
+    components;
     constructor(id, date, foodItems, components) {
         this.id = id;
         this.date = date;

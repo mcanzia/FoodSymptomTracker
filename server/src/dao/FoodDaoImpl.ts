@@ -14,7 +14,7 @@ export class FoodDaoImpl {
             });
             return foodItems;
         } catch (error) {
-            throw new DatabaseError("Could not retrieve food items from database");
+            throw new DatabaseError("Could not retrieve food items from database: " + error);
         }
     }
 
@@ -25,7 +25,7 @@ export class FoodDaoImpl {
             const foodItem : FoodItem = new FoodItem(document.id, documentData.name);
             return foodItem;
         } catch (error) {
-            throw new DatabaseError("Could not retrieve food item from database");
+            throw new DatabaseError("Could not retrieve food item from database: " + error);
         }
     }
 
@@ -44,7 +44,7 @@ export class FoodDaoImpl {
             await batch.commit();
             return;
         } catch (error) {
-            throw new DatabaseError("Could not add food item to database");
+            throw new DatabaseError("Could not add food item to database: " + error);
         }
     }
 
@@ -57,7 +57,7 @@ export class FoodDaoImpl {
             }
             await batch.commit();
         } catch (error) {
-            throw new DatabaseError("Could not delete foods from database");
+            throw new DatabaseError("Could not delete foods from database: " + error);
         }
     }
 

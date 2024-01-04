@@ -17,7 +17,7 @@ class AuthServiceImpl {
             return userDetails.uid;
         }
         catch (error) {
-            throw new CustomError_1.AuthorizationError("User is not authorized");
+            throw new CustomError_1.AuthorizationError("User is not authorized: " + error);
         }
     }
 }

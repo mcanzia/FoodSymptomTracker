@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const vitest_1 = require("vitest");
-const firebase_1 = require("../../configs/firebase");
 const FoodControllerImpl_1 = require("../../controllers/FoodControllerImpl");
 const FoodDaoImpl_1 = require("../../dao/FoodDaoImpl");
 const MockFoods_1 = require("../mockData/MockFoods");
@@ -11,7 +10,6 @@ const CustomError_1 = require("../../util/error/CustomError");
     let foodController;
     (0, vitest_1.beforeEach)(async () => {
         foodController = new FoodControllerImpl_1.FoodControllerImpl();
-        firebase_1.testauth.useEmulator("http://localhost:9099/");
     });
     (0, vitest_1.it)('gets all foods successfully', async () => {
         const request = MockExpress_1.MockExpress.mockRequest({});

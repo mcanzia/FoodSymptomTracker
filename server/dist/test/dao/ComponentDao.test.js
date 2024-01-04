@@ -6,28 +6,26 @@ const ComponentDaoImpl_1 = require("../../dao/ComponentDaoImpl"); // Assuming a 
 const MockComponents_1 = require("../mockData/MockComponents"); // Assuming similar mock data exists for Components
 const CustomError_1 = require("../../util/error/CustomError");
 (0, vitest_1.describe)('component dao method tests', () => {
-    firebase_1.testdb.useEmulator("localhost", 8080);
     let componentDao;
     let authId = "ABC123";
     let mockComponentData = [];
     (0, vitest_1.beforeEach)(async () => {
         componentDao = new ComponentDaoImpl_1.ComponentDaoImpl();
         mockComponentData = MockComponents_1.MockComponents.createComponentArray();
-        mockComponentData.forEach(async (component) => {
-            await firebase_1.testdb.collection('users').doc(authId).collection('components').doc(component.id).set(component);
-        });
+        await Promise.all(mockComponentData.map((component) => {
+            return firebase_1.db.collection('users').doc(authId).collection('components').doc(component.id).set(component);
+        }));
     });
     (0, vitest_1.describe)('getAllComponents', () => {
         (0, vitest_1.it)('gets all components successfully', async () => {
             const components = await componentDao.getAllComponents(authId);
             (0, vitest_1.expect)(components.length).toBe(3);
-            console.log(components);
             (0, vitest_1.expect)(components).toContainEqual(mockComponentData[0]);
             (0, vitest_1.expect)(components).toContainEqual(mockComponentData[1]);
             (0, vitest_1.expect)(components).toContainEqual(mockComponentData[2]);
         });
         (0, vitest_1.it)('handles errors gracefully', async () => {
-            const dbMock = vitest_1.vi.spyOn(firebase_1.testdb, "collection");
+            const dbMock = vitest_1.vi.spyOn(firebase_1.db, "collection");
             dbMock.mockImplementationOnce(() => { throw new Error("Error Retrieving Components"); });
             await (0, vitest_1.expect)(componentDao.getAllComponents(authId)).rejects.toThrow(CustomError_1.DatabaseError);
         });
@@ -38,7 +36,7 @@ const CustomError_1 = require("../../util/error/CustomError");
             (0, vitest_1.expect)(component).toEqual(mockComponentData[0]);
         });
         (0, vitest_1.it)('handles errors gracefully', async () => {
-            const dbMock = vitest_1.vi.spyOn(firebase_1.testdb, "collection");
+            const dbMock = vitest_1.vi.spyOn(firebase_1.db, "collection");
             dbMock.mockImplementationOnce(() => { throw new Error("Error Retrieving Component"); });
             await (0, vitest_1.expect)(componentDao.getComponentById(authId, mockComponentData[0].id)).rejects.toThrow(CustomError_1.DatabaseError);
         });
@@ -59,7 +57,7 @@ const CustomError_1 = require("../../util/error/CustomError");
             (0, vitest_1.expect)(components).toContainEqual(mockComponentData[2]);
         });
         (0, vitest_1.it)('handles errors gracefully', async () => {
-            const dbMock = vitest_1.vi.spyOn(firebase_1.testdb, "collection");
+            const dbMock = vitest_1.vi.spyOn(firebase_1.db, "collection");
             dbMock.mockImplementationOnce(() => { throw new Error("Error Adding Components"); });
             await (0, vitest_1.expect)(componentDao.addComponents(authId, newComponentData)).rejects.toThrow(CustomError_1.DatabaseError);
         });
@@ -74,7 +72,7 @@ const CustomError_1 = require("../../util/error/CustomError");
             (0, vitest_1.expect)(components).toContainEqual(mockComponentData[2]);
         });
         (0, vitest_1.it)('handles errors gracefully', async () => {
-            const dbMock = vitest_1.vi.spyOn(firebase_1.testdb, "collection");
+            const dbMock = vitest_1.vi.spyOn(firebase_1.db, "collection");
             dbMock.mockImplementationOnce(() => { throw new Error("Error Updating Component"); });
             await (0, vitest_1.expect)(componentDao.updateComponent(authId, mockComponentData[0].id, mockComponentData[0])).rejects.toThrow(CustomError_1.DatabaseError);
         });
@@ -93,20 +91,20 @@ const CustomError_1 = require("../../util/error/CustomError");
         });
         (0, vitest_1.it)('handles errors gracefully', async () => {
             const mockComponentDataIds = mockComponentData.map(mockComponent => mockComponent.id);
-            const dbMock = vitest_1.vi.spyOn(firebase_1.testdb, "batch");
+            const dbMock = vitest_1.vi.spyOn(firebase_1.db, "batch");
             dbMock.mockImplementationOnce(() => { throw new Error("Error Deleting Components"); });
             await (0, vitest_1.expect)(componentDao.deleteComponents(authId, mockComponentDataIds)).rejects.toThrow(CustomError_1.DatabaseError);
         });
     });
     (0, vitest_1.afterEach)(async () => {
         vitest_1.vi.clearAllMocks();
-        const componentsRef = firebase_1.testdb.collection('users').doc(authId).collection('components');
+        const componentsRef = firebase_1.db.collection('users').doc(authId).collection('components');
         const snapshot = await componentsRef.get();
-        const batch = firebase_1.testdb.batch();
+        const batch = firebase_1.db.batch();
         snapshot.docs.forEach(doc => {
             batch.delete(doc.ref);
         });
         await batch.commit();
-        await firebase_1.testdb.collection('users').doc(authId).delete();
+        await firebase_1.db.collection('users').doc(authId).delete();
     });
 });

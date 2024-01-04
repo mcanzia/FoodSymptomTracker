@@ -17,7 +17,7 @@ export class ChartDaoImpl {
             });
             return charts;
         } catch (error) {
-            throw new DatabaseError("Could not retrieve charts from database");
+            throw new DatabaseError("Could not retrieve charts from database: " + error);
         }
     }
 
@@ -30,7 +30,7 @@ export class ChartDaoImpl {
                 documentData.endDate);
             return chart;
         } catch (error) {
-            throw new DatabaseError("Could not retrieve chart from database");
+            throw new DatabaseError("Could not retrieve chart from database: " + error);
         }
     }
 
@@ -48,7 +48,7 @@ export class ChartDaoImpl {
             }
             await batch.commit();
         } catch (error) {
-            throw new DatabaseError("Could not add chart to database");
+            throw new DatabaseError("Could not add chart to database: " + error);
         }
     }
 
@@ -57,7 +57,7 @@ export class ChartDaoImpl {
             const dataToUpdate = chartData.toObject ? chartData.toObject() : chartData as unknown as { [key: string]: any };
             await db.collection('users').doc(authId).collection('charts').doc(chartId).update(dataToUpdate);
         } catch (error) {
-            throw new DatabaseError("Could not update chart in database");
+            throw new DatabaseError("Could not update chart in database: " + error);
         }
     }
 
@@ -70,7 +70,7 @@ export class ChartDaoImpl {
             }
             await batch.commit();
         } catch (error) {
-            throw new DatabaseError("Could not delete charts from database");
+            throw new DatabaseError("Could not delete charts from database: " + error);
         }
     }
     

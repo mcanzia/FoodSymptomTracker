@@ -25,4 +25,12 @@ const props = defineProps({
   padding: 0;
   margin: 0;
 }
+
+.food-item-list:not(:empty) {
+  border: 2px #846F91 solid;
+}
+
+.food-item-list > li:not(:last-child) {
+  border-bottom: 1px solid;
+}
 </style>

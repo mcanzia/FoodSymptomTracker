@@ -1,0 +1,26 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: food-log-tracker
+    environment:
+      - NODE_ENV=test
+      - FIRESTORE_EMULATOR_HOST=firebase-emulator:8080
+      - FIREBASE_AUTH_EMULATOR_HOST=firebase-emulator:9099
+    ports:
+      - "7500:7500"
+    depends_on:
+      - firebase-emulator
+
+
+  firebase-emulator:
+      image: firebase-emulator
+      container_name: firebase-emulator
+      environment:
+        - PROJECT_ID=crohns-food-tracker
+      ports:
+        - "8080:8080"
+        - "9099:9099"
+        - "4001:4000"
+        - "9150:9150"

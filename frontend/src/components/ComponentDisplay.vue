@@ -1,23 +1,34 @@
 <template>
     <div>
-        <SliderComponent 
-            v-if="component.typeId === 1" 
-            :component="component" 
-            :disabled="disabled" 
-            :layout="layout" 
-            @toggleComponentSelection="toggleComponentSelection(component)"/>
-        <SingleSelectComponent 
-            v-if="component.typeId === 2" 
-            :component="component" 
-            :disabled="disabled" 
-            :layout="layout" 
-            @toggleComponentSelection="toggleComponentSelection(component)"/>
-        <MultiSelectComponent 
-            v-if="component.typeId === 3" 
-            :component="component" 
-            :disabled="disabled" 
-            :layout="layout" 
-            @toggleComponentSelection="toggleComponentSelection(component)"/>
+        <ComponentWrapper v-if="component.typeId === 1">
+            <template v-slot:content>
+                <SliderComponent 
+                    :component="component" 
+                    :disabled="disabled" 
+                    :layout="layout" 
+                    @toggleComponentSelection="toggleComponentSelection(component)"/>
+            </template>
+        </ComponentWrapper>
+        <ComponentWrapper v-if="component.typeId === 2">
+            <template v-slot:content>
+                <SingleSelectComponent 
+                    v-if="component.typeId === 2" 
+                    :component="component" 
+                    :disabled="disabled" 
+                    :layout="layout" 
+                    @toggleComponentSelection="toggleComponentSelection(component)"/>
+            </template>
+        </ComponentWrapper>
+        <ComponentWrapper v-if="component.typeId === 3">
+            <template v-slot:content>
+                <MultiSelectComponent 
+                    v-if="component.typeId === 3" 
+                    :component="component" 
+                    :disabled="disabled" 
+                    :layout="layout" 
+                    @toggleComponentSelection="toggleComponentSelection(component)"/>
+            </template>
+        </ComponentWrapper>
     </div>
 </template>
 
@@ -25,6 +36,7 @@
 import MultiSelectComponent from "./MultiSelectComponent.vue";
 import SingleSelectComponent from "./SingleSelectComponent.vue";
 import SliderComponent from "./SliderComponent.vue";
+import ComponentWrapper from "./ComponentWrapper.vue";
 
 const props = defineProps({
     component: Object,

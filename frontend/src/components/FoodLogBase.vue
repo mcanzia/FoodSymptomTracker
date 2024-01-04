@@ -21,7 +21,7 @@
         </div>
         <FoodItemList :foodItems="dateLogStore.selectedDateLog.foodItems" :editMode="editMode" />
       </div>
-      <div class="flex-column">
+      <div class="flex-column component-container">
         <h2>Components: </h2>
         <ComponentDisplay
           v-for="component in dateLogStore.selectedDateLog.components"
@@ -85,8 +85,12 @@ function addFoodItem() {
   max-height: calc(75vh - 10px);
 }
 
+.component-container > *:not(:last-child) {
+  margin-bottom: 20px;
+}
+
 h2 {
-    font-family: garamond;
+  font-family: Lato, sans-serif;
 }
 
 .search-container {

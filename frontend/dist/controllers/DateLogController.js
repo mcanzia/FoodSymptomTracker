@@ -1,84 +1,55 @@
+import { ErrorHandler } from "../util/error/ErrorHandler";
+import { ObjectType } from "../models/ObjectType";
+import { RequestUtil } from "./RequestUtil";
 export class DateLogController {
     async getAllDateLogs(userAuthToken) {
         try {
-            const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7500/api/datelogs', {
-                method: 'GET',
-                headers: {
-                    'Authorization': bearer
-                }
-            });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/datelogs`;
+            const response = await fetch(requestUrl, RequestUtil.GETRequestParams(userAuthToken));
             return response.json();
         }
         catch (error) {
-            console.log(error);
+            ErrorHandler.handleGetAllError(userAuthToken, ObjectType.DATELOG, error);
         }
     }
     async getDateLogById(userAuthToken, dateLogId) {
         try {
-            const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7500/api/datelogs/' + dateLogId, {
-                method: 'GET',
-                headers: {
-                    'Authorization': bearer
-                }
-            });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/datelogs/${dateLogId}`;
+            const response = await fetch(requestUrl, RequestUtil.GETRequestParams(userAuthToken));
             return response.json();
         }
         catch (error) {
-            console.log(error);
+            ErrorHandler.handleGetByIdError(userAuthToken, ObjectType.DATELOG, dateLogId, error);
         }
     }
     async addDateLogs(userAuthToken, dateLogs) {
         try {
-            const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7500/api/datelogs', {
-                method: 'POST',
-                headers: {
-                    'Authorization': bearer,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dateLogs)
-            });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/datelogs`;
+            const response = await fetch(requestUrl, RequestUtil.POSTRequestParams(userAuthToken, dateLogs));
             return response;
         }
         catch (error) {
-            console.log(error);
+            ErrorHandler.handleAddError(userAuthToken, ObjectType.DATELOG, dateLogs, error);
         }
     }
     async updateDateLog(userAuthToken, dateLog) {
         try {
-            const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7500/api/datelogs/' + dateLog.id, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': bearer,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dateLog)
-            });
-            console.log(response.json());
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/datelogs/${dateLog.id}`;
+            const response = await fetch(requestUrl, RequestUtil.PUTRequestParams(userAuthToken, dateLog));
+            return response;
         }
         catch (error) {
-            console.log(error);
+            ErrorHandler.handleUpdateError(userAuthToken, ObjectType.DATELOG, dateLog, error);
         }
     }
     async deleteDateLogs(userAuthToken, dateLogs) {
         try {
-            const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7500/api/dateLogs', {
-                method: 'DELETE',
-                headers: {
-                    'Authorization': bearer,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dateLogs)
-            });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/datelogs`;
+            const response = await fetch(requestUrl, RequestUtil.DELETERequestParams(userAuthToken, dateLogs));
             return response;
         }
         catch (error) {
-            console.log(error);
+            ErrorHandler.handleDeleteError(userAuthToken, ObjectType.DATELOG, dateLogs, error);
         }
     }
 }

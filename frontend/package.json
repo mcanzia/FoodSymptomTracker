@@ -4,35 +4,38 @@
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
-    "dev-type": "concurrently \"npx tsc --watch\" \"vite\"",
+    "dev-type": "concurrently \"npx tsc --watch\" \"vite --mode development\"",
     "type": "npx tsc",
     "dev": "vite",
-    "build": "concurrently \"npx tsc --watch\" \"vite build\"",
+    "build": "concurrently \"npx tsc --watch\" \"vite build --mode production\"",
     "serve": "vite preview"
   },
   "dependencies": {
+    "@sentry/vue": "^7.84.0",
     "@vue/compat": "^3.2.47",
+    "air-datepicker": "^3.4.0",
     "bootstrap": "^5.2.3",
     "chart.js": "^4.3.0",
     "date-fns": "^2.28.0",
     "firebase": "^9.17.1",
+    "ionicons": "^7.2.1",
     "pinia": "^2.0.30",
     "vue": "^3.2.47",
-    "vue-chartjs": "^4.1.1",
+    "vue-chartjs": "^5.2.0",
     "vue-router": "^4.0.15",
     "vuedraggable": "^2.24.3"
   },
   "devDependencies": {
-    "@vue/compiler-sfc": "^3.1.0",
-    "typescript": "~4.1.5",
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "@typescript-eslint/parser": "^5.52.0",
+    "@vitejs/plugin-vue": "^1.6.1",
+    "@vue/compiler-sfc": "^3.1.0",
     "@vue/eslint-config-typescript": "^11.0.2",
+    "concurrently": "^7.6.0",
     "eslint": "^8.34.0",
     "eslint-plugin-vue": "^9.9.0",
-    "@vitejs/plugin-vue": "^1.6.1",
-    "vite": "^2.5.4",
-    "concurrently": "^7.6.0"
+    "typescript": "^5.2.2",
+    "vite": "^2.5.4"
   },
   "eslintConfig": {
     "root": true,

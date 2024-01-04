@@ -22,7 +22,7 @@ export class DateLogDaoImpl {
             });
             return dateLogs;
         } catch (error) {
-            throw new DatabaseError("Could not retrieve date logs from database");
+            throw new DatabaseError("Could not retrieve date logs from database: " + error);
         }
     }
 
@@ -42,7 +42,7 @@ export class DateLogDaoImpl {
             });
             return dateLogs;
         } catch (error) {
-            throw new DatabaseError("Could not retrieve date logs from database");
+            throw new DatabaseError("Could not retrieve date logs from database: " + error);
         }
     }
 
@@ -53,7 +53,7 @@ export class DateLogDaoImpl {
             const dateLog : DateLog = new DateLog(document.id, documentData.date, documentData.foodItems, documentData.components);
             return dateLog;
         } catch (error) {
-            throw new DatabaseError("Could not retrieve date log from database");
+            throw new DatabaseError("Could not retrieve date log from database: " + error);
         }
     }
 
@@ -72,7 +72,7 @@ export class DateLogDaoImpl {
             await batch.commit();
             return;
         } catch (error) {
-            throw new DatabaseError("Could not add date log to database");
+            throw new DatabaseError("Could not add date log to database: " + error);
         }
     }
 
@@ -81,7 +81,7 @@ export class DateLogDaoImpl {
             const dataToUpdate = dateLogData.toObject ? dateLogData.toObject() : dateLogData as unknown as { [key: string]: any };
             await db.collection('users').doc(authId).collection('dateLogs').doc(dateLogId).update(dataToUpdate);
         } catch (error) {
-            throw new DatabaseError("Could not update date log in database");
+            throw new DatabaseError("Could not update date log in database: " + error);
         }
     }
     
@@ -95,7 +95,7 @@ export class DateLogDaoImpl {
             }
             await batch.commit();
         } catch (error) {
-            throw new DatabaseError("Could not delete date logs from database");
+            throw new DatabaseError("Could not delete date logs from database: " + error);
         }
     }
 

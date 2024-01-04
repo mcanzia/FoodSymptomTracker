@@ -14,7 +14,7 @@ export class AuthServiceImpl {
             const userDetails = await firebaseAdmin.auth().verifyIdToken(userAuthToken);
             return userDetails.uid;
         } catch (error) {
-            throw new AuthorizationError("User is not authorized");
+            throw new AuthorizationError("User is not authorized: " + error);
         }
     }
 }

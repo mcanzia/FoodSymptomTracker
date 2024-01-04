@@ -1,8 +1,11 @@
 <template>
   <div>
+    <ErrorToast id="error-notification" aria-label="error-notification"></ErrorToast>
     <div v-if="!userStore.isLoading && userStore.isLoggedIn">
         <Navbar />
-        <router-view />
+        <div class="display-box">
+          <router-view />
+        </div>
     </div>
     <Login v-else-if="!userStore.isLoading" />
     <div v-else class="center">
@@ -11,33 +14,21 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import Login from './components/Login.vue';
 import Navbar from './components/Navbar.vue';
 import Spinner from './components/Spinner.vue';
+import ErrorToast from './components/ErrorToast.vue';
 import { useUserStore } from './stores/userStore';
-export default {
-  name: 'App',
-  components: {
-    Login,
-    Navbar,
-    Spinner
-  },
-  setup() {
-    const userStore = useUserStore()
-    return {
-        userStore
-    }
-  },
-  created() {
-    this.userStore.initalizeAuthListener();
-  }
-}
+
+const userStore = useUserStore();
+userStore.initalizeAuthListener();
+
 </script>
 
 <style>
 body {
-  background-color:white;
+  background-color:#143542;
   margin: 0;
 }
 
@@ -46,6 +37,17 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
+}
+
+.display-box {
+  background-color: #D9D9D9;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin: 0 auto;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 95%;
+  box-sizing: border-box;
 }
 
 </style>

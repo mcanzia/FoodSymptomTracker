@@ -10,26 +10,49 @@ export class DateLogService {
     }
 
     async getAllDateLogs(userAuth : any) {
-        const allDateLogs = JSON.parse(await this.dateLogController.getAllDateLogs(userAuth));
-        return allDateLogs;
+        try {
+            const response = await this.dateLogController.getAllDateLogs(userAuth);
+            const allDateLogs = response ? JSON.parse(response) : [];
+            return allDateLogs;
+        } catch(error) {
+            throw error;
+        }
+        
     }
 
     async getDateLogById(userAuth : any, dateLogId : string) {
-        const dateLog = await this.dateLogController.getDateLogById(userAuth, dateLogId);
-        return dateLog;
+        try {
+            const dateLog = await this.dateLogController.getDateLogById(userAuth, dateLogId);
+            return dateLog;
+        } catch (error) {
+            throw error;
+        }
+        
     }
 
     async addDateLogs(userAuth : any, dateLogs : Array<DateLog>) {
-        const dateLog = await this.dateLogController.addDateLogs(userAuth, dateLogs);
-        return dateLog;
+        try {
+            const dateLog = await this.dateLogController.addDateLogs(userAuth, dateLogs);
+            return dateLog;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async updateDateLog(userAuth : any, dateLog : DateLog) {
-        await this.dateLogController.updateDateLog(userAuth, dateLog);
+        try {
+            await this.dateLogController.updateDateLog(userAuth, dateLog);
+        } catch (error) {
+            throw error;
+        }
     }
 
     async deleteDateLogs(userAuth : any, dateLogs : Array<DateLog>) {
-        const dateLog = await this.dateLogController.deleteDateLogs(userAuth, dateLogs);
-        return dateLog;
+        try {
+            const dateLog = await this.dateLogController.deleteDateLogs(userAuth, dateLogs);
+            return dateLog;
+        } catch (error) {
+            throw error;
+        }
     }
 }

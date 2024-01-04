@@ -6,7 +6,6 @@ const AuthServiceImpl_1 = require("../../services/AuthServiceImpl");
 const CustomError_1 = require("../../util/error/CustomError");
 (0, vitest_1.describe)('auth service method tests', () => {
     (0, vitest_1.beforeEach)(async () => {
-        firebase_1.testauth.useEmulator("http://localhost:9099/");
     });
     (0, vitest_1.it)('validates auth token successfully', async () => {
         const mockUID = "user1234";

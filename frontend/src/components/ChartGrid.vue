@@ -1,10 +1,10 @@
 <template>
     <div class="remove-all-margin-padding chart-container d-flex">
-      <div class="chart-slot" v-for="(chart, index) in charts" :key="index">
+      <div class="chart-slot" v-for="(chart) in charts" :key="chart.id">
             <span class="change-icon">
                 <ion-icon name="pencil" class="bi" @click="editChart(chart)" />
             </span>
-            <span>
+            <span class="trash-icon">
                 <ion-icon name="trash-outline" class="bi" @click="deleteChart(chart)" />
             </span>
           <Chart :chart-details="chart" />
@@ -54,15 +54,23 @@ function deleteChart(chart) {
   position: relative;
   flex-basis: calc(100% / 3);
   background-color: white;
+  border-radius: 10px;
   padding: 10px;
   /* border: 1px solid gray;
   border-top: 0px; */
   max-height: 400px;
   max-width: 400px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .chart-slot:hover {
   background-color: whitesmoke;
+}
+
+.chart-slot > span {
+  opacity: 0;
+  transition: opacity 0.5s;
 }
 
 .change-icon {
@@ -70,13 +78,17 @@ function deleteChart(chart) {
   top: 0;
   right: 0;
   padding: 5px;
-  opacity: 0;
-  transition: opacity 0.5s;
 } 
 
 .chart-slot:hover .change-icon {
   opacity: 1;
 }
+
+.chart-slot:hover .trash-icon {
+  opacity: 1;
+}
+
+
 
 .bi {   
   cursor: pointer;

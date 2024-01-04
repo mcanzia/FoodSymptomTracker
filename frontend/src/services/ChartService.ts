@@ -10,48 +10,87 @@ export class ChartService {
     }
 
     async getAllCharts(userAuth : any) {
-        const allCharts = JSON.parse(await this.chartController.getAllCharts(userAuth));
-        return allCharts;
+        try {
+            const response = await this.chartController.getAllCharts(userAuth);
+            const allCharts = response ? JSON.parse(response) : [];
+            return allCharts;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async getChartById(userAuth : any, chartId : string) {
-        const chart = await this.chartController.getChartById(userAuth, chartId);
-        console.log(chart);
-        return chart;
+        try {
+            const chart = await this.chartController.getChartById(userAuth, chartId);
+            return chart;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async addCharts(userAuth : any, charts : Array<Chart>) {
-        const chart = await this.chartController.addCharts(userAuth, charts);
-        return chart;
+        try {
+            const chart = await this.chartController.addCharts(userAuth, charts);
+            return chart;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async updateChart(userAuth : any, chart : Chart) {
-        await this.chartController.updateChart(userAuth, chart);
-        return;
+        try {
+            await this.chartController.updateChart(userAuth, chart);
+        } catch (error) {
+            throw error;
+        }
     }
 
     async deleteCharts(userAuth : any, charts : Array<Chart>) {
-        const chart = await this.chartController.deleteCharts(userAuth, charts);
-        return chart;
+        try {
+            const chart = await this.chartController.deleteCharts(userAuth, charts);
+            return chart;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async createAverageChart(userAuth : any, chart : Chart) {
-        const createdChart = JSON.parse(await this.chartController.createAverageChart(userAuth, chart));
-        return createdChart;
+        try {
+            const response = await this.chartController.createAverageChart(userAuth, chart);
+            const createdChart = response ? JSON.parse(response) : null;
+            return createdChart;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async createFoodValueChart(userAuth : any, chart : Chart) {
-        const createdChart = JSON.parse(await this.chartController.createFoodValueChart(userAuth, chart));
-        return createdChart;
+        try {
+            const response = await this.chartController.createFoodValueChart(userAuth, chart);
+            const createdChart = response ? JSON.parse(response) : null;
+            return createdChart;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async createSingleValueComponentWeightByFoodChart(userAuth : any, chart : Chart) {
-        const createdChart = JSON.parse(await this.chartController.createSingleValueComponentWeightByFoodChart(userAuth, chart));
-        return createdChart;
+        try {
+            const response = await this.chartController.createSingleValueComponentWeightByFoodChart(userAuth, chart);
+            const createdChart = response ? JSON.parse(response) : null;
+            return createdChart;
+        } catch (error) {
+            throw error;
+        }
     }
 
     async createMultiValueComponentWeightByFoodChart(userAuth : any, chart : Chart) {
-        const createdChart = JSON.parse(await this.chartController.createMultiValueComponentWeightByFoodChart(userAuth, chart));
-        return createdChart;
+        try {
+            const response = await this.chartController.createMultiValueComponentWeightByFoodChart(userAuth, chart);
+            const createdChart = response ? JSON.parse(response) : null;
+            return createdChart;
+        } catch (error) {
+            throw error;
+        }
     }
 }

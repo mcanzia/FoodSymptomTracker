@@ -16,7 +16,7 @@ class FoodDaoImpl {
             return foodItems;
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not retrieve food items from database");
+            throw new CustomError_1.DatabaseError("Could not retrieve food items from database: " + error);
         }
     }
     async getFoodById(authId, foodId) {
@@ -27,7 +27,7 @@ class FoodDaoImpl {
             return foodItem;
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not retrieve food item from database");
+            throw new CustomError_1.DatabaseError("Could not retrieve food item from database: " + error);
         }
     }
     async addFoods(authId, foodItems) {
@@ -46,7 +46,7 @@ class FoodDaoImpl {
             return;
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not add food item to database");
+            throw new CustomError_1.DatabaseError("Could not add food item to database: " + error);
         }
     }
     async deleteFoods(authId, foodIds) {
@@ -59,7 +59,7 @@ class FoodDaoImpl {
             await batch.commit();
         }
         catch (error) {
-            throw new CustomError_1.DatabaseError("Could not delete foods from database");
+            throw new CustomError_1.DatabaseError("Could not delete foods from database: " + error);
         }
     }
 }

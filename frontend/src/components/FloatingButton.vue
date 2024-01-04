@@ -1,10 +1,10 @@
 <template>
     <div>
-        <button :class="editMode ? 'floating-button floating-button-save' : 'floating-button floating-button-edit' " @click="saveOrEdit()" @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
+        <button :class="editMode ? 'floating-button floating-button-save' : 'floating-button floating-button-edit' " @click="saveOrEdit()" @mouseover="showTooltip = true" @mouseleave="showTooltip = false" aria-label="Toggle Edit Mode">
             <ion-icon :name="editMode ? 'pizza' : 'pencil'"></ion-icon>
             <span v-if="showTooltip" class="tooltip" v-text="(editMode ? 'Save ' : 'Edit ') + saveType"></span>
         </button>
-        <button v-if="editMode" class="floating-button floating-button-cancel" @click="closeEditMode()" @mouseover="showCancelTooltip = true" @mouseleave="showCancelTooltip = false">
+        <button v-if="editMode" class="floating-button floating-button-cancel" @click="closeEditMode()" @mouseover="showCancelTooltip = true" @mouseleave="showCancelTooltip = false" aria-label="Close Edit Mode">
             <ion-icon name="close" class="close-icon"></ion-icon>
             <span v-if="showCancelTooltip" class="tooltip">Close</span>
         </button>
@@ -13,7 +13,7 @@
 
 <script setup>
   const props = defineProps({
-      saveType: Boolean,
+      saveType: String,
       editMode: Boolean
   })
 

@@ -30,10 +30,10 @@ const transports = [
         format: winston_1.default.format.colorize({ all: true }),
     }),
     new winston_1.default.transports.File({
-        filename: 'logs/error.log',
+        filename: 'logs/server/error.log',
         level: 'error',
     }),
-    new winston_1.default.transports.File({ filename: 'logs/all.log' }),
+    new winston_1.default.transports.File({ filename: 'logs/server/all.log' }),
 ];
 const Logger = winston_1.default.createLogger({
     level: level(),
