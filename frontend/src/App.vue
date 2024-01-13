@@ -30,6 +30,8 @@ userStore.initalizeAuthListener();
 body {
   background-color:#143542;
   margin: 0;
+  display: grid;
+  padding: 0px 20px 20px 20px;
 }
 
 .center {
@@ -41,13 +43,15 @@ body {
 
 .display-box {
   background-color: #D9D9D9;
-  padding-left: 20px;
-  padding-right: 20px;
-  margin: 0 auto;
   border-radius: 10px;
-  width: 100%;
-  max-width: 95%;
-  box-sizing: border-box;
+  padding-left: 30px;
+  padding-right: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 90vw;
+  max-width: 90vw;
+  height: 80vh;
+  max-height: 80vh;
 }
 
 </style>

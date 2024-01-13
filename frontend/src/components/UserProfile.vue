@@ -19,7 +19,7 @@ const props = defineProps({
 })
 
 function logout() {
-  this.userStore.logoutUser();
+  userStore.logoutUser();
 }
 
 </script>

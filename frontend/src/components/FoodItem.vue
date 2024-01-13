@@ -38,6 +38,10 @@ function removeFoodItem(item) {
   background-color: #E8DED9;
 }
 
+.food-item:hover {
+  background-color: #e9ecef;
+}
+
 .content-wrapper {
   display: flex;
   align-items: center;

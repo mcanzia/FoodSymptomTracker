@@ -8,36 +8,34 @@
             id="food-item-search"
             placeholder="Type to search..."
             v-model="foodItem"
+            @keyup.enter="addFoodItem()"
             class="search-input"
+            ref="foodItemInput"
           />
-          <datalist id="existing-food-items">
-            <option
-              v-for="existingFoodItem in existingFoodItems"
-              :key="existingFoodItem"
-              :value="existingFoodItem"
-            ></option>
-          </datalist>
           <button @click="addFoodItem()" class="search-button">Add</button>
         </div>
-        <FoodItemList :foodItems="dateLogStore.selectedDateLog.foodItems" :editMode="editMode" />
+        <div class="list-wrapper">
+          <FoodItemList :foodItems="dateLogStore.selectedDateLog.foodItems" :editMode="editMode" />
+        </div>
       </div>
-      <div class="flex-column component-container">
+      <div class="flex-column">
         <h2>Components: </h2>
-        <ComponentDisplay
-          v-for="component in dateLogStore.selectedDateLog.components"
-          :key="component.id"
-          :component="component"
-          :disabled="!editMode"
-          :layout="false"
-        />
+        <div class="list-wrapper">
+          <ComponentDisplay
+            v-for="component in dateLogStore.selectedDateLog.components"
+            :key="component.id"
+            :component="component"
+            :disabled="!editMode"
+            :layout="false"
+          />
+        </div>
       </div>
     </div>
   </template>
 
 <script setup>
 import { useDateLogStore } from '../stores/dateLogStore';
-import { useComponentStore } from '../stores/componentStore';
-import { useFoodStore } from '../stores/foodStore';
+import { ref } from 'vue';
 import ComponentDisplay from './ComponentDisplay.vue';
 import FoodItemList from './FoodItemList.vue';
 
@@ -46,28 +44,35 @@ const props = defineProps({
 })
 
 const dateLogStore = useDateLogStore();
-const componentStore = useComponentStore();
-const foodStore = useFoodStore();
 
-let foodItem = "";
-let existingFoodItems = ['Apple', 'Banana', 'Grape', 'Kiwi', 'Orange'];
+const foodItem = ref("");
+const foodItemInput = ref(null);
 
 function addFoodItem() {
-  if (foodItem == "") {
+  if (foodItem.value === "") {
       return;
   }
 
-  if (dateLogStore.containsFoodDuplicate(foodItem)) {
-      return console.log("This food is already in the list");
+  if (dateLogStore.containsFoodDuplicate(foodItem.value)) {
+      setWarningMessage(foodItemInput.value, "This food is already in the list");
+      return;
   }
   
   const newFoodItem = {
       id: null,
-      name: this.foodItem
+      name: foodItem.value
   }
 
   dateLogStore.selectedDateLog.foodItems.push(newFoodItem);
-  foodItem = "";
+  foodItem.value = "";
+}
+
+function setWarningMessage(refTarget, message) {
+  refTarget.setCustomValidity(message);
+  refTarget.reportValidity();
+  setTimeout(() => {
+    refTarget.setCustomValidity("");
+  },2000);
 }
 
 </script>
@@ -77,16 +82,22 @@ function addFoodItem() {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
+  height: 100%;
 }
 
 .flex-column {
   flex-basis: calc(50% - 2rem);
-  overflow-y: auto;
-  max-height: calc(75vh - 10px);
+  height: 100%;
 }
 
-.component-container > *:not(:last-child) {
+.list-wrapper > * {
   margin-bottom: 20px;
+}
+
+.list-wrapper {
+  overflow-y: scroll;
+  height: 100%;
+  max-height: 85%;
 }
 
 h2 {
@@ -112,7 +123,7 @@ h2 {
 
 .search-input:focus {
   outline: none;
-  border-color: #4AAE9B;
+  border-color: #846F91;
   box-shadow: 0 0 3px rgba(0, 184, 255, 0.3);
 }
 
@@ -120,7 +131,7 @@ h2 {
   padding: 8px 16px;
   font-size: 16px;
   color: #fff;
-  background-color: #4AAE9B;
+  background-color: #846F91;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -128,7 +139,8 @@ h2 {
 }
 
 .search-button:hover {
-  background-color: #4AAE9B;
+  background-color: #423748;
+  border: #423748;
 }
 
 .search-button:disabled {

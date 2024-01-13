@@ -1,12 +1,16 @@
 import { FoodController } from '../controllers/FoodController';
+import { useUserStore } from '../stores/userStore';
 export class FoodService {
     foodController;
+    userStore;
     constructor() {
         this.foodController = new FoodController();
+        this.userStore = useUserStore();
     }
-    async getAllFoods(userAuth) {
+    async getAllFoods() {
         try {
-            const response = await this.foodController.getAllFoods(userAuth);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const response = await this.foodController.getAllFoods(userAccessToken);
             const allFoods = response ? JSON.parse(response) : [];
             return allFoods;
         }
@@ -14,27 +18,30 @@ export class FoodService {
             throw error;
         }
     }
-    async getFoodById(userAuth, foodId) {
+    async getFoodById(foodId) {
         try {
-            const food = await this.foodController.getFoodById(userAuth, foodId);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const food = await this.foodController.getFoodById(userAccessToken, foodId);
             return food;
         }
         catch (error) {
             throw error;
         }
     }
-    async addFoods(userAuth, foodItems) {
+    async addFoods(foodItems) {
         try {
-            const food = await this.foodController.addFoods(userAuth, foodItems);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const food = await this.foodController.addFoods(userAccessToken, foodItems);
             return food;
         }
         catch (error) {
             throw error;
         }
     }
-    async deleteFoods(userAuth, foodItems) {
+    async deleteFoods(foodItems) {
         try {
-            const food = await this.foodController.deleteFoods(userAuth, foodItems);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const food = await this.foodController.deleteFoods(userAccessToken, foodItems);
             return food;
         }
         catch (error) {

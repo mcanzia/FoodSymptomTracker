@@ -23,26 +23,26 @@ export const useDateLogStore = defineStore('dateLogStore', {
         }
     },
     actions: {
-        async initializeStore(userToken, selectedDate, baseComponents) {
+        async initializeStore(selectedDate, baseComponents) {
             this.baseComponents = baseComponents;
-            this.initializeDateLogs(userToken, selectedDate);
+            this.initializeDateLogs(selectedDate);
         },
-        async initializeDateLogs(userToken, selectedDate) {
+        async initializeDateLogs(selectedDate) {
             try {
                 const dateLogService = new DateLogService();
-                this.dateLogs = await dateLogService.getAllDateLogs(userToken);
+                this.dateLogs = await dateLogService.getAllDateLogs();
                 this.setSelectedDateLog(selectedDate);
             }
             catch (error) {
                 ErrorHandler.displayGenericError();
             }
         },
-        async addDateLogs(userToken, dateLogs) {
+        async addDateLogs(dateLogs) {
             try {
                 const dateLogService = new DateLogService();
-                await dateLogService.addDateLogs(userToken, dateLogs);
+                await dateLogService.addDateLogs(dateLogs);
                 if (this.selectedDateLog) {
-                    await this.initializeDateLogs(userToken, this.selectedDateLog.date);
+                    await this.initializeDateLogs(this.selectedDateLog.date);
                 }
                 this.dateLogCopy = null;
             }
@@ -50,11 +50,11 @@ export const useDateLogStore = defineStore('dateLogStore', {
                 ErrorHandler.displayGenericError();
             }
         },
-        async deleteDateLogs(userToken, dateLogsToDelete) {
+        async deleteDateLogs(dateLogsToDelete) {
             try {
                 const dateLogService = new DateLogService();
                 const dateLogIds = dateLogsToDelete.map(dateLogToDelete => dateLogToDelete.id);
-                await dateLogService.deleteDateLogs(userToken, dateLogsToDelete);
+                await dateLogService.deleteDateLogs(dateLogsToDelete);
                 this.dateLogs = await this.dateLogs.filter(dateLog => !dateLogIds.includes(dateLog.id));
             }
             catch (error) {
@@ -78,17 +78,17 @@ export const useDateLogStore = defineStore('dateLogStore', {
             });
             return date;
         },
-        async addDateLogComponent(userToken, componentToAdd) {
+        async addDateLogComponent(componentToAdd) {
             this.dateLogs.map(dateLog => {
                 dateLog.components.push(componentToAdd);
             });
-            await this.addDateLogs(userToken, this.dateLogs);
+            await this.addDateLogs(this.dateLogs);
         },
-        async removeDateLogComponent(userToken, componentToRemove) {
+        async removeDateLogComponent(componentToRemove) {
             this.dateLogs.map(dateLog => {
                 dateLog.components = dateLog.components.filter(component => component.id !== componentToRemove.id);
             });
-            await this.addDateLogs(userToken, this.dateLogs);
+            await this.addDateLogs(this.dateLogs);
         },
         setDayTitle() {
             if (!this.selectedDateLog) {
@@ -110,7 +110,7 @@ export const useDateLogStore = defineStore('dateLogStore', {
             }
         },
         containsFoodDuplicate(foodName) {
-            return this.selectedDateLog?.foodItems.some(food => food.name === foodName);
+            return this.selectedDateLog?.foodItems.some(food => food.name.toLowerCase() === foodName.toLowerCase());
         },
     }
 });

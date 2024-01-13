@@ -1,17 +1,21 @@
 import { ComponentController } from '../controllers/ComponentController';
+import { useUserStore } from '../stores/userStore';
 import { Component } from '../models/Component';
 
 export class ComponentService {
 
     private componentController : ComponentController;
+    private userStore : any;
 
     constructor() {
         this.componentController = new ComponentController();
+        this.userStore = useUserStore();
     }
 
-    async getAllComponents(userAuth : any) {
+    async getAllComponents() {
         try {
-            const response =  await this.componentController.getAllComponents(userAuth);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const response =  await this.componentController.getAllComponents(userAccessToken);
             const allComponents = response ? JSON.parse(response) : [];
             return allComponents;
         } catch (error) {
@@ -19,36 +23,40 @@ export class ComponentService {
         }
     }
 
-    async getComponentById(userAuth : any, componentId : string) {
+    async getComponentById(componentId : string) {
         try {
-            const component = await this.componentController.getComponentById(userAuth, componentId);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const component = await this.componentController.getComponentById(userAccessToken, componentId);
             return component;
         } catch (error) {
             throw error;
         } 
     }
 
-    async addComponents(userAuth : any, components : Array<Component>) {
+    async addComponents(components : Array<Component>) {
         try {
-            const component = await this.componentController.addComponents(userAuth, components);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const component = await this.componentController.addComponents(userAccessToken, components);
             return component;
         } catch (error) {
             throw error;
         }
     }
 
-    async updateComponent(userAuth : any, component : Component) {
+    async updateComponent(component : Component) {
         try {
-            await this.componentController.updateComponent(userAuth, component);
+            const userAccessToken = await this.userStore.getAccessToken();
+            await this.componentController.updateComponent(userAccessToken, component);
             return;
         } catch (error) {
             throw error;
         }
     }
 
-    async deleteComponents(userAuth : any, components : Array<Component>) {
+    async deleteComponents(components : Array<Component>) {
         try {
-            const component = await this.componentController.deleteComponents(userAuth, components);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const component = await this.componentController.deleteComponents(userAccessToken, components);
             return component;
         } catch (error) {
             throw error;

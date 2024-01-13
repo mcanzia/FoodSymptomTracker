@@ -1,6 +1,9 @@
 <template>
     <form class="component-box">
         <div class="content-wrapper">
+            <span class="trash-icon" v-if="layout && !component.selected">
+                <ion-icon name="trash-outline" class="bi" @click="deleteComponent(component)" />
+            </span>
             <h3 :id="'component-name-'+component.id" class="component-name">{{component.name}}</h3>
             <span class="change-icon" v-if="layout">
                 <ion-icon 
@@ -57,16 +60,19 @@ let sliderGradient = computed(() => {
     const percent = (props.component.values / 10) * 100;
     const gradient = props.disabled ? 
         `linear-gradient(90deg, #999999 ${percent}%, #d1d3d1 ${percent}%)` :
-        `linear-gradient(90deg, #4AAE9B ${percent}%, #d1d3d1 ${percent}%)`;
+        `linear-gradient(90deg, #846F91 ${percent}%, #d1d3d1 ${percent}%)`;
 
     return {
         background: gradient,
     };
 });
 
-const emits = defineEmits(['toggleComponentSelection']);
+const emits = defineEmits(['toggleComponentSelection', 'deleteComponent']);
 function toggleComponentSelection(component) {
     emits('toggleComponentSelection', component);
+}
+function deleteComponent(component) {
+    emits('deleteComponent', component);
 }
 
 </script>
@@ -88,12 +94,12 @@ function toggleComponentSelection(component) {
 }
 
 .layout-slider {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 input[type=range] {
     -webkit-appearance: none;
-    background-color: #4AAE9B;
+    background-color: #846F91;
     border-radius: 10px;
     width: 50%;
     height:10px;
@@ -106,7 +112,7 @@ input[type=range]::-webkit-slider-runnable-track {
 
 input[type="range"]::-webkit-slider-thumb {
      -webkit-appearance: none;
-    background-color: #4AAE9B;
+    background-color: #846F91;
     border-radius: 50%;
     width: 15px;
     height: 15px;
@@ -124,7 +130,7 @@ input[type=range]::-moz-range-track {
 }
 
 input[type=range]::-moz-range-thumb {
-    background-color: #4AAE9B;
+    background-color: #846F91;
     border-radius: 50%;
     width: 15px;
     height: 15px;
@@ -140,6 +146,17 @@ h4 {
     font-weight: 500;
     font-family: Lato, sans-serif;
     color: #343a40;
+}
+
+h3 {
+    margin-left: 20px;
+}
+.trash-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 5px;
+    opacity: 0;
 }
 
 </style>

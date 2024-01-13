@@ -1,51 +1,52 @@
 <template>
     <div class="form-container">
         <div class="form-column">
-            <div class="form-column-item date-picker-container">
-                <button id="chart-date-picker" @click="toggleDatePicker()">
-                    <ion-icon name="calendar-outline"></ion-icon>
-                    <span>{{ dateString }}</span>
-                </button>
-                <button id="clear-date-selection" v-if="datePickerActive" @click="clearDateSelection()">
-                    <ion-icon name="close"></ion-icon>
-                </button>
-                <DropDown class="date-dropdown" v-if="datePickerActive" role="dialog" aria-modal="true">
-                    <template v-slot:body>
-                        <air-date-range @date-input="setDateRange"></air-date-range>
-                    </template>
-                </DropDown>
-            </div>
             <div class="form-column-item">
                 <label for="new-chart-title">Chart Title:</label>
-                <input class="add-chart-input" id="new-chart-title" v-model="chartStore.newChartDetails.chartTitle" @blur="updateTempChartTitle">
+                <div class="form-input-container">
+                    <input class="add-chart-input" id="new-chart-title" v-model="chartStore.newChartDetails.chartTitle" @blur="updateTempChartTitle">
+                    <ion-icon name="close" @click="resetChartTitle()"></ion-icon>
+                </div>
             </div>
             <div class="form-column-item">
                 <label for="new-chart-type">Chart Type:</label>
-                <select class="add-chart-dropdown" id="new-chart-type" v-model="chartStore.newChartDetails.chartType" @change="updateTempChartTitle">
-                    <option v-for="option in typeSelectOptions" :key="option" :value="option">
-                        {{ option }}
-                    </option>    
-                </select>
+                <div class="form-input-container">
+                    <select class="add-chart-dropdown" id="new-chart-type" v-model="chartStore.newChartDetails.chartType" @change="updateTempChartTitle">
+                        <option v-for="option in chartStore.chartShapeParams" :key="option" :value="option.name">
+                            {{ option.name }}
+                        </option>    
+                    </select>
+                    <ion-icon name="close" @click="resetChartType()"></ion-icon>
+                </div>
             </div>
             <div class="form-column-item">
                 <label for="new-chart-component">Chart Component:</label>
-                <select class="add-chart-dropdown" id="new-chart-component" v-model="chartStore.newChartDetails.selectedComponent" @change="updateTempChartComponent">
-                    <option v-for="option in componentStore.selectedComponents" :key="option.id" :value="option">
-                        {{ option.name }}
-                    </option> 
-                </select>
+                <div class="form-input-container">
+                    <select class="add-chart-dropdown" id="new-chart-component" v-model="chartStore.newChartDetails.selectedComponent" @change="updateTempChartComponent">
+                        <option v-for="option in componentStore.selectedComponents" :key="option.id" :value="option">
+                            {{ option.name }}
+                        </option> 
+                    </select>
+                    <ion-icon name="close" @click="resetSelectedComponent()"></ion-icon>
+                </div>
             </div>
             <div class="form-column-item">
                 <label for="new-chart-food-select">Target Food:</label>
-                <select class="add-chart-dropdown" id="new-chart-food-select" v-model="chartStore.newChartDetails.selectedFood" @change="updateTempChartComponent">
-                    <option v-for="option in foodStore.foods" :key="option.id" :value="option">
-                        {{ option.name }}
-                    </option>
-                </select>
+                <div class="form-input-container">
+                    <select class="add-chart-dropdown" id="new-chart-food-select" v-model="chartStore.newChartDetails.selectedFood" @change="updateTempChartComponent">
+                        <option v-for="option in foodStore.foods" :key="option.id" :value="option">
+                            {{ option.name }}
+                        </option>
+                    </select>
+                    <ion-icon name="close" @click="resetSelectedFood()"></ion-icon>
+                </div>
+            </div>
+            <div class="form-column-item form-button-container">
+                <button id="closeEditButton" @click="closeChartBuilder()">Close</button>
+                <button id="saveEditButton" @click="saveChart()">Save</button>
             </div>
         </div>
         <ChartComponent :chart-details="chartStore.newChartDetails" />
-        <FloatingButton saveType="Chart" :editMode="chartBuilderActive" @saveOrEdit="saveChart()" @closeEditMode="closeChartBuilder()"/>                        
     </div>
 </template>
 
@@ -54,11 +55,8 @@ import router from "../router/index";
 import { useComponentStore } from '../stores/componentStore';
 import { useFoodStore } from '../stores/foodStore';
 import { useChartStore } from '../stores/chartStore';
-import { useUserStore } from '../stores/userStore';
-import FloatingButton from './FloatingButton.vue';
 import ChartComponent from './Chart.vue';
-import DropDown from "./DropDown.vue";
-import AirDateRange from "./AirDateRange.vue";
+import ChartShape from '../models/ChartShape';
 import { Chart } from '../models/Chart';
 import { ChartOptions } from '../models/ChartOptions';
 import { onBeforeMount, computed, ref } from 'vue';
@@ -66,43 +64,12 @@ import { onBeforeMount, computed, ref } from 'vue';
 const componentStore = useComponentStore();
 const foodStore = useFoodStore();
 const chartStore = useChartStore();
-const userStore = useUserStore();
 
-let userAccessToken = null;
 const chartBuilderActive = ref(true);
-const datePickerActive = ref(false);
-const typeSelectOptions = ['bar', 'line', 'pie', 'doughnut', 'radar'];
 
 onBeforeMount(async() => {
-    console.log(chartStore.newChartDetails);
-    userAccessToken = await userStore.getAccessToken();
-    await componentStore.initializeComponentLists(userAccessToken);
-    await foodStore.initializeFoodList(userAccessToken);
-});
-
-let maxStartDate = computed(() => {
-    return endDate !== "" || endDate !== undefined ? new Date(endDate) : new Date('2970-01-01T00:00:00'); 
-});
-
-let minEndDate = computed(() => {
-    return startDate !== "" || startDate !== undefined ? new Date(startDate) : new Date('1970-01-01T00:00:00');
-});
-
-let dateString = computed(() => {
-    if (chartStore.dateRange.length === 0) {
-        return "All Time";
-    }
-
-    const startDate = new Date(chartStore.dateRange[0]).toLocaleDateString();
-
-    if (chartStore.dateRange.length === 1) {
-        return `${startDate} - `;
-    }
-
-    const endDate = new Date(chartStore.dateRange[1]).toLocaleDateString();
-
-    return `${startDate} - ${endDate}`;
-
+    await componentStore.initializeComponentLists();
+    await foodStore.initializeFoodList();
 });
 
 let chartStoreLastIndex = computed(() => {
@@ -121,18 +88,18 @@ async function updateTempChartComponent() {
     switch (chartStore.newChartDetails.selectedComponent.typeId) {
         case 1: {
             if (chartStore.newChartDetails.selectedFood === null) {
-                await chartStore.createAverageChart(userAccessToken, chartStore.newChartDetails);
+                await chartStore.createAverageChart(chartStore.newChartDetails);
             } else {
-                await chartStore.createFoodValueChart(userAccessToken, chartStore.newChartDetails);
+                await chartStore.createFoodValueChart(chartStore.newChartDetails);
             }
             break;
         }
         case 2: {
-            await chartStore.createSingleValueComponentWeightByFoodChart(userAccessToken, chartStore.newChartDetails);
+            await chartStore.createSingleValueComponentWeightByFoodChart(chartStore.newChartDetails);
             break;
         }
         case 3: {
-            await chartStore.createMultiValueComponentWeightByFoodChart(userAccessToken, chartStore.newChartDetails);
+            await chartStore.createMultiValueComponentWeightByFoodChart(chartStore.newChartDetails);
             break;
         }
         default: {
@@ -148,7 +115,7 @@ async function resetChartForm() {
 }
 
 async function saveChart() {
-    await chartStore.addCharts(userAccessToken);
+    await chartStore.addCharts();
     this.closeChartBuilder();
 }
 
@@ -160,77 +127,89 @@ async function closeChartBuilder() {
 function resetNewChart() {
     const id = "chart_" + (chartStore.charts.length + 1);
     const defaultTitle = "New Chart - " + (chartStore.charts.length + 1);
-    chartStore.newChartDetails = new Chart(id, defaultTitle, "bar", null, new ChartOptions(defaultTitle), null, null, "", "");
+    chartStore.newChartDetails = new Chart(id, defaultTitle, ChartShape.BAR, null, new ChartOptions(defaultTitle), null, null, "", "");
 }
 
-function toggleDatePicker() {
-    if (chartStore.dateRange.length !== 1) {
-        datePickerActive.value = !datePickerActive.value;
-    }
+function resetChartTitle() {
+    chartStore.newChartDetails.chartTitle = '';
+    updateTempChartTitle();
 }
 
-function clearDateSelection() {
-    chartStore.dateRange = [];
-    datePickerActive.value = false;
+function resetChartType() {
+    chartStore.newChartDetails.chartType = ChartShape.BAR;
+    updateTempChartComponent();
 }
 
+function resetSelectedComponent()  {
+    chartStore.newChartDetails.selectedComponent = '';
+    updateTempChartComponent();
+}
 
-function setDateRange(selectedDateRange) {
-    chartStore.dateRange = selectedDateRange;
-    if (selectedDateRange.length === 2) {
-        datePickerActive.value = false;
-    }
+function resetSelectedFood() {
+    chartStore.newChartDetails.selectedFood = '';
+    updateTempChartComponent();
 }
 
 </script>
 
 <style scoped>
 
-.date-picker-container {
-    position: relative;
-    display: flex;
-}
-
-#clear-date-selection {
-    margin-left: 5px;
-    background-color: #846F91;
-    color: white;
-}
-
-#chart-date-picker {
-    display: flex;
-}
-
-#chart-date-picker ion-icon{
-    align-content: baseline;
-    padding-top: 2px;
-}
-
-#chart-date-picker span {
-    margin-left: 5px;
-    padding-bottom: 2px;
-}
-
-.date-dropdown {
-    position: absolute;
-    top: 100%;
-    left: 3%;
-    animation: fade 0.3s linear forwards;
-    z-index: 100;
-  }
-
 .form-container {
   display: flex;
+  height: 100%;
   gap: 20px;
 }
 
-.form-column-item:not(:first-child) {
+.form-container > :not(:last-child) {
+    width: 33%;
+}
+
+.form-container > *:last-child {
+    width: 67%;
+}
+
+.form-column {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.form-column-item:not(:last-child) {
   display: flex;
   flex-direction: column;
 }
 
+.form-input-container{
+    display: inline-flex;
+    align-items: center;
+    width: 100%;
+}
+
+.form-input-container ion-icon {
+    opacity: 0;
+    margin-left: 8px;
+    cursor: pointer;
+}
+.form-input-container:hover ion-icon {
+    opacity: 1;
+    animation: fade-right 0.1s linear forwards;
+}
+
+.form-button-container {
+    display: flex;
+    gap: 10px;
+}
+
+.form-button-container > button {
+    flex: 1;
+}
+
 .form-column-item {
     padding: 10px;
+    width: 100%;
 }
 
 .form-column-item label {
@@ -263,5 +242,28 @@ button {
   border: none;
   border-radius: 10px;
   cursor: pointer;
+}
+
+#closeEditButton {
+    background-color: #D9D9D9;
+    border: #846F91 2px solid;
+    color: black;
+}
+
+#closeEditButton:hover {
+    background-color: #423748;
+    border: #423748 2px solid;
+    color: white;
+}
+
+#saveEditButton {
+    background-color: #846F91;
+    color: white;
+    border: #846F91 2px solid;
+}
+
+#saveEditButton:hover {
+    background-color: #423748;
+    border: #423748 2px solid;
 }
 </style>

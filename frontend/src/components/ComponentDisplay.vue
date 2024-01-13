@@ -6,7 +6,8 @@
                     :component="component" 
                     :disabled="disabled" 
                     :layout="layout" 
-                    @toggleComponentSelection="toggleComponentSelection(component)"/>
+                    @toggleComponentSelection="toggleComponentSelection(component)"
+                    @deleteComponent="deleteComponent(component)"/>
             </template>
         </ComponentWrapper>
         <ComponentWrapper v-if="component.typeId === 2">
@@ -16,7 +17,8 @@
                     :component="component" 
                     :disabled="disabled" 
                     :layout="layout" 
-                    @toggleComponentSelection="toggleComponentSelection(component)"/>
+                    @toggleComponentSelection="toggleComponentSelection(component)"
+                    @deleteComponent="deleteComponent(component)"/>
             </template>
         </ComponentWrapper>
         <ComponentWrapper v-if="component.typeId === 3">
@@ -26,7 +28,8 @@
                     :component="component" 
                     :disabled="disabled" 
                     :layout="layout" 
-                    @toggleComponentSelection="toggleComponentSelection(component)"/>
+                    @toggleComponentSelection="toggleComponentSelection(component)"
+                    @deleteComponent="deleteComponent(component)"/>
             </template>
         </ComponentWrapper>
     </div>
@@ -44,9 +47,12 @@ const props = defineProps({
     layout: Boolean
 });
 
-const emits = defineEmits(['toggleComponentSelection']);
+const emits = defineEmits(['toggleComponentSelection', 'deleteComponent']);
 function toggleComponentSelection(component) {
     emits('toggleComponentSelection', component);
+}
+function deleteComponent(component) {
+    emits('deleteComponent', component);
 }
 
 </script>

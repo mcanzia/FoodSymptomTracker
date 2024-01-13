@@ -9,30 +9,30 @@ export const useFoodStore = defineStore('foodStore', {
         getExistingFood(foodName) {
             return this.foods.find(food => food.name === foodName);
         },
-        async initializeFoodList(userToken) {
+        async initializeFoodList() {
             try {
                 const foodService = new FoodService();
-                this.foods = await foodService.getAllFoods(userToken);
+                this.foods = await foodService.getAllFoods();
             }
             catch (error) {
                 ErrorHandler.displayGenericError();
             }
         },
-        async addFoods(userToken, foods) {
+        async addFoods(foods) {
             try {
                 const foodService = new FoodService();
-                await foodService.addFoods(userToken, foods);
-                await this.initializeFoodList(userToken);
+                await foodService.addFoods(foods);
+                await this.initializeFoodList();
             }
             catch (error) {
                 ErrorHandler.displayGenericError();
             }
         },
-        async deleteFoods(userToken, foodsToDelete) {
+        async deleteFoods(foodsToDelete) {
             try {
                 const foodService = new FoodService();
                 const foodIds = foodsToDelete.map(foodToDelete => foodToDelete.id);
-                await foodService.deleteFoods(userToken, foodsToDelete);
+                await foodService.deleteFoods(foodsToDelete);
                 this.foods = await this.foods.filter(food => !foodIds.includes(food.id));
             }
             catch (error) {

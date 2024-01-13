@@ -1,6 +1,9 @@
 <template>
     <form class="component-box">
         <div class="content-wrapper">
+            <span class="trash-icon" v-if="layout && !component.selected">
+                <ion-icon name="trash-outline" class="bi" @click="deleteComponent(component)" />
+            </span>
             <h3 class="component-name">{{component.name}}</h3>
             <span class="change-icon" v-if="layout">
                 <ion-icon 
@@ -36,9 +39,12 @@ const props = defineProps({
     layout: Boolean
 });
 
-const emits = defineEmits(['toggleComponentSelection']);
+const emits = defineEmits(['toggleComponentSelection', 'deleteComponent']);
 function toggleComponentSelection(component) {
     emits('toggleComponentSelection', component);
+}
+function deleteComponent(component) {
+    emits('deleteComponent', component);
 }
 
 </script>
@@ -87,7 +93,7 @@ input[type='checkbox']:checked:after {
     top: -2px;
     left: -2px;
     position: relative;
-    background-color: #4AAE9B;
+    background-color: #846F91;
     content: '';
     display: inline-block;
     visibility: visible;
@@ -105,5 +111,16 @@ input[type='checkbox']:disabled:checked:after {
     display: inline-block;
     visibility: visible;
     border: 1px solid #d1d3d1;
+}
+
+h3 {
+    margin-left: 20px;
+}
+.trash-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 5px;
+    opacity: 0;
 }
 </style>

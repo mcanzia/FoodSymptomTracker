@@ -2,7 +2,6 @@ import { Component } from '../models/Component';
 import { defineStore } from 'pinia'
 import { ComponentService } from '../services/ComponentService';
 import { ErrorHandler } from '../util/error/ErrorHandler';
-import { ObjectType } from '../models/ObjectType';
 
 interface IComponentState {
   availableComponents : Array<Component>
@@ -17,40 +16,40 @@ export const useComponentStore = defineStore('componentStore', {
         newComponent: new Component('', '', -1, false, [])
       }),
     actions: {
-      async initializeComponentLists(userToken : any) {
+      async initializeComponentLists() {
         try {
           const componentService = new ComponentService();
-          const allComponents : Array<Component> = await componentService.getAllComponents(userToken);
+          const allComponents : Array<Component> = await componentService.getAllComponents();
           this.availableComponents = allComponents.filter(component => !component.selected);
           this.selectedComponents = allComponents.filter(component => component.selected);
         } catch (error : any) {
           ErrorHandler.displayGenericError();
         }
       },
-      async addComponents(userToken : any, components : Array<Component>) {
+      async addComponents(components : Array<Component>) {
         try {
           const componentService = new ComponentService();
-          await componentService.addComponents(userToken, components);
-          await this.initializeComponentLists(userToken);
+          await componentService.addComponents(components);
+          await this.initializeComponentLists();
         } catch (error : any) {
           ErrorHandler.displayGenericError();
         }
       },
-      async deleteComponents(userToken : any, componentsToDelete : Array<Component>) {
+      async deleteComponents(componentsToDelete : Array<Component>) {
         try {
           const componentService = new ComponentService();
           const componentIds = componentsToDelete.map(componentToDelete => componentToDelete.id);
-          await componentService.deleteComponents(userToken, componentsToDelete);
+          await componentService.deleteComponents(componentsToDelete);
           this.availableComponents = await this.availableComponents.filter(component => !componentIds.includes(component.id));
         } catch (error : any) {
           ErrorHandler.displayGenericError();
         }
       },
-      async toggleSelectedField(userToken : any, component : Component, selected : boolean) {
+      async toggleSelectedField(component : Component, selected : boolean) {
         try {
           const componentService = new ComponentService();
           component.selected = selected;
-          await componentService.updateComponent(userToken, component);
+          await componentService.updateComponent(component);
           if (!selected) {
             const selectedIndex : number = this.selectedComponents.findIndex(selectedComponent => selectedComponent === component);
             this.selectedComponents.splice(selectedIndex, 1);

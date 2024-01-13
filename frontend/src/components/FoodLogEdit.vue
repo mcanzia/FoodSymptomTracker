@@ -51,13 +51,9 @@
 
 <script setup>
 import { useDateLogStore } from '../stores/dateLogStore';
-import { useComponentStore } from '../stores/componentStore';
-import { useFoodStore } from '../stores/foodStore';
 import ComponentDisplay from './ComponentDisplay.vue';
 
 const dateLogStore = useDateLogStore();
-const componentStore = useComponentStore();
-const foodStore = useFoodStore();
 
 let foodItem = "";
 let existingFoodItems = ['Apple', 'Banana', 'Grape', 'Kiwi', 'Orange'];

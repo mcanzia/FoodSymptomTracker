@@ -9,10 +9,10 @@ export const useComponentStore = defineStore('componentStore', {
         newComponent: new Component('', '', -1, false, [])
     }),
     actions: {
-        async initializeComponentLists(userToken) {
+        async initializeComponentLists() {
             try {
                 const componentService = new ComponentService();
-                const allComponents = await componentService.getAllComponents(userToken);
+                const allComponents = await componentService.getAllComponents();
                 this.availableComponents = allComponents.filter(component => !component.selected);
                 this.selectedComponents = allComponents.filter(component => component.selected);
             }
@@ -20,32 +20,32 @@ export const useComponentStore = defineStore('componentStore', {
                 ErrorHandler.displayGenericError();
             }
         },
-        async addComponents(userToken, components) {
+        async addComponents(components) {
             try {
                 const componentService = new ComponentService();
-                await componentService.addComponents(userToken, components);
-                await this.initializeComponentLists(userToken);
+                await componentService.addComponents(components);
+                await this.initializeComponentLists();
             }
             catch (error) {
                 ErrorHandler.displayGenericError();
             }
         },
-        async deleteComponents(userToken, componentsToDelete) {
+        async deleteComponents(componentsToDelete) {
             try {
                 const componentService = new ComponentService();
                 const componentIds = componentsToDelete.map(componentToDelete => componentToDelete.id);
-                await componentService.deleteComponents(userToken, componentsToDelete);
+                await componentService.deleteComponents(componentsToDelete);
                 this.availableComponents = await this.availableComponents.filter(component => !componentIds.includes(component.id));
             }
             catch (error) {
                 ErrorHandler.displayGenericError();
             }
         },
-        async toggleSelectedField(userToken, component, selected) {
+        async toggleSelectedField(component, selected) {
             try {
                 const componentService = new ComponentService();
                 component.selected = selected;
-                await componentService.updateComponent(userToken, component);
+                await componentService.updateComponent(component);
                 if (!selected) {
                     const selectedIndex = this.selectedComponents.findIndex(selectedComponent => selectedComponent === component);
                     this.selectedComponents.splice(selectedIndex, 1);

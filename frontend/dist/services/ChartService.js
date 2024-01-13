@@ -1,12 +1,16 @@
 import { ChartController } from '../controllers/ChartController';
+import { useUserStore } from '../stores/userStore';
 export class ChartService {
     chartController;
+    userStore;
     constructor() {
         this.chartController = new ChartController();
+        this.userStore = useUserStore();
     }
-    async getAllCharts(userAuth) {
+    async getAllCharts() {
         try {
-            const response = await this.chartController.getAllCharts(userAuth);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const response = await this.chartController.getAllCharts(userAccessToken);
             const allCharts = response ? JSON.parse(response) : [];
             return allCharts;
         }
@@ -14,44 +18,49 @@ export class ChartService {
             throw error;
         }
     }
-    async getChartById(userAuth, chartId) {
+    async getChartById(chartId) {
         try {
-            const chart = await this.chartController.getChartById(userAuth, chartId);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const chart = await this.chartController.getChartById(userAccessToken, chartId);
             return chart;
         }
         catch (error) {
             throw error;
         }
     }
-    async addCharts(userAuth, charts) {
+    async addCharts(charts) {
         try {
-            const chart = await this.chartController.addCharts(userAuth, charts);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const chart = await this.chartController.addCharts(userAccessToken, charts);
             return chart;
         }
         catch (error) {
             throw error;
         }
     }
-    async updateChart(userAuth, chart) {
+    async updateChart(chart) {
         try {
-            await this.chartController.updateChart(userAuth, chart);
+            const userAccessToken = await this.userStore.getAccessToken();
+            await this.chartController.updateChart(userAccessToken, chart);
         }
         catch (error) {
             throw error;
         }
     }
-    async deleteCharts(userAuth, charts) {
+    async deleteCharts(charts) {
         try {
-            const chart = await this.chartController.deleteCharts(userAuth, charts);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const chart = await this.chartController.deleteCharts(userAccessToken, charts);
             return chart;
         }
         catch (error) {
             throw error;
         }
     }
-    async createAverageChart(userAuth, chart) {
+    async createAverageChart(chart) {
         try {
-            const response = await this.chartController.createAverageChart(userAuth, chart);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const response = await this.chartController.createAverageChart(userAccessToken, chart);
             const createdChart = response ? JSON.parse(response) : null;
             return createdChart;
         }
@@ -59,9 +68,10 @@ export class ChartService {
             throw error;
         }
     }
-    async createFoodValueChart(userAuth, chart) {
+    async createFoodValueChart(chart) {
         try {
-            const response = await this.chartController.createFoodValueChart(userAuth, chart);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const response = await this.chartController.createFoodValueChart(userAccessToken, chart);
             const createdChart = response ? JSON.parse(response) : null;
             return createdChart;
         }
@@ -69,9 +79,10 @@ export class ChartService {
             throw error;
         }
     }
-    async createSingleValueComponentWeightByFoodChart(userAuth, chart) {
+    async createSingleValueComponentWeightByFoodChart(chart) {
         try {
-            const response = await this.chartController.createSingleValueComponentWeightByFoodChart(userAuth, chart);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const response = await this.chartController.createSingleValueComponentWeightByFoodChart(userAccessToken, chart);
             const createdChart = response ? JSON.parse(response) : null;
             return createdChart;
         }
@@ -79,9 +90,10 @@ export class ChartService {
             throw error;
         }
     }
-    async createMultiValueComponentWeightByFoodChart(userAuth, chart) {
+    async createMultiValueComponentWeightByFoodChart(chart) {
         try {
-            const response = await this.chartController.createMultiValueComponentWeightByFoodChart(userAuth, chart);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const response = await this.chartController.createMultiValueComponentWeightByFoodChart(userAccessToken, chart);
             const createdChart = response ? JSON.parse(response) : null;
             return createdChart;
         }

@@ -2,44 +2,47 @@ import { defineStore } from 'pinia';
 import { ChartService } from '../services/ChartService';
 import { Chart } from '../models/Chart';
 import { ChartOptions } from '../models/ChartOptions';
+import { ChartShapeParams } from '../models/ChartShapeParams';
+import ChartShape from '../models/ChartShape';
 export const useChartStore = defineStore('chartStore', {
     state: () => ({
         charts: [],
         dateRange: [],
-        newChartDetails: new Chart(null, "", "", null, null, null, null, "", "")
+        newChartDetails: new Chart(null, "", "", null, null, null, null, "", ""),
+        chartShapeParams: []
     }),
     actions: {
-        async createAverageChart(userToken, chart) {
+        async createAverageChart(chart) {
             try {
                 const chartService = new ChartService();
-                this.newChartDetails = await chartService.createAverageChart(userToken, chart);
+                this.newChartDetails = await chartService.createAverageChart(chart);
             }
             catch (error) {
                 console.log("Show error");
             }
         },
-        async createFoodValueChart(userToken, chart) {
+        async createFoodValueChart(chart) {
             try {
                 const chartService = new ChartService();
-                this.newChartDetails = await chartService.createFoodValueChart(userToken, chart);
+                this.newChartDetails = await chartService.createFoodValueChart(chart);
             }
             catch (error) {
                 console.log("Show error");
             }
         },
-        async createSingleValueComponentWeightByFoodChart(userToken, chart) {
+        async createSingleValueComponentWeightByFoodChart(chart) {
             try {
                 const chartService = new ChartService();
-                this.newChartDetails = await chartService.createSingleValueComponentWeightByFoodChart(userToken, chart);
+                this.newChartDetails = await chartService.createSingleValueComponentWeightByFoodChart(chart);
             }
             catch (error) {
                 console.log("Show error");
             }
         },
-        async createMultiValueComponentWeightByFoodChart(userToken, chart) {
+        async createMultiValueComponentWeightByFoodChart(chart) {
             try {
                 const chartService = new ChartService();
-                this.newChartDetails = await chartService.createMultiValueComponentWeightByFoodChart(userToken, chart);
+                this.newChartDetails = await chartService.createMultiValueComponentWeightByFoodChart(chart);
             }
             catch (error) {
                 console.log("Show error");
@@ -50,11 +53,11 @@ export const useChartStore = defineStore('chartStore', {
             const chartOptions = new ChartOptions(chartTitle);
             this.newChartDetails = new Chart(this.newChartDetails.id, chartTitle, this.newChartDetails.chartType, null, chartOptions, null, null, "", "");
         },
-        async addCharts(userToken) {
+        async addCharts() {
             try {
                 const chartService = new ChartService();
                 const newCharts = [this.newChartDetails];
-                await chartService.addCharts(userToken, newCharts);
+                await chartService.addCharts(newCharts);
                 if (this.newChartDetails.id?.startsWith('chart')) {
                     await this.charts.push(this.newChartDetails);
                 }
@@ -68,26 +71,34 @@ export const useChartStore = defineStore('chartStore', {
                 console.log("Show error");
             }
         },
-        async deleteCharts(userToken, chartsToDelete) {
+        async deleteCharts(chartsToDelete) {
             try {
                 const chartService = new ChartService();
                 const chartIds = chartsToDelete.map(chartToDelete => chartToDelete.id);
-                await chartService.deleteCharts(userToken, chartsToDelete);
+                await chartService.deleteCharts(chartsToDelete);
                 this.charts = await this.charts.filter(chart => !chartIds.includes(chart.id));
             }
             catch (error) {
                 console.log("Show error");
             }
         },
-        async initializeCharts(userToken) {
+        async initializeCharts() {
             try {
                 const chartService = new ChartService();
                 this.charts = [];
-                this.charts.push(...await chartService.getAllCharts(userToken));
+                this.charts.push(...await chartService.getAllCharts());
             }
             catch (error) {
                 console.log("Show error");
             }
+        },
+        initializeChartShapeParams() {
+            this.chartShapeParams = [];
+            this.chartShapeParams.push(new ChartShapeParams(ChartShape.BAR, true, '250px', '400px'));
+            this.chartShapeParams.push(new ChartShapeParams(ChartShape.LINE, true, '250px', '400px'));
+            this.chartShapeParams.push(new ChartShapeParams(ChartShape.PIE, true, '350px', '300px'));
+            this.chartShapeParams.push(new ChartShapeParams(ChartShape.DOUGHNUT, true, '350px', '300px'));
+            this.chartShapeParams.push(new ChartShapeParams(ChartShape.RADAR, true, '350px', '300px'));
         }
     },
 });

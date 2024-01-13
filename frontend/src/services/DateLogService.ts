@@ -1,17 +1,21 @@
 import { DateLogController } from '../controllers/DateLogController';
 import { DateLog } from '../models/DateLog';
+import { useUserStore } from '../stores/userStore';
 
 export class DateLogService {
 
     private dateLogController : DateLogController;
+    private userStore : any;
 
     constructor() {
         this.dateLogController = new DateLogController();
+        this.userStore = useUserStore();
     }
 
-    async getAllDateLogs(userAuth : any) {
+    async getAllDateLogs() {
         try {
-            const response = await this.dateLogController.getAllDateLogs(userAuth);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const response = await this.dateLogController.getAllDateLogs(userAccessToken);
             const allDateLogs = response ? JSON.parse(response) : [];
             return allDateLogs;
         } catch(error) {
@@ -20,9 +24,10 @@ export class DateLogService {
         
     }
 
-    async getDateLogById(userAuth : any, dateLogId : string) {
+    async getDateLogById(dateLogId : string) {
         try {
-            const dateLog = await this.dateLogController.getDateLogById(userAuth, dateLogId);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const dateLog = await this.dateLogController.getDateLogById(userAccessToken, dateLogId);
             return dateLog;
         } catch (error) {
             throw error;
@@ -30,26 +35,29 @@ export class DateLogService {
         
     }
 
-    async addDateLogs(userAuth : any, dateLogs : Array<DateLog>) {
+    async addDateLogs(dateLogs : Array<DateLog>) {
         try {
-            const dateLog = await this.dateLogController.addDateLogs(userAuth, dateLogs);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const dateLog = await this.dateLogController.addDateLogs(userAccessToken, dateLogs);
             return dateLog;
         } catch (error) {
             throw error;
         }
     }
 
-    async updateDateLog(userAuth : any, dateLog : DateLog) {
+    async updateDateLog(dateLog : DateLog) {
         try {
-            await this.dateLogController.updateDateLog(userAuth, dateLog);
+            const userAccessToken = await this.userStore.getAccessToken();
+            await this.dateLogController.updateDateLog(userAccessToken, dateLog);
         } catch (error) {
             throw error;
         }
     }
 
-    async deleteDateLogs(userAuth : any, dateLogs : Array<DateLog>) {
+    async deleteDateLogs(dateLogs : Array<DateLog>) {
         try {
-            const dateLog = await this.dateLogController.deleteDateLogs(userAuth, dateLogs);
+            const userAccessToken = await this.userStore.getAccessToken();
+            const dateLog = await this.dateLogController.deleteDateLogs(userAccessToken, dateLogs);
             return dateLog;
         } catch (error) {
             throw error;

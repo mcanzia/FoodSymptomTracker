@@ -1,57 +1,54 @@
 <template>
     <div class="container">
         <div class="date-header-container">
-            <div id="homeHeader" @click.self="closeCalendar()" class="flex-item" role="heading" aria-labelledby="calendarLabel" aria-level="1">
-                <a href="#" v-if="!logEditMode" @click="goToPreviousDay()" aria-label="Previous Day">
-                    <ion-icon name="caret-back" aria-hidden="true"></ion-icon>
-                </a>
-                <a href="#" @click="calendarActive = true">
-                    <h1 id="calendarLabel" aria-live="polite" :aria-label="dateLogStore.dayTitle">{{dateLogStore.dayTitle}}</h1>
-                </a>
-                <a href="#" v-if="!logEditMode" @click="goToNextDay()" aria-label="Next Day">
-                    <ion-icon name="caret-forward" aria-hidden="true"></ion-icon>
-                </a>
-                <br />
+            <div id="homeHeader" @click.self="closeCalendar()" role="heading" aria-labelledby="calendarLabel" aria-level="1">
+                <div>
+                    <a href="#" v-if="!logEditMode" @click="goToPreviousDay()" aria-label="Previous Day">
+                        <ion-icon name="caret-back" aria-hidden="true"></ion-icon>
+                    </a>
+                    <a href="#" @click="calendarActive = true">
+                        <h1 id="calendarLabel" aria-live="polite" :aria-label="dateLogStore.dayTitle">{{dateLogStore.dayTitle}}</h1>
+                    </a>
+                    <a href="#" v-if="!logEditMode" @click="goToNextDay()" aria-label="Next Day">
+                        <ion-icon name="caret-forward" aria-hidden="true"></ion-icon>
+                    </a>
+                </div>
+                <div>
+                    <button id="closeEditButton" v-if="logEditMode" @click="closeEditMode()">Close</button>
+                    <button id="saveEditButton" @click="saveOrEdit()">{{ logEditMode ? 'Save' : 'Edit' }}</button>
+                </div>
             </div>
-                <DropDown class="date-dropdown" v-if="calendarActive" role="dialog" aria-modal="true">
+                <DropDown class="date-dropdown" v-if="calendarActive && !logEditMode" role="dialog" aria-modal="true">
                     <template v-slot:body>
                         <air-calendar @date-input="setDateField"></air-calendar>
                     </template>
                 </DropDown>
         </div>
-        <div id="homeBody" @click="closeCalendar()" class="flex-item" role="main">
-            <FoodLogBase :editMode="logEditMode" />
-        </div>
-        <FloatingButton saveType="Date Log" :editMode="logEditMode" @saveOrEdit="saveOrEdit()" @closeEditMode="closeEditMode()" aria-label="Edit Date Log"/>
+        <FoodLogBase id="homeBody" :editMode="logEditMode" @click="closeCalendar()" role="main" />
     </div>
 </template>
 
 <script setup>
 import FoodLogBase from './FoodLogBase.vue';
 import AirCalendar from './AirCalendar.vue';
-import FloatingButton from './FloatingButton.vue';
 import { storeToRefs } from 'pinia';
 import DropDown from './DropDown.vue';
-import { useUserStore } from '../stores/userStore';
 import { useDateLogStore } from '../stores/dateLogStore';
 import { useComponentStore } from '../stores/componentStore';
 import { useFoodStore } from '../stores/foodStore';
 import { onBeforeMount, computed, ref, watch } from 'vue';
 
-const userStore = useUserStore();
 const dateLogStore = useDateLogStore();
 const componentStore = useComponentStore();
 const foodStore = useFoodStore();
 
 onBeforeMount(async() => {
-    userAccessToken = await userStore.getAccessToken();
-    await componentStore.initializeComponentLists(userAccessToken);
-    await dateLogStore.initializeStore(userAccessToken, currentDateString.value, componentStore.selectedComponents);
-    await foodStore.initializeFoodList(userAccessToken);
+    await componentStore.initializeComponentLists();
+    await dateLogStore.initializeStore(currentDateString.value, componentStore.selectedComponents);
+    await foodStore.initializeFoodList();
     //testEndpoints()
 });
 
-let userAccessToken = null;
 let selectedDay = 0;
 let logEditMode = ref(false);
 let dayTitle = "";
@@ -69,11 +66,11 @@ let currentDate = computed(() => {
 
 async function saveOrEdit() {
     if (logEditMode.value) {
-        await foodStore.addFoods(userAccessToken, dateLogStore.selectedDateLog.foodItems);
+        await foodStore.addFoods(dateLogStore.selectedDateLog.foodItems);
         dateLogStore.selectedDateLog.foodItems = dateLogStore.selectedDateLog.foodItems.map(food => {
             return foodStore.getExistingFood(food.name);
         });
-        dateLogStore.addDateLogs(userAccessToken, new Array(dateLogStore.selectedDateLog));
+        dateLogStore.addDateLogs(new Array(dateLogStore.selectedDateLog));
     }
     if (!logEditMode.value) {
         dateLogStore.dateLogCopy = JSON.parse(JSON.stringify(dateLogStore.selectedDateLog));
@@ -164,22 +161,25 @@ this.componentService.updateComponent(this.auth.currentUser, componentUpdate);*/
 
 <style scoped>
 
+.container {
+    height: 100%;
+}
+
 .date-header-container {
     position: relative;
 }
 
 .date-dropdown {
     position: absolute;
-    top: 75%;
-    left: 39%;
+    top: 100%;
+    left: 4%;
     animation: fade 0.3s linear forwards;
     z-index: 100;
   }
 
-.flex-item {
+#homeBody {
   text-align: center;
-  flex: 0 0 100%;
-  padding: 5px 100px 5px 100px;
+  max-height: 80%;
 }
 
 h1 {
@@ -202,14 +202,13 @@ a:link, a:visited, a:hover, a:active {
 
 #homeHeader {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding-top: 20px;
 }
 
 #homeHeader a {
   color: #333;
-  display: inline;
   text-decoration: none;
   margin-right: 10px;
   font-size: 20px;
@@ -223,46 +222,37 @@ a:link, a:visited, a:hover, a:active {
   font-family: Lato, sans-serif;
 }
 
-.floating-button {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  color: #ffffff;
-  font-size: 24px;
-  line-height: 60px;
-  text-align: center;
-  border: none;
+#homeHeader button {
+  padding: 8px 30px;
+  font-size: 16px;
+  font-family: Lato, sans-serif;
+  border-radius: 10px;
+  margin-left: 10px;
+  height: 20%;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
-  transition: background-color 0.3s ease;
 }
 
-.floating-button-edit {
-  background-color: #2c3e50;
+#closeEditButton {
+    background-color: #D9D9D9;
+    border: #846F91 2px solid;
+    color: black;
 }
 
-.floating-button-edit:hover {
-  background-color: #34495e;
+#closeEditButton:hover {
+    background-color: #423748;
+    border: #423748 2px solid;
+    color: white;
 }
 
-.floating-button-save {
-  background-color: #4AAE9B;
+#saveEditButton {
+    background-color: #846F91;
+    color: white;
+    border: #846F91 2px solid;
 }
 
-.floating-button-save:hover {
-  background-color: #42A38D;
-}
-
-.floating-button-cancel {
-  background-color: #990000;
-  right: 90px;
-}
-
-.floating-button-cancel:hover {
-  background-color: #990000;
+#saveEditButton:hover {
+    background-color: #423748;
+    border: #423748 2px solid;
 }
 
 .close-icon {
