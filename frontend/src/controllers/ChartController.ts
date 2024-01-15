@@ -1,6 +1,7 @@
 import { ErrorHandler } from "../util/error/ErrorHandler";
 import { Chart } from "../models/Chart";
 import { ObjectType } from "../models/ObjectType";
+import ChartType from "../models/ChartType";
 import { RequestUtil } from "./RequestUtil";
 export class ChartController {
 

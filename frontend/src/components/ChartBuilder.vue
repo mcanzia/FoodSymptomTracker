@@ -9,9 +9,9 @@
                 </div>
             </div>
             <div class="form-column-item">
-                <label for="new-chart-type">Chart Type:</label>
+                <label for="new-chart-type">Chart Shape:</label>
                 <div class="form-input-container">
-                    <select class="add-chart-dropdown" id="new-chart-type" v-model="chartStore.newChartDetails.chartType" @change="updateTempChartTitle">
+                    <select class="add-chart-dropdown" id="new-chart-type" v-model="chartStore.newChartDetails.chartShape" @change="updateTempChartTitle">
                         <option v-for="option in chartStore.chartShapeParams" :key="option" :value="option.name">
                             {{ option.name }}
                         </option>    
@@ -57,6 +57,7 @@ import { useFoodStore } from '../stores/foodStore';
 import { useChartStore } from '../stores/chartStore';
 import ChartComponent from './Chart.vue';
 import ChartShape from '../models/ChartShape';
+import ChartType from '../models/ChartType';
 import { Chart } from '../models/Chart';
 import { ChartOptions } from '../models/ChartOptions';
 import { onBeforeMount, computed, ref } from 'vue';
@@ -88,18 +89,22 @@ async function updateTempChartComponent() {
     switch (chartStore.newChartDetails.selectedComponent.typeId) {
         case 1: {
             if (chartStore.newChartDetails.selectedFood === null) {
-                await chartStore.createAverageChart(chartStore.newChartDetails);
+                chartStore.newChartDetails.chartType = ChartType.AVERAGE;
+                chartStore.newChartDetails = await chartStore.createAverageChart(chartStore.newChartDetails);
             } else {
-                await chartStore.createFoodValueChart(chartStore.newChartDetails);
+                chartStore.newChartDetails.chartType = ChartType.FOODVALUE;
+                chartStore.newChartDetails = await chartStore.createFoodValueChart(chartStore.newChartDetails);
             }
             break;
         }
         case 2: {
-            await chartStore.createSingleValueComponentWeightByFoodChart(chartStore.newChartDetails);
+            chartStore.newChartDetails.chartType = ChartType.SVCWEIGHTBYFOOD;
+            chartStore.newChartDetails = await chartStore.createSingleValueComponentWeightByFoodChart(chartStore.newChartDetails);
             break;
         }
         case 3: {
-            await chartStore.createMultiValueComponentWeightByFoodChart(chartStore.newChartDetails);
+            chartStore.newChartDetails.chartType = ChartType.MVCWEIGHTBYFOOD;
+            chartStore.newChartDetails = await chartStore.createMultiValueComponentWeightByFoodChart(chartStore.newChartDetails);
             break;
         }
         default: {
@@ -127,7 +132,7 @@ async function closeChartBuilder() {
 function resetNewChart() {
     const id = "chart_" + (chartStore.charts.length + 1);
     const defaultTitle = "New Chart - " + (chartStore.charts.length + 1);
-    chartStore.newChartDetails = new Chart(id, defaultTitle, ChartShape.BAR, null, new ChartOptions(defaultTitle), null, null, "", "");
+    chartStore.newChartDetails = new Chart(id, defaultTitle, null, ChartShape.BAR, null, new ChartOptions(defaultTitle), null, null, "", "");
 }
 
 function resetChartTitle() {
@@ -136,7 +141,7 @@ function resetChartTitle() {
 }
 
 function resetChartType() {
-    chartStore.newChartDetails.chartType = ChartShape.BAR;
+    chartStore.newChartDetails.chartShape = ChartShape.BAR;
     updateTempChartComponent();
 }
 

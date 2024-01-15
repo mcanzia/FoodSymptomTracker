@@ -5,16 +5,18 @@ class Chart {
     id;
     chartTitle;
     chartType;
+    chartShape;
     chartData;
     chartOptions;
     selectedComponent;
     selectedFood;
     startDate;
     endDate;
-    constructor(id, chartTitle, chartType, chartData, chartOptions, selectedComponent, selectedFood, startDate, endDate) {
+    constructor(id, chartTitle, chartType, chartShape, chartData, chartOptions, selectedComponent, selectedFood, startDate, endDate) {
         this.id = id;
         this.chartTitle = chartTitle;
         this.chartType = chartType;
+        this.chartShape = chartShape;
         this.chartData = chartData;
         this.chartOptions = chartOptions;
         this.selectedComponent = selectedComponent;
@@ -27,6 +29,7 @@ class Chart {
             id: this.id,
             chartTitle: this.chartTitle,
             chartType: this.chartType,
+            chartShape: this.chartShape,
             chartData: this.chartData.toObject ? this.chartData.toObject() : this.chartData,
             chartOptions: this.chartOptions.toObject ? this.chartOptions.toObject() : this.chartOptions,
             selectedComponent: this.selectedComponent.toObject ? this.selectedComponent.toObject() : this.selectedComponent,

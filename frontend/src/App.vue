@@ -9,7 +9,7 @@
     </div>
     <Login v-else-if="!userStore.isLoading" />
     <div v-else class="center">
-        <Spinner />
+        <PancakeLoader />
     </div>
   </div>
 </template>
@@ -17,7 +17,7 @@
 <script setup>
 import Login from './components/Login.vue';
 import Navbar from './components/Navbar.vue';
-import Spinner from './components/Spinner.vue';
+import PancakeLoader from './components/PancakeLoader.vue';
 import ErrorToast from './components/ErrorToast.vue';
 import { useUserStore } from './stores/userStore';
 

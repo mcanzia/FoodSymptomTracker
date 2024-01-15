@@ -19,7 +19,7 @@ function createChartContextAlt() {
     const ctx = document.getElementById(props.chartDetails.id);
     ChartInstance.register(Colors);
     chart = new ChartInstance(ctx, {
-        type: props.chartDetails.chartType,
+        type: props.chartDetails.chartShape,
         data: props.chartDetails.chartData,
         options: props.chartDetails.chartOptions
     });

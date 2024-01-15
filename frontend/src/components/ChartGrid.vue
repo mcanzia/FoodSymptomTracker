@@ -10,9 +10,9 @@
           </div>
           <div class="chart-container" v-if="shapeParam.isOpen">
             <div class="chart-slot" 
-              v-for="(chart) in chartsByType(shapeParam.name)" 
+              v-for="(chart) in chartsByShape(shapeParam.name)" 
               :key="chart.id"
-              :style="{ 'max-height': maxHeight(chart.chartType), 'max-width': maxWidth(chart.chartType)}">
+              :style="{ 'max-height': maxHeight(chart.chartShape), 'max-width': maxWidth(chart.chartShape)}">
                   <span class="edit-icon">
                       <ion-icon name="pencil" class="bi" @click="editChart(chart)" />
                   </span>
@@ -46,16 +46,16 @@ function deleteChart(chart) {
   chartStore.deleteCharts(chartsToDelete);
 }
 
-function maxHeight(chartType) {
-  return chartStore.chartShapeParams.find(chartShape => chartShape.name === chartType).maxHeight;
+function maxHeight(chartShape) {
+  return chartStore.chartShapeParams.find(chartShapeCurrent => chartShapeCurrent.name === chartShape).maxHeight;
 }
 
-function maxWidth(chartType) {
-  return chartStore.chartShapeParams.find(chartShape => chartShape.name === chartType).maxWidth;
+function maxWidth(chartShape) {
+  return chartStore.chartShapeParams.find(chartShapeCurrent => chartShapeCurrent.name === chartShape).maxWidth;
 }
 
-function chartsByType(chartType) {
-  return chartStore.charts.filter(chart => chart.chartType === chartType);
+function chartsByShape(chartShape) {
+  return chartStore.charts.filter(chart => chart.chartShape === chartShape);
 }
 
 </script>

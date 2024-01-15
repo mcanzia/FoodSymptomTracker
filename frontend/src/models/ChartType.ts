@@ -4,3 +4,5 @@ const ChartType = Object.freeze({
     SVCWEIGHTBYFOOD: "SVC WEIGHT BY FOOD",
     MVCWEIGHTBYFOOD: "MVC WEIGHT BY FOOD",
   });
+
+export default ChartType;

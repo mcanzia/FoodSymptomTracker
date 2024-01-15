@@ -8,6 +8,7 @@ export class Chart {
     id : string | null; 
     chartTitle : string | null;
     chartType : string | null;
+    chartShape : string | null;
     chartData : ChartData | null;
     chartOptions : ChartOptions | null
     selectedComponent : Component | null;
@@ -16,11 +17,12 @@ export class Chart {
     endDate? : string | null;
 
 
-    constructor(id : string | null, chartTitle : string | null, chartType : string | null, chartData : ChartData | null, chartOptions : ChartOptions | null,
+    constructor(id : string | null, chartTitle : string | null, chartType : string | null, chartShape : string | null, chartData : ChartData | null, chartOptions : ChartOptions | null,
         selectedComponent : Component | null, selectedFood? : FoodItem | null, startDate? : string | null, endDate? : string | null) {
             this.id = id;
             this.chartTitle = chartTitle;
             this.chartType = chartType;
+            this.chartShape = chartShape;
             this.chartData = chartData;
             this.chartOptions = chartOptions;
             this.selectedComponent = selectedComponent;

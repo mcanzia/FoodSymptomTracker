@@ -1,15 +1,12 @@
 <template>
     <div class="container">
-        <Spinner />
         <p>Logged in as {{ auth.currentUser.displayName }}</p>
         <button @click="logout()">Sign Out</button>
     </div>
 </template>
 
 <script setup>
-
 import { auth } from "../firebase";
-import Spinner from "./Spinner.vue";
 import { useUserStore } from "../stores/userStore";
 
 const userStore = useUserStore();

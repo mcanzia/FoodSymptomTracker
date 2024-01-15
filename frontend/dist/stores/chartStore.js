@@ -4,18 +4,19 @@ import { Chart } from '../models/Chart';
 import { ChartOptions } from '../models/ChartOptions';
 import { ChartShapeParams } from '../models/ChartShapeParams';
 import ChartShape from '../models/ChartShape';
+import ChartType from '../models/ChartType';
 export const useChartStore = defineStore('chartStore', {
     state: () => ({
         charts: [],
         dateRange: [],
-        newChartDetails: new Chart(null, "", "", null, null, null, null, "", ""),
+        newChartDetails: new Chart(null, "", "", "", null, null, null, null, "", ""),
         chartShapeParams: []
     }),
     actions: {
         async createAverageChart(chart) {
             try {
                 const chartService = new ChartService();
-                this.newChartDetails = await chartService.createAverageChart(chart);
+                return await chartService.createAverageChart(chart);
             }
             catch (error) {
                 console.log("Show error");
@@ -24,7 +25,7 @@ export const useChartStore = defineStore('chartStore', {
         async createFoodValueChart(chart) {
             try {
                 const chartService = new ChartService();
-                this.newChartDetails = await chartService.createFoodValueChart(chart);
+                return await chartService.createFoodValueChart(chart);
             }
             catch (error) {
                 console.log("Show error");
@@ -33,7 +34,7 @@ export const useChartStore = defineStore('chartStore', {
         async createSingleValueComponentWeightByFoodChart(chart) {
             try {
                 const chartService = new ChartService();
-                this.newChartDetails = await chartService.createSingleValueComponentWeightByFoodChart(chart);
+                return await chartService.createSingleValueComponentWeightByFoodChart(chart);
             }
             catch (error) {
                 console.log("Show error");
@@ -42,7 +43,7 @@ export const useChartStore = defineStore('chartStore', {
         async createMultiValueComponentWeightByFoodChart(chart) {
             try {
                 const chartService = new ChartService();
-                this.newChartDetails = await chartService.createMultiValueComponentWeightByFoodChart(chart);
+                return await chartService.createMultiValueComponentWeightByFoodChart(chart);
             }
             catch (error) {
                 console.log("Show error");
@@ -51,7 +52,7 @@ export const useChartStore = defineStore('chartStore', {
         resetNewChartDetails() {
             const chartTitle = "New Chart - " + this.charts.length;
             const chartOptions = new ChartOptions(chartTitle);
-            this.newChartDetails = new Chart(this.newChartDetails.id, chartTitle, this.newChartDetails.chartType, null, chartOptions, null, null, "", "");
+            this.newChartDetails = new Chart(this.newChartDetails.id, chartTitle, null, this.newChartDetails.chartShape, null, chartOptions, null, null, "", "");
         },
         async addCharts() {
             try {
@@ -87,6 +88,36 @@ export const useChartStore = defineStore('chartStore', {
                 const chartService = new ChartService();
                 this.charts = [];
                 this.charts.push(...await chartService.getAllCharts());
+            }
+            catch (error) {
+                console.log("Show error");
+            }
+        },
+        async recalculateCharts() {
+            try {
+                const chartPromises = this.charts.map(async (chart) => {
+                    if (this.dateRange.length !== 0 && this.dateRange.length !== 2) {
+                        return chart;
+                    }
+                    const updatedChart = {
+                        ...chart,
+                        startDate: this.dateRange[0] ? this.dateRange[0].toLocaleDateString() : null,
+                        endDate: this.dateRange[1] ? this.dateRange[1].toLocaleDateString() : null
+                    };
+                    switch (updatedChart.chartType) {
+                        case ChartType.AVERAGE:
+                            return await this.createAverageChart(updatedChart);
+                        case ChartType.FOODVALUE:
+                            return await this.createFoodValueChart(updatedChart);
+                        case ChartType.SVCWEIGHTBYFOOD:
+                            return await this.createSingleValueComponentWeightByFoodChart(updatedChart);
+                        case ChartType.MVCWEIGHTBYFOOD:
+                            return await this.createMultiValueComponentWeightByFoodChart(updatedChart);
+                        default:
+                            return chart;
+                    }
+                });
+                this.charts = await Promise.all(chartPromises);
             }
             catch (error) {
                 console.log("Show error");

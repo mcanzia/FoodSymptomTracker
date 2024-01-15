@@ -1,5 +1,6 @@
 import { ErrorHandler } from "../util/error/ErrorHandler";
 import { ObjectType } from "../models/ObjectType";
+import ChartType from "../models/ChartType";
 import { RequestUtil } from "./RequestUtil";
 export class ChartController {
     async getAllCharts(userAuthToken) {

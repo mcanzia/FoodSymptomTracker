@@ -29,6 +29,7 @@ import { Chart } from '../models/Chart';
 import { ChartOptions } from '../models/ChartOptions';
 import DropDown from "./DropDown.vue";
 import AirDateRange from "./AirDateRange.vue";
+import ChartShape from "../models/ChartShape";
 import { onBeforeMount, ref, computed } from 'vue';
 
 const chartStore = useChartStore();
@@ -73,10 +74,9 @@ async function openChartBuilder() {
 }
 
 function createTempChart() {
-    // const id = db.collection('users').doc(this.auth.currentUser.uid).collection('charts').doc().id;
     const id = "chart_" + (chartStore.charts.length + 1);
     const defaultTitle = "New Chart - " + (chartStore.charts.length + 1);
-    chartStore.newChartDetails = new Chart(id, defaultTitle, "bar", null, new ChartOptions(defaultTitle), null, null, "", "");
+    chartStore.newChartDetails = new Chart(id, defaultTitle, null, ChartShape.BAR, null, new ChartOptions(defaultTitle), null, null, "", "");
 }
 
 function toggleDatePicker() {
@@ -85,16 +85,18 @@ function toggleDatePicker() {
     }
 }
 
-function clearDateSelection() {
+async function clearDateSelection() {
     chartStore.dateRange = [];
     datePickerActive.value = false;
+    await chartStore.recalculateCharts();
 }
 
 
-function setDateRange(selectedDateRange) {
+async function setDateRange(selectedDateRange) {
     chartStore.dateRange = selectedDateRange;
     if (selectedDateRange.length === 2) {
         datePickerActive.value = false;
+        await chartStore.recalculateCharts();
     }
 }
 

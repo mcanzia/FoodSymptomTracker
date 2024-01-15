@@ -37,7 +37,8 @@ export class MockCharts {
         return {
           id : '1',
           chartTitle : 'Test Chart',
-          chartType : 'bar',
+          chartType: 'AVERAGE',
+          chartShape : 'bar',
           chartData : MockCharts.createChartData(),
           chartOptions : MockCharts.createChartOptions('Test Chart'),
           selectedComponent : MockComponents.createComponent(),
@@ -52,7 +53,8 @@ export class MockCharts {
             {
               id : '1',
               chartTitle : 'Test Chart 1',
-              chartType : 'bar',
+              chartType: 'AVERAGE',
+              chartShape : 'bar',
               chartData : MockCharts.createChartData(),
               chartOptions : MockCharts.createChartOptions('Test Chart 1'),
               selectedComponent : MockComponents.createComponent(),
@@ -63,7 +65,8 @@ export class MockCharts {
             {
               id : '2',
               chartTitle : 'Test Chart 2',
-              chartType : 'line',
+              chartType: 'AVERAGE',
+              chartShape : 'line',
               chartData : MockCharts.createChartData(),
               chartOptions : MockCharts.createChartOptions('Test Chart 2'),
               selectedComponent : MockComponents.createComponent(),
@@ -79,7 +82,8 @@ export class MockCharts {
           {
             id : '3',
             chartTitle : 'New Test Chart 3',
-            chartType : 'pie',
+            chartType: 'AVERAGE',
+            chartShape : 'pie',
             chartData : MockCharts.createChartData(),
             chartOptions : MockCharts.createChartOptions('New Test Chart 3'),
             selectedComponent : MockComponents.createComponent(),
@@ -90,7 +94,8 @@ export class MockCharts {
           {
             id : '4',
             chartTitle : 'New Test Chart 4',
-            chartType : 'donut',
+            chartType: 'AVERAGE',
+            chartShape : 'donut',
             chartData : MockCharts.createChartData(),
             chartOptions : MockCharts.createChartOptions('New Test Chart 4'),
             selectedComponent : MockComponents.createComponent(),
