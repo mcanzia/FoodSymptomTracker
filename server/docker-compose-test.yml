@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.test
-    container_name: food-log-tracker
+    container_name: flt-server-test
     environment:
       - NODE_ENV=test
       - FIRESTORE_EMULATOR_HOST=firebase-emulator:8080

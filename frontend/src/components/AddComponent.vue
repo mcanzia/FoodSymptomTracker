@@ -114,11 +114,9 @@ async function addNewComponent() {
         if(!validateForm()) {
             return;
         }
-        console.log(newComponent.value);
         newComponent.value.selectOptions.map((option) => { option.value = option.text});
         newComponent.value.selectOptions = newComponent.value.selectOptions
           .filter(option => option.text !== '');
-        console.log(newComponent.value);
         await componentStore.addComponents(new Array(newComponent.value));
     } catch (error) {
         console.log(error)

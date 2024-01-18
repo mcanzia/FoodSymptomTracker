@@ -58,7 +58,6 @@ class ChartDao {
     }
     async deleteCharts(authId, chartIds) {
         try {
-            console.log('Chart Ids: ' + chartIds);
             const chartsRef = firebase_1.db.collection('users').doc(authId).collection('charts');
             const query = chartsRef.where(firebase_1.documentId, 'in', chartIds);
             query.get()
