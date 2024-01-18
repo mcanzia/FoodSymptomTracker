@@ -1,12 +1,14 @@
-import { Component } from '@/models/Component';
-import { DateLog } from '@/models/DateLog';
+import { Component } from '../models/Component';
+import { DateLog } from '../models/DateLog';
 import { defineStore } from 'pinia'
 import { DateLogService } from '../services/DateLogService';
 import { DateUtil } from '../util/DateUtil';
+import { ErrorHandler } from '../util/error/ErrorHandler';
 
 interface IDateLogState {
   dateLogs : Array<DateLog>
   selectedDateLog? : DateLog | null
+  dateLogCopy? : DateLog | null
   dayTitle : string
   baseComponents : Array<Component>
 }
@@ -15,8 +17,9 @@ export const useDateLogStore = defineStore('dateLogStore', {
     state: () : IDateLogState => ({
         dateLogs: [],
         selectedDateLog: null,
+        dateLogCopy: null,
         dayTitle: "Today",
-        baseComponents: []
+        baseComponents: [],
       }),
     getters: {
       yesterdayDate: () => {
@@ -31,22 +34,38 @@ export const useDateLogStore = defineStore('dateLogStore', {
       }
     },
     actions: {
-      async initializeStore(userToken : any, selectedDate : string, baseComponents : Array<Component>) {
+      async initializeStore(selectedDate : string, baseComponents : Array<Component>) {
         this.baseComponents = baseComponents;
-        this.initializeDateLogs(userToken, selectedDate);
+        this.initializeDateLogs(selectedDate);
       },
-      async initializeDateLogs(userToken : any, selectedDate : string) {
-        const dateLogService : DateLogService = new DateLogService();
-        this.dateLogs = await dateLogService.getAllDateLogs(userToken);
-        this.setSelectedDateLog(selectedDate);
+      async initializeDateLogs(selectedDate : string) {
+        try {
+          const dateLogService : DateLogService = new DateLogService();
+          this.dateLogs = await dateLogService.getAllDateLogs();
+          this.setSelectedDateLog(selectedDate);
+        } catch (error : any) {
+          ErrorHandler.displayGenericError();        }
       },
-      async addDateLogs(userToken : any, dateLogs : Array<DateLog>) {
-        const dateLogService = new DateLogService();
-        await dateLogService.addDateLogs(userToken, dateLogs);
-        if (this.selectedDateLog) {
-          await this.initializeDateLogs(userToken, this.selectedDateLog.date);
-        } else {
-          throw Error;
+      async addDateLogs(dateLogs : Array<DateLog>) {
+        try {
+          const dateLogService = new DateLogService();
+          await dateLogService.addDateLogs(dateLogs);
+          if (this.selectedDateLog) {
+            await this.initializeDateLogs(this.selectedDateLog.date);
+          }
+          this.dateLogCopy = null;
+        } catch (error) {
+          ErrorHandler.displayGenericError();
+        }
+      },
+      async deleteDateLogs(dateLogsToDelete : Array<DateLog>) {
+        try {
+          const dateLogService = new DateLogService();
+          const dateLogIds = dateLogsToDelete.map(dateLogToDelete => dateLogToDelete.id);
+          await dateLogService.deleteDateLogs(dateLogsToDelete)
+          this.dateLogs = await this.dateLogs.filter(dateLog => !dateLogIds.includes(dateLog.id));
+        } catch (error) {
+          ErrorHandler.displayGenericError();
         }
       },
       async selectDay(selectedDate : string) {
@@ -66,17 +85,17 @@ export const useDateLogStore = defineStore('dateLogStore', {
         });
         return date;
       },
-      async addDateLogComponent(userToken : any, componentToAdd : Component) {
+      async addDateLogComponent(componentToAdd : Component) {
         this.dateLogs.map(dateLog => {
           dateLog.components.push(componentToAdd);
         });
-        await this.addDateLogs(userToken, this.dateLogs);
+        await this.addDateLogs(this.dateLogs);
       },
-      async removeDateLogComponent(userToken : any, componentToRemove : Component) {
+      async removeDateLogComponent(componentToRemove : Component) {
         this.dateLogs.map(dateLog => {
           dateLog.components = dateLog.components.filter(component => component.id !== componentToRemove.id);
         });
-        await this.addDateLogs(userToken, this.dateLogs);
+        await this.addDateLogs(this.dateLogs);
       },
       setDayTitle() {
         if (!this.selectedDateLog) {
@@ -98,7 +117,7 @@ export const useDateLogStore = defineStore('dateLogStore', {
         }
       },
       containsFoodDuplicate(foodName : string) {
-        return this.selectedDateLog?.foodItems.some(food => food.name === foodName);
+        return this.selectedDateLog?.foodItems.some(food => food.name.toLowerCase() === foodName.toLowerCase());
       },
     }
 })

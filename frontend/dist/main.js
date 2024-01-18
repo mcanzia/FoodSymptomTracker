@@ -1,38 +1,39 @@
-import Vue from 'vue';
+import { createPinia } from 'pinia';
+import { createApp } from 'vue';
+import * as Sentry from "@sentry/vue";
 import App from './App.vue';
-import VueCompositionApi from '@vue/composition-api';
-import { firestorePlugin } from 'vuefire';
-import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-vue/dist/bootstrap-vue.css';
 import router from './router';
-import { createPinia, PiniaVuePlugin } from 'pinia';
-Vue.use(PiniaVuePlugin);
-Vue.use(VueCompositionApi);
-Vue.use(firestorePlugin);
-Vue.use(BootstrapVue);
-Vue.use(BootstrapVueIcons);
-//Vue.use('BIconCaretLeftFill', BIconCaretLeftFill);
-//Vue.use('BIconCaretRightFill', BIconCaretRightFill);
-//Vue.use('BIconDashCircle', BIconDashCircle);
-//Vue.use('BIconDashCircleFill', BIconDashCircleFill);
-//Vue.use('BIconPlusCircle', BIconPlusCircle);
-//Vue.use('BIconPlusCircleFill', BIconPlusCircleFill);
-//Vue.use('BIconXCircle', BIconXCircle);
-//Vue.use('BIconXCircleFill', BIconXCircleFill);
-//Vue.use('BIconGear', BIconGear);
-//Vue.use('BIconGearFill', BIconGearFill);
-//Vue.use('BIconBarChartFill', BIconBarChartFill);
-//Vue.use('BIconPieChartFill', BIconPieChartFill);
-//Vue.use('BIconGraphUp', BIconGraphUp);
-//Vue.use('BIconLifePreserver', BIconLifePreserver);
-//Vue.use('BIconBroadcast', BIconBroadcast);
-Vue.config.productionTip = false;
+import { ObjectType } from './models/ObjectType';
+import './style/core.css';
 const pinia = createPinia();
-export const bus = new Vue();
-new Vue({
-    router,
-    pinia,
-    render: h => h(App),
-}).$mount('#app');
+const app = createApp(App);
+Sentry.init({
+    app,
+    dsn: "https://71e2c0a7e3d6ef6c95f5113886a86033@o4506306172420096.ingest.sentry.io/4506306184806400",
+    integrations: [
+        new Sentry.BrowserTracing({
+            // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
+            // tracePropagationTargets: ["localhost", /^https:\/\/yourserver\.io\/api/],
+            routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+        }),
+        new Sentry.Replay(),
+    ],
+    beforeSend(event) {
+        if (event.tags?.itemType === ObjectType.COMPONENT) {
+            if (event.exception && event.exception.values && event.exception.values.length) {
+                event.message = `Component Error - ${event.exception.values[0].value}`;
+            }
+        }
+        return event;
+    },
+    // Performance Monitoring
+    tracesSampleRate: 1.0,
+    // Session Replay
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+});
+app.use(router);
+app.use(pinia);
+app.config.compilerOptions.isCustomElement = tag => tag.startsWith('ion-');
+app.mount('#app');
 //# sourceMappingURL=main.js.map

@@ -10,5 +10,12 @@ export class ChartData {
         this.labels = labels ? labels : new Array<String>;
     }
 
+    toObject?() {
+        return {
+            datasets: this.datasets.map(dataset => dataset.toObject ? dataset.toObject() : dataset),
+            labels: [...this.labels]
+        };
+    }
+
 
 }

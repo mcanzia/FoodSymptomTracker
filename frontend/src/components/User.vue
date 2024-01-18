@@ -4,23 +4,18 @@
     </div>
 </template>
 
-<script>
+<script setup>
 import { ref } from '@vue/composition-api';
 import { auth } from '../firebase';
-export default {
-    setup() {
-        const user = ref(null);
-        const unsubscribe = auth.onAuthStateChanged(
-            userCred => user.value = userCred
-        );
+import { onBeforeUnmount } from 'vue';
 
-        return {
-            user,
-            unsubscribe,
-        }
-    },
-    destroyed() {
-        this.unsubscribe()
-    }
-}
+const user = ref(null);
+const unsubscribe = auth.onAuthStateChanged(
+    userCred => user.value = userCred
+);
+
+onBeforeUnmount(() => {
+  this.unsubscribe();
+});
+
 </script>

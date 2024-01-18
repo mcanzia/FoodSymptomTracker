@@ -8,5 +8,11 @@ export class ChartOptions {
         this.plugins = plugins;
     }
 
+    toObject?() {
+        return {
+            plugins: this.plugins.toObject ? this.plugins.toObject() : this.plugins
+        };
+    }
+
 
 }

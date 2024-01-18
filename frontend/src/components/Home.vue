@@ -1,198 +1,265 @@
 <template>
-        <b-container>
-            <br />
-            <b-carousel
-                id="day-selection-carousel"
-                v-model="selectedDay"
-                controls
-                background="#ababab"
-            >
-                    <b-row class="text-center">
-                        <b-col cols="4">
-                            <a href="javascript:void(0);" v-if="!logEditMode" @click="goToPreviousDay()" class="nav-link ml-5"><b-icon icon="caret-left-fill" scale="1.5"></b-icon></a>
-                        </b-col>
-                        <b-col cols="4">
-                            <a href="javascript:void(0);" @click="$bvModal.show('date-select-modal')" class="nav-link"><h3>{{dateLogStore.dayTitle}}</h3></a>
-                            
-                            <b-button @click="saveOrEdit()">{{ logEditMode ? "Save" : "Edit"}}</b-button>
-                        </b-col>
-                        <b-col cols="4">
-                            <a href="javascript:void(0);" v-if="!logEditMode" @click="goToNextDay()" class="nav-link mr-5"><b-icon icon="caret-right-fill" scale="1.5"></b-icon></a>
-                        </b-col>
-                    </b-row>
-                    <br />
-                    <FoodLogEdit v-if="logEditMode"/>
-                    <FoodLogBase v-else />
-                    <br />
-            </b-carousel>
-            <br />
-            <b-modal 
-                id="date-select-modal" 
-                title="Please choose a date:"
-                @ok="chooseDate()">
-                <b-calendar v-model="calendarSelection" block value-as-date></b-calendar>
-            </b-modal>
-        </b-container>
+    <div class="container">
+        <div class="date-header-container">
+            <div id="homeHeader" @click.self="closeCalendar()" role="heading" aria-labelledby="calendarLabel" aria-level="1">
+                <div>
+                    <a href="#" v-if="!logEditMode" @click="goToPreviousDay()" aria-label="Previous Day">
+                        <ion-icon name="caret-back" aria-hidden="true"></ion-icon>
+                    </a>
+                    <a href="#" @click="calendarActive = true">
+                        <h1 id="calendarLabel" aria-live="polite" :aria-label="dateLogStore.dayTitle">{{dateLogStore.dayTitle}}</h1>
+                    </a>
+                    <a href="#" v-if="!logEditMode" @click="goToNextDay()" aria-label="Next Day">
+                        <ion-icon name="caret-forward" aria-hidden="true"></ion-icon>
+                    </a>
+                </div>
+                <div>
+                    <button id="closeEditButton" v-if="logEditMode" @click="closeEditMode()">Close</button>
+                    <button id="saveEditButton" @click="saveOrEdit()">{{ logEditMode ? 'Save' : 'Edit' }}</button>
+                </div>
+            </div>
+                <DropDown class="date-dropdown" v-if="calendarActive && !logEditMode" role="dialog" aria-modal="true">
+                    <template v-slot:body>
+                        <air-calendar @date-input="setDateField"></air-calendar>
+                    </template>
+                </DropDown>
+        </div>
+        <FoodLogBase id="homeBody" :editMode="logEditMode" @click="closeCalendar()" role="main" />
+    </div>
 </template>
 
-<script>
-import FoodLogEdit from './FoodLogEdit.vue';
+<script setup>
 import FoodLogBase from './FoodLogBase.vue';
-import { auth, db } from '../firebase';
-import { useUserStore } from '../stores/userStore';
+import AirCalendar from './AirCalendar.vue';
+import { storeToRefs } from 'pinia';
+import DropDown from './DropDown.vue';
 import { useDateLogStore } from '../stores/dateLogStore';
 import { useComponentStore } from '../stores/componentStore';
 import { useFoodStore } from '../stores/foodStore';
-import { FoodService } from '../services/FoodService';
-import { DateLogService } from '../services/DateLogService';
-import { ComponentService } from '../services/ComponentService';
-export default {
-    setup() {
-        const userStore = useUserStore();
-        const dateLogStore = useDateLogStore();
-        const componentStore = useComponentStore();
-        const foodStore = useFoodStore();
-        const foodService = new FoodService();
-        const dateLogService = new DateLogService();
-        const componentService = new ComponentService();
+import { onBeforeMount, computed, ref, watch } from 'vue';
 
-        return {
-            userStore,
-            dateLogStore,
-            componentStore,
-            foodStore,
-            foodService,
-            dateLogService,
-            componentService
-        }
-    },
-    async created() {
-        this.userAccessToken = await this.userStore.getAccessToken();
-        await this.componentStore.initializeComponentLists(this.userAccessToken);
-        await this.dateLogStore.initializeStore(this.userAccessToken, this.currentDateString, this.componentStore.selectedComponents);
-        await this.foodStore.initializeFoodList(this.userAccessToken);
-        //this.testEndpoints()
-    },
-    components: {
-        FoodLogEdit,
-        FoodLogBase
-    },
-    data() {
-        return {
-            auth,
-            db,
-            userAccessToken: null,
-            selectedDay: 0,
-            logEditMode: false,
-            dayTitle: "",
-            calendarSelection: new Date(),
-            allFoods: []
-        }
-    },
-    props:[],
-    computed: {
-        currentDateString() {
-            return new Date().toLocaleDateString();
-        },
-        currentDate() {
-            return new Date();
-        }
-    },
-    methods: {
-        async saveOrEdit() {
-            if (this.logEditMode) {
-                await this.foodStore.addFoods(this.userAccessToken, this.dateLogStore.selectedDateLog.foodItems);
-                this.dateLogStore.selectedDateLog.foodItems = this.dateLogStore.selectedDateLog.foodItems.map(food => {
-                    return this.foodStore.getExistingFood(food.name);
-                });
-                this.dateLogStore.addDateLogs(this.userAccessToken, new Array(this.dateLogStore.selectedDateLog));
-            }
-            this.logEditMode = !this.logEditMode;
-        },
-        async goToNextDay() {
-            const nextDay = new Date(this.dateLogStore.selectedDateLog.date);
-            nextDay.setDate(nextDay.getDate() + 1);
-            this.dateLogStore.selectDay(nextDay.toLocaleDateString('en-us', {timeZone: 'UTC'}));
-        },
-        async goToPreviousDay() {
-            const previousDay = new Date(this.dateLogStore.selectedDateLog.date);
-            previousDay.setDate(previousDay.getDate() - 1);
-            this.dateLogStore.selectDay(previousDay.toLocaleDateString('en-us', {timeZone: 'UTC'}));
-        },
-        async chooseDate() {
-            this.dateLogStore.selectDay(this.calendarSelection.toLocaleDateString('en-us', {timeZone: 'UTC'}));
-        },
-        testEndpoints() {
-            //this.allFoods = this.foodService.getAllFoods(this.auth.currentUser);
-        //this.foodService.getFoodById(this.auth.currentUser, 'RzXHA9fgrB7748vRkvjM');
-        //this.dateLogStore.foodItems.push({ id: "", name: "Banana"});
-        //this.foodService.addFoods(this.auth.currentUser, this.dateLogStore.foodItems);
-        //this.dateLogService.getAllDateLogs(await this.userStore.getAccessToken());
-        //this.dateLogService.getDateLogById(this.auth.currentUser, 'PGQ0CTGlM0Boe7Z79W3l');
-        /*let dateLogItems = [];
-        dateLogItems.push({
-            id: '',
-            date: '10/26/2022',
-            foodItems: [
-                {
-                    id: 'HriRbXuQ0Koa230LBtbf',
-                    name: 'Grape'
-                }
-            ],
-            components: this.dateLogStore.components,
-        });
-        this.dateLogService.addDateLogs(this.auth.currentUser, dateLogItems);*/
-        /*let dateLogUpdate = {
-            id: 'KZodVKilnluY3tVi4Tyz',
-            date: '10/27/2022',
-            foodItems: [],
-            components: this.dateLogStore.components
-        }
-        this.dateLogService.updateDateLog(this.auth.currentUser, dateLogUpdate)*/
-        //this.componentService.getAllComponents(await this.userStore.getAccessToken());
-        //this.componentService.getComponentById(this.auth.currentUser, '2qxzyxX82GmiDOAHcJVs');
-        /*let componentItems = [];
-        componentItems.push({
-           id: '',
-           name: 'Dummy',
-           selectOptions: this.componentStore.availableComponents[0].selectOptions,
-           selected: false,
-           typeId: 2
-        });
-        this.componentService.addComponents(this.auth.currentUser, componentItems);*/
-        /*let componentUpdate = {
-            id: 'rVT5buIqaEXwucr7WRwZ',
-            name: 'Update Dummy',
-            selectOptions: this.componentStore.availableComponents[0].selectOptions,
-            selected: true,
-            typeId: 2
-        };
-        this.componentService.updateComponent(this.auth.currentUser, componentUpdate);*/
-        }
+const dateLogStore = useDateLogStore();
+const componentStore = useComponentStore();
+const foodStore = useFoodStore();
 
+onBeforeMount(async() => {
+    await componentStore.initializeComponentLists();
+    await dateLogStore.initializeStore(currentDateString.value, componentStore.selectedComponents);
+    await foodStore.initializeFoodList();
+    //testEndpoints()
+});
+
+let selectedDay = 0;
+let logEditMode = ref(false);
+let dayTitle = "";
+let calendarSelection = new Date();
+let allFoods = [];
+let calendarActive = ref(false);
+
+let currentDateString = computed(() => {
+  return new Date().toLocaleDateString();
+});
+
+let currentDate = computed(() => {
+  return new Date();
+});
+
+async function saveOrEdit() {
+    if (logEditMode.value) {
+        await foodStore.addFoods(dateLogStore.selectedDateLog.foodItems);
+        dateLogStore.selectedDateLog.foodItems = dateLogStore.selectedDateLog.foodItems.map(food => {
+            return foodStore.getExistingFood(food.name);
+        });
+        dateLogStore.addDateLogs(new Array(dateLogStore.selectedDateLog));
     }
+    if (!logEditMode.value) {
+        dateLogStore.dateLogCopy = JSON.parse(JSON.stringify(dateLogStore.selectedDateLog));
+    } 
+    logEditMode.value = !logEditMode.value;
 }
+
+async function goToNextDay() {
+    const nextDay = new Date(dateLogStore.selectedDateLog.date);
+    nextDay.setDate(nextDay.getDate() + 1);
+    dateLogStore.selectDay(nextDay.toLocaleDateString('en-us', {timeZone: 'UTC'}));
+}
+
+async function goToPreviousDay() {
+    const previousDay = new Date(dateLogStore.selectedDateLog.date);
+    previousDay.setDate(previousDay.getDate() - 1);
+    dateLogStore.selectDay(previousDay.toLocaleDateString('en-us', {timeZone: 'UTC'}));
+}
+
+async function chooseDate() {
+    dateLogStore.selectDay(calendarSelection.toLocaleDateString('en-us', {timeZone: 'UTC'}));
+}
+
+function setDateField(selectedDate) {
+    calendarSelection = new Date(selectedDate);
+    chooseDate();
+    closeCalendar();
+}
+
+function closeCalendar() {
+    calendarActive.value = false;
+}
+
+function closeEditMode() {
+    dateLogStore.selectedDateLog = JSON.parse(JSON.stringify(dateLogStore.dateLogCopy));
+    logEditMode.value = false;
+}
+
+function testEndpoints() {
+    //this.allFoods = this.foodService.getAllFoods(this.auth.currentUser);
+//this.foodService.getFoodById(this.auth.currentUser, 'RzXHA9fgrB7748vRkvjM');
+//this.dateLogStore.foodItems.push({ id: "", name: "Banana"});
+//this.foodService.addFoods(this.auth.currentUser, this.dateLogStore.foodItems);
+//this.dateLogService.getAllDateLogs(await this.userStore.getAccessToken());
+//this.dateLogService.getDateLogById(this.auth.currentUser, 'PGQ0CTGlM0Boe7Z79W3l');
+/*let dateLogItems = [];
+dateLogItems.push({
+    id: '',
+    date: '10/26/2022',
+    foodItems: [
+        {
+            id: 'HriRbXuQ0Koa230LBtbf',
+            name: 'Grape'
+        }
+    ],
+    components: this.dateLogStore.components,
+});
+this.dateLogService.addDateLogs(this.auth.currentUser, dateLogItems);*/
+/*let dateLogUpdate = {
+    id: 'KZodVKilnluY3tVi4Tyz',
+    date: '10/27/2022',
+    foodItems: [],
+    components: this.dateLogStore.components
+}
+this.dateLogService.updateDateLog(this.auth.currentUser, dateLogUpdate)*/
+//this.componentService.getAllComponents(await this.userStore.getAccessToken());
+//this.componentService.getComponentById(this.auth.currentUser, '2qxzyxX82GmiDOAHcJVs');
+/*let componentItems = [];
+componentItems.push({
+    id: '',
+    name: 'Dummy',
+    selectOptions: this.componentStore.availableComponents[0].selectOptions,
+    selected: false,
+    typeId: 2
+});
+this.componentService.addComponents(this.auth.currentUser, componentItems);*/
+/*let componentUpdate = {
+    id: 'rVT5buIqaEXwucr7WRwZ',
+    name: 'Update Dummy',
+    selectOptions: this.componentStore.availableComponents[0].selectOptions,
+    selected: true,
+    typeId: 2
+};
+this.componentService.updateComponent(this.auth.currentUser, componentUpdate);*/
+}
+
 </script>
 
 <style scoped>
-    a.nav-link:link
-    {
-    color: #000000;
+
+.container {
+    height: 100%;
+}
+
+.date-header-container {
+    position: relative;
+}
+
+.date-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 4%;
+    animation: fade 0.3s linear forwards;
+    z-index: 100;
+  }
+
+#homeBody {
+  text-align: center;
+  max-height: 80%;
+}
+
+h1 {
+    font-family: Lato, sans-serif;
+}
+
+a {
+    color: black
+}
+
+a:link, a:visited, a:hover, a:active {
     text-decoration: none;
-    }
-    a.nav-link:visited
-    {
-    color: #000000;
-    text-decoration: none;
-    }
-    a.nav-link:hover
-    {
-    color: #000000;
-    text-decoration: none;
-    }
-    a.nav-link:active
-    {
-    color: #000000;
-    text-decoration: none;
-    }
+}
+
+
+#homeHeader a, h1 {
+    display: inline;
+    margin: 10px;
+}
+
+#homeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 20px;
+}
+
+#homeHeader a {
+  color: #333;
+  text-decoration: none;
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+#homeHeader h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: bold;
+  display: inline;
+  font-family: Lato, sans-serif;
+}
+
+#homeHeader button {
+  padding: 8px 30px;
+  font-size: 16px;
+  font-family: Lato, sans-serif;
+  border-radius: 10px;
+  margin-left: 10px;
+  height: 20%;
+  cursor: pointer;
+}
+
+#closeEditButton {
+    background-color: #D9D9D9;
+    border: #846F91 2px solid;
+    color: black;
+}
+
+#closeEditButton:hover {
+    background-color: #423748;
+    border: #423748 2px solid;
+    color: white;
+}
+
+#saveEditButton {
+    background-color: #846F91;
+    color: white;
+    border: #846F91 2px solid;
+}
+
+#saveEditButton:hover {
+    background-color: #423748;
+    border: #423748 2px solid;
+}
+
+.close-icon {
+    padding-top: 13px;
+    font-size: 30px;
+}
+
+
+
 </style>

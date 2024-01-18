@@ -1,165 +1,137 @@
 <template>
-    <b-container fluid class="remove-all-margin-padding background-gray display-table">
-        <b-row no-gutters v-for="r in numberOfRows" :key="r">
-            <b-col cols="4" v-for="(chart, index) in chartStore.charts.slice(chartStartIndex(r), chartEndIndex(r))" :key="index">
-                <div class="chart-slot">
-                    <Chart :chart-details="chart" />
-                </div>
-            </b-col>
-            <b-col cols="4" v-if="chartEndIndex(r) === chartStore.charts.length && !chartStore.chartPanelOpen" class="parent">
-                <div class="empty-chart-slot">                    
-                    <span class="change-icon" v-if="!newChartToggle">
-                        <b-icon name="addNewChart" icon="plus-circle" class="bi h1" variant="dark"></b-icon>
-                        <b-icon icon="plus-circle-fill" class="bi h1" variant="dark" @click="newChartToggle = true"></b-icon>
-                    </span>
-                    <b-icon icon="bar-chart-fill" v-if="newChartToggle" aria-controls="chart-build-sidebar" name="addBarChart" class="add-bar-chart-button h3" @click="addNewChart('bar')"></b-icon>
-                    <b-icon icon="graph-up" v-if="newChartToggle" aria-controls="chart-build-sidebar" name="addLineChart" class="add-line-chart-button h3" @click="addNewChart('line')"></b-icon>
-                    <span class="change-icon" name="closeChartToggle" v-if="newChartToggle">
-                        <b-icon icon="x-circle" v-if="newChartToggle" class="bi h1"></b-icon>
-                        <b-icon icon="x-circle-fill" v-if="newChartToggle" class="bi h1" @click="newChartToggle = false"></b-icon>
-                    </span>
-                    <b-icon icon="pie-chart-fill" v-if="newChartToggle" aria-controls="chart-build-sidebar" name="addPieChart" class="add-pie-chart-button h3" @click="addNewChart('pie')"></b-icon>
-                    <b-icon icon="life-preserver" v-if="newChartToggle" aria-controls="chart-build-sidebar" name="addDonutChart" class="add-donut-chart-button h3" @click="addNewChart('doughnut')"></b-icon>
-                    <b-icon icon="broadcast" v-if="newChartToggle" aria-controls="chart-build-sidebar" name="addRadarChart" class="add-radar-chart-button h3" @click="addNewChart('radar')"></b-icon>
-                </div>            
-            </b-col>
-        </b-row>
-    </b-container>
-</template>
-
-<script>
-import { auth, db } from '../firebase';
+  <div class="chart-grid-container">
+        <div class="type-layer" v-for="(shapeParam) in chartStore.chartShapeParams" :key="shapeParam.name">
+          <div class="type-label-dropdown" @click="shapeParam.isOpen = !shapeParam.isOpen">
+            <h3>{{ shapeParam.name.toLocaleUpperCase() }}</h3>
+            <span class="toggle-icon">
+              <ion-icon name="caret-down-outline" v-if="shapeParam.isOpen"></ion-icon>
+              <ion-icon name="caret-forward-outline" v-else></ion-icon>
+            </span>
+          </div>
+          <div class="chart-container" v-if="shapeParam.isOpen">
+            <div class="chart-slot" 
+              v-for="(chart) in chartsByShape(shapeParam.name)" 
+              :key="chart.id"
+              :style="{ 'max-height': maxHeight(chart.chartShape), 'max-width': maxWidth(chart.chartShape)}">
+                  <span class="edit-icon">
+                      <ion-icon name="pencil" class="bi" @click="editChart(chart)" />
+                  </span>
+                  <span class="trash-icon">
+                      <ion-icon name="trash-outline" class="bi" @click="deleteChart(chart)" />
+                  </span>
+                <Chart :chart-details="chart" />
+            </div>
+          </div>
+        </div>
+    </div>
+  </template>
+  
+<script setup>
+import { ref, computed, onBeforeMount } from 'vue';
 import { useChartStore } from '../stores/chartStore';
+import router from "../router/index";
 import Chart from './Chart.vue';
-export default {
-    setup() {
-        const chartStore = useChartStore();
-        return {
-            chartStore
-        }
-    },
-    data() {
-        return {
-            auth,
-            db,
-            present: false,
-            height: 1000,
-            width: 1000,
-            newChartToggle: false
-        }
-    },
-    components: {
-        Chart
-    },
-    created() {
-    },
-    destroyed() {
-    },
-    mounted() {
-    },
-    methods: {
-        addNewChart(type) {
-            this.$emit('add-new-chart', type);
-        },
-        chartStartIndex(row) {
-            return 3 * (row - 1);
-        },
-        chartEndIndex(row) {
-            return this.chartStore.charts.length - this.chartStartIndex(row);
-        }
-    },
-    computed: {
-        numberOfRows() {
-            return Math.floor(this.chartStore.charts.length / 3) + 1;
-        }
-    },
+
+const chartStore = useChartStore();
+
+let charts = computed(() => chartStore.charts);
+
+function editChart(chart) {
+    chartStore.newChartDetails = chart;
+    router.push({ name: 'chart-builder'});
 }
+
+function deleteChart(chart) {
+  const chartsToDelete = [chart];
+  chartStore.deleteCharts(chartsToDelete);
+}
+
+function maxHeight(chartShape) {
+  return chartStore.chartShapeParams.find(chartShapeCurrent => chartShapeCurrent.name === chartShape).maxHeight;
+}
+
+function maxWidth(chartShape) {
+  return chartStore.chartShapeParams.find(chartShapeCurrent => chartShapeCurrent.name === chartShape).maxWidth;
+}
+
+function chartsByShape(chartShape) {
+  return chartStore.charts.filter(chart => chart.chartShape === chartShape);
+}
+
 </script>
 
 <style>
-body {
-    background-color: lightgrey;
+
+.chart-grid-container {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  overflow-y: scroll;
+  max-height: 80%;
 }
-.remove-all-margin-padding{
-    margin:0 !important;
-    padding:0 !important;
+
+.type-layer {
+  font-family: Lato, sans-serif;
 }
-.display-table {
-    display: table;
+
+.type-label-dropdown {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  background: #143542;
+  color: white;
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.type-label-dropdown > * {
+  margin-left: 10px;
+}
+
+.type-label-dropdown > span {
+  margin-left: 5px;
+}
+
+.chart-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: start;
+  gap: 1rem;
 }
 .chart-slot {
-    background-color: white;
-    border: 0px;
-    border-radius: 25px;
-    margin: 10px;
-}
-.empty-chart-slot {
-    background-color: lightsteelblue;
-    border: 0px;
-    border-radius: 25px;
-    margin: 10px;
-    flex-grow: 1;
-    flex-basis: 33%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.building-chart-slot {
-    background-color: whitesmoke;
-    border: 0px;
-    border-radius: 25px;
-    margin: 10px;
-    flex-grow: 1;
-    flex-basis: 33%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.background-gray {
-    background-color: lightgrey;
+  position: relative;
+  flex-basis: calc(100% / 3);
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+  border: 2px solid #846F91;
+  /* margin-top: 10px; */
 }
 
-.change-icon > .bi + .bi,
-  .change-icon:hover > .bi {
-    display: none;
-  }
-  .change-icon:hover > .bi + .bi {
-    display: inherit;
-  }
-
-.parent {
-    display: flex;
-    flex-wrap: wrap; 
-}
-.canvas-height {
-    height: 400px;
+.chart-slot:hover {
+  background-color: whitesmoke;
 }
 
-/* margin: top right bottom left*/
-.add-bar-chart-button {
-    margin: 0% 50% 25% 0%;
-    color: whitesmoke;
-    position: absolute;
+.chart-slot > span {
+  opacity: 0;
 }
-.add-line-chart-button {
-    margin: 40% 0% 0% 35%;
-    color: whitesmoke;
-    position: absolute;
+
+.edit-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 5px;
+} 
+
+.chart-slot:hover .edit-icon {
+  opacity: 1;
 }
-.add-pie-chart-button {
-    margin: 40% 35% 0% 0%;
-    color: whitesmoke;
-    position: absolute;
-}
-.add-radar-chart-button {
-    margin: 55% 0% 0% 0%;
-    color: whitesmoke;
-    position: absolute;
-}
-.add-donut-chart-button {
-    margin: 0% 0% 25% 50%;
-    color: whitesmoke;
-    position: absolute;
+
+.chart-slot:hover .trash-icon {
+  opacity: 1;
 }
 
 </style>
+  

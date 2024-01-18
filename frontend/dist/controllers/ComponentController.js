@@ -1,66 +1,55 @@
+import { ErrorHandler } from "../util/error/ErrorHandler";
+import { ObjectType } from "../models/ObjectType";
+import { RequestUtil } from "./RequestUtil";
 export class ComponentController {
     async getAllComponents(userAuthToken) {
         try {
-            const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7000/api/components', {
-                method: 'GET',
-                headers: {
-                    'Authorization': bearer
-                }
-            });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/components`;
+            const response = await fetch(requestUrl, RequestUtil.GETRequestParams(userAuthToken));
             return response.json();
         }
         catch (error) {
-            console.log(error);
+            ErrorHandler.handleGetAllError(userAuthToken, ObjectType.COMPONENT, error);
         }
     }
     async getComponentById(userAuthToken, componentId) {
         try {
-            const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7000/api/components/' + componentId, {
-                method: 'GET',
-                headers: {
-                    'Authorization': bearer
-                }
-            });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/components/${componentId}`;
+            const response = await fetch(requestUrl, RequestUtil.GETRequestParams(userAuthToken));
             return response.json();
         }
         catch (error) {
-            console.log(error);
+            ErrorHandler.handleGetByIdError(userAuthToken, ObjectType.COMPONENT, componentId, error);
         }
     }
     async addComponents(userAuthToken, components) {
         try {
-            const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7000/api/components', {
-                method: 'POST',
-                headers: {
-                    'Authorization': bearer,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(components)
-            });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/components`;
+            const response = await fetch(requestUrl, RequestUtil.POSTRequestParams(userAuthToken, components));
             return response;
         }
         catch (error) {
-            console.log(error);
+            ErrorHandler.handleAddError(userAuthToken, ObjectType.COMPONENT, components, error);
         }
     }
     async updateComponent(userAuthToken, component) {
         try {
-            const bearer = 'Bearer ' + userAuthToken;
-            const response = await fetch('http://localhost:7000/api/components/' + component.id, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': bearer,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(component)
-            });
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/components/${component.id}`;
+            const response = await fetch(requestUrl, RequestUtil.PUTRequestParams(userAuthToken, component));
             return response;
         }
         catch (error) {
-            console.log(error);
+            ErrorHandler.handleUpdateError(userAuthToken, ObjectType.COMPONENT, component, error);
+        }
+    }
+    async deleteComponents(userAuthToken, components) {
+        try {
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/components`;
+            const response = await fetch(requestUrl, RequestUtil.DELETERequestParams(userAuthToken, components));
+            return response;
+        }
+        catch (error) {
+            ErrorHandler.handleDeleteError(userAuthToken, ObjectType.COMPONENT, components, error);
         }
     }
 }

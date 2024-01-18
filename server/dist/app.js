@@ -6,27 +6,41 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const path_1 = __importDefault(require("path"));
 const cors_1 = __importDefault(require("cors"));
+const express_rate_limit_1 = __importDefault(require("express-rate-limit"));
 const index_1 = __importDefault(require("./routes/index"));
-const AuthService_1 = require("./services/AuthService");
+const logger_1 = __importDefault(require("./util/logs/logger"));
+const ErrorHandler_1 = require("./util/error/ErrorHandler");
+const AuthServiceImpl_1 = require("./services/AuthServiceImpl");
 const app = (0, express_1.default)();
-const port = process.env.PORT || 8000;
+const port = process.env.VITE_PORT || 7500;
 // Middleware
 app.set('view engine', 'ejs');
 app.set('views', path_1.default.join(__dirname, 'views'));
+// Security
 app.use((0, cors_1.default)());
+const limiter = (0, express_rate_limit_1.default)({
+    windowMs: 15 * 60 * 1000,
+    max: 100 // limit each IP to 100 requests per 15 minutes
+});
+app.use(limiter);
 // User Authorization
 app.use(async (request, response, next) => {
     try {
-        const userUID = await AuthService_1.AuthService.validateAuthToken(request.headers.authorization);
+        const userUID = await AuthServiceImpl_1.AuthServiceImpl.validateAuthToken(request.headers.authorization);
         response.locals.userAuth = userUID;
         next();
     }
     catch (error) {
+        logger_1.default.error("Authorization attempt failed");
         return response.status(403).json({ error: 'User is not authorized to perform this action' });
     }
 });
 //Routes Definitions
 app.use('/api', index_1.default);
+//Error Handling
+app.use((error, request, response, next) => {
+    ErrorHandler_1.ErrorHandler.handleError(error, response);
+});
 /*
 app.use((request : Request, response : Response, next : NextFunction) => {
   //response.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
@@ -35,5 +49,5 @@ app.use((request : Request, response : Response, next : NextFunction) => {
 })*/
 //Server Activation
 app.listen(port, () => {
-    console.log(`Listening to requests on http://localhost:${port}`);
+    logger_1.default.info(`Listening to requests on http://localhost:${port}`);
 });

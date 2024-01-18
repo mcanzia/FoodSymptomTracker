@@ -24,12 +24,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importStar(require("express"));
-const ComponentController_1 = require("../controllers/ComponentController");
+const ComponentControllerImpl_1 = require("../controllers/ComponentControllerImpl");
 const router = (0, express_1.Router)();
-const componentController = new ComponentController_1.ComponentController();
+const componentController = new ComponentControllerImpl_1.ComponentControllerImpl();
 router.use(express_1.default.json());
 router.get('/', componentController.getAllComponents);
 router.get('/:componentId', componentController.getComponentById);
 router.post('/', componentController.addComponents);
 router.put('/:componentId', componentController.updateComponent);
+router.delete('/', componentController.deleteComponents);
 exports.default = router;

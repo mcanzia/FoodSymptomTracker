@@ -1,170 +1,149 @@
 <template>
-    <b-container>
-        <b-row>
-            <b-col></b-col>
-            <b-col>
-                <aside>
-                    <b-card
-                        title="Welcome Back"
-                        style="max-width: 20rem;"
-                        class="text-center"
-                        v-if="!emailSignIn && !newUser"
-                    >
-                        <b-button @click="googleSignIn()" pill variant="outline-primary">Sign In with Google</b-button><br><br>
-                        <b-button @click="toggleEmailForm()" pill variant="outline-primary">Sign In with Email</b-button><br><br>
-                        <b-button @click="signInAnonymously()" pill variant="outline-primary">Sign In Anonymously</b-button><br><br>
-
-                        <a href="#" @click="newUser = true">New User?</a>
-                    </b-card>
-
-                    <b-card
-                        title="Sign In with Email"
-                        style="max-width: 20rem;"
-                        class="text-center"
-                        v-if="emailSignIn && !newUser"
-                    >
-                        <b-form @submit="signInOrCreateUser()" @reset="onReset()">
-                            <b-form-group id="email-label" label="Email" label-for="email-input">
-                                <b-form-input
-                                    id="email-input"
-                                    v-model="loginForm.email"
-                                    type="email"
-                                    placeholder="Enter email"
-                                    required
-                                ></b-form-input>
-                            </b-form-group>
-
-                            <b-form-group id="password-label" label="Password" label-for="password-input">
-                                <b-form-input
-                                    id="password-input"
-                                    v-model="loginForm.password"
-                                    placeholder="Enter password"
-                                    required
-                                ></b-form-input>
-                            </b-form-group>
-
-                            <b-button type="submit" variant="primary" :class="{'is-loading': loading}">Submit</b-button>
-                            <b-button type="reset" class="ml-3">Reset</b-button>
-                        </b-form>
-                        <br>
-                        <a href="#" @click="toggleEmailForm()">See all sign in options</a>
-                    </b-card>
-
-                    <b-card
-                        title="Welcome"
-                        style="max-width: 20rem;"
-                        class="text-center"
-                        v-if="!emailSignIn && newUser"
-                    >
-                        <b-button @click="testGoogle()" pill variant="outline-primary">Sign Up with Google</b-button><br><br>
-                        <b-button @click="toggleEmailForm()" pill variant="outline-primary">Sign Up with Email</b-button><br><br>
-
-                        <a href="#" @click="newUser = false">Returning User?</a>
-                    </b-card>
-
-                    <b-card
-                        title="Sign Up with Email"
-                        style="max-width: 20rem;"
-                        class="text-center"
-                        v-if="emailSignIn && newUser"
-                    >
-                        <b-form @submit="signInOrCreateUser()" @reset="onReset()">
-                            <b-form-group id="email-label" label="Email" label-for="email-input">
-                                <b-form-input
-                                    id="email-input"
-                                    v-model="loginForm.email"
-                                    type="email"
-                                    placeholder="Enter email"
-                                    required
-                                ></b-form-input>
-                            </b-form-group>
-
-                            <b-form-group id="password-label" label="Password" label-for="password-input">
-                                <b-form-input
-                                    id="password-input"
-                                    v-model="loginForm.password"
-                                    placeholder="Enter password"
-                                    required
-                                ></b-form-input>
-                            </b-form-group>
-
-                            <b-button type="submit" variant="primary" :class="{'is-loading': loading}">Submit</b-button>
-                            <b-button type="reset" class="ml-3">Reset</b-button>
-                        </b-form>
-                        <br>
-                        <a href="#" @click="toggleEmailForm()">See all sign in options</a>
-                    </b-card>
-
-                    <p class="has-text-danger" v-if="errorMessage">{{ errorMessage }}</p>
-                
-                </aside>
-            </b-col>
-            <b-col></b-col>
-        </b-row>
-    </b-container>
+        <div class="container">
+            <div class="flex-column primary-background-color">
+                    <h1>{{ newUser ? 'Create Your Account' : 'Logo' }}</h1>
+                    <label id="email-label" for="email-input"><b>Email</b></label>
+                    <input type="email" id="email-input" placeholder="Enter email" v-model="loginForm.email" required>
+                    <label id="password-label" for="password-input"><b>Password</b></label>
+                    <input type="password" id="password-input" placeholder="Enter password" v-model="loginForm.password" required>
+                    <label v-if="newUser" id="confirm-password-label" for="confirm-password-input"><b>Confirm Password</b></label>
+                    <input v-if="newUser" type="password" id="confirm-password-input" placeholder="Enter password" v-model="loginForm.confirmPassword" required>
+                    <button @click="signInOrCreateUser()" class="default-button">{{ newUser ? 'Register' : 'Login' }}</button>
+                    <button class="accent-button" @click="toggleNewUser()">{{ newUser ? 'Already have an account?' : 'Don\'t have an account?' }}</button>
+                    <button class="default-button" @click="googleSignIn()">{{ newUser ? 'Sign up with Google' : 'Sign in with Google' }}</button>
+                    <p class="error-text" v-if="errorMessage">{{ errorMessage }}</p>
+                <div class="link-container">
+                    <a href="#">Forgot password?</a>
+                    <a href="#" @click="signInAnonymously()">Try it out?</a>
+                </div>
+            </div>
+            <div class="flex-column">
+                <img :src="backgroundImage" />
+            </div>
+        </div>
 </template>
 
-<script>
-import {auth, db} from '../firebase';
+<script setup>
+import { ref } from 'vue';
 import { useUserStore } from '../stores/userStore';
-export default {
-    setup() {
-        const userStore = useUserStore()
+import backgroundImage from '../assets/beaver.png';
 
-        return {
-            userStore,
-        }
-    },
-    data() {
-        return {
-            auth,
-            db,
-            newUser: false,
-            emailSignIn: false,
-            loading: false,
-            errorMessage: '',
-            loginForm: {
-                email: '',
-                password: '',
-            },
-        }
-    },
-    methods: {
-        async signInAnonymously() {
-            await this.userStore.loginUserAnonymously();
-        },
-        async signInOrCreateUser() {
-            this.loading = true;
-            this.errorMessage = '';
-            try {
-                if (this.newUser) {
-                    this.userStore.registerUser(this.loginForm.email, this.loginForm.password);
-                } else {
-                    this.userStore.loginUser(this.loginForm.email, this.loginForm.password);
-                }
-            } catch (error) {
-                this.errorMessage = error.message;
-            }
+const userStore = useUserStore();
 
-            this.loading = false;
-        },
-        async googleSignIn() {
-            console.log('Google');
-            this.errorMessage = '';
-            try {
-                await this.userStore.loginUserGoogle();
-            } catch (error) {
-                this.errorMessage = error.message;
+const newUser = ref(false);
+const loading = ref(false);
+const errorMessage = ref(false);
+let loginForm = {
+    email: '',
+    password: '',
+    confirmPassword: ''
+}
+
+//Functions
+async function signInAnonymously() {
+    errorMessage.value = '';
+    await userStore.loginUserAnonymously();
+}
+
+async function signInOrCreateUser() {
+    loading.value = true;
+    errorMessage.value = '';
+    try {
+        if (newUser.value) {
+            if (loginForm.confirmPassword && loginForm.password === loginForm.confirmPassword) {
+                userStore.registerUser(loginForm.email, loginForm.password);
+            } else {
+                throw new Error("Passwords do not match");
             }
-        },
-        onReset() {
-            this.loginForm.email = '';
-            this.loginForm.password = '';
-        },
-        toggleEmailForm() {
-            this.emailSignIn = !this.emailSignIn;
-            this.onReset();
+        } else {
+            userStore.loginUser(loginForm.email, loginForm.password);
         }
+    } catch (error) {
+        errorMessage.value = error.message;
+    }
+
+    loading.value = false;
+}
+
+async function googleSignIn() {
+    errorMessage.value = '';
+    try {
+        await userStore.loginUserGoogle();
+    } catch (error) {
+        errorMessage.value = error.message;
     }
 }
+
+function onReset() {
+    loginForm.email = '';
+    loginForm.password = '';
+    loginForm.confirmPassword = '';
+}
+
+function toggleNewUser() {
+    newUser.value = !newUser.value;
+}
+
 </script>
+
+<style scoped>
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  padding: 0px;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.flex-column:first-of-type {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 100%;
+    padding: 0px 50px 50px 50px;
+}
+.link-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0px 20px;
+  }
+
+a {
+    color: #FFFFFF;
+    margin-bottom: 20px;
+}
+
+form label {
+    text-align: left;
+    padding: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical
+}
+
+.error-text{
+    color: red;
+}
+
+h1 {
+    color: #FFFFFF;
+}
+
+img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+</style>

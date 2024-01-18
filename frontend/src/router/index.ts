@@ -1,14 +1,11 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-//import { auth } from '../firebase'
-import Home from '@/components/Home.vue';
-import Login from '@/components/Login.vue'
-import UserProfile from '@/components/UserProfile.vue'
-import Layout from '@/components/Layout.vue'
-import Summary from '@/components/Summary.vue'
-import ChartBuilder from '@/components/ChartBuilder.vue'
-
-Vue.use(VueRouter)
+import { createRouter, createWebHistory } from "vue-router";
+// import { auth } from '../firebase'
+import Home from '../components/Home.vue';
+import Login from '../components/Login.vue'
+import UserProfile from '../components/UserProfile.vue'
+import Layout from '../components/Layout.vue'
+import Summary from '../components/Summary.vue'
+import ChartBuilder from '../components/ChartBuilder.vue'
 
 const routes = [
     { 
@@ -58,19 +55,19 @@ const routes = [
    }
 ]
 
-const router = new VueRouter({
-   mode: 'history',
+const router = createRouter({
+   history: createWebHistory(),
    routes
-})
+ });
 
-/*
-router.beforeEach((to, from, next) => {
-   const currentUser = auth.currentUser;
-   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
-   if (requiresAuth && !currentUser) next('login');
-   else if (!requiresAuth && currentUser) next ('home');
-   else next();
-});*/
+// router.beforeEach((to, from, next) => {
+//    const currentUser = auth.currentUser;
+//    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+
+//    if (requiresAuth && !currentUser) next('login');
+//    else if (!requiresAuth && currentUser) next ('home');
+//    else next();
+// });
 
 export default router

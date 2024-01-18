@@ -1,12 +1,14 @@
-import { DateLog } from '@/models/DateLog';
+import { DateLog } from '../models/DateLog';
 import { defineStore } from 'pinia';
 import { DateLogService } from '../services/DateLogService';
+import { ErrorHandler } from '../util/error/ErrorHandler';
 export const useDateLogStore = defineStore('dateLogStore', {
     state: () => ({
         dateLogs: [],
         selectedDateLog: null,
+        dateLogCopy: null,
         dayTitle: "Today",
-        baseComponents: []
+        baseComponents: [],
     }),
     getters: {
         yesterdayDate: () => {
@@ -21,23 +23,42 @@ export const useDateLogStore = defineStore('dateLogStore', {
         }
     },
     actions: {
-        async initializeStore(userToken, selectedDate, baseComponents) {
+        async initializeStore(selectedDate, baseComponents) {
             this.baseComponents = baseComponents;
-            this.initializeDateLogs(userToken, selectedDate);
+            this.initializeDateLogs(selectedDate);
         },
-        async initializeDateLogs(userToken, selectedDate) {
-            const dateLogService = new DateLogService();
-            this.dateLogs = await dateLogService.getAllDateLogs(userToken);
-            this.setSelectedDateLog(selectedDate);
-        },
-        async addDateLogs(userToken, dateLogs) {
-            const dateLogService = new DateLogService();
-            await dateLogService.addDateLogs(userToken, dateLogs);
-            if (this.selectedDateLog) {
-                await this.initializeDateLogs(userToken, this.selectedDateLog.date);
+        async initializeDateLogs(selectedDate) {
+            try {
+                const dateLogService = new DateLogService();
+                this.dateLogs = await dateLogService.getAllDateLogs();
+                this.setSelectedDateLog(selectedDate);
             }
-            else {
-                throw Error;
+            catch (error) {
+                ErrorHandler.displayGenericError();
+            }
+        },
+        async addDateLogs(dateLogs) {
+            try {
+                const dateLogService = new DateLogService();
+                await dateLogService.addDateLogs(dateLogs);
+                if (this.selectedDateLog) {
+                    await this.initializeDateLogs(this.selectedDateLog.date);
+                }
+                this.dateLogCopy = null;
+            }
+            catch (error) {
+                ErrorHandler.displayGenericError();
+            }
+        },
+        async deleteDateLogs(dateLogsToDelete) {
+            try {
+                const dateLogService = new DateLogService();
+                const dateLogIds = dateLogsToDelete.map(dateLogToDelete => dateLogToDelete.id);
+                await dateLogService.deleteDateLogs(dateLogsToDelete);
+                this.dateLogs = await this.dateLogs.filter(dateLog => !dateLogIds.includes(dateLog.id));
+            }
+            catch (error) {
+                ErrorHandler.displayGenericError();
             }
         },
         async selectDay(selectedDate) {
@@ -57,17 +78,17 @@ export const useDateLogStore = defineStore('dateLogStore', {
             });
             return date;
         },
-        async addDateLogComponent(userToken, componentToAdd) {
+        async addDateLogComponent(componentToAdd) {
             this.dateLogs.map(dateLog => {
                 dateLog.components.push(componentToAdd);
             });
-            await this.addDateLogs(userToken, this.dateLogs);
+            await this.addDateLogs(this.dateLogs);
         },
-        async removeDateLogComponent(userToken, componentToRemove) {
+        async removeDateLogComponent(componentToRemove) {
             this.dateLogs.map(dateLog => {
                 dateLog.components = dateLog.components.filter(component => component.id !== componentToRemove.id);
             });
-            await this.addDateLogs(userToken, this.dateLogs);
+            await this.addDateLogs(this.dateLogs);
         },
         setDayTitle() {
             if (!this.selectedDateLog) {
@@ -89,7 +110,7 @@ export const useDateLogStore = defineStore('dateLogStore', {
             }
         },
         containsFoodDuplicate(foodName) {
-            return this.selectedDateLog?.foodItems.some(food => food.name === foodName);
+            return this.selectedDateLog?.foodItems.some(food => food.name.toLowerCase() === foodName.toLowerCase());
         },
     }
 });

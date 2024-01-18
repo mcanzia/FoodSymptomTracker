@@ -1,1 +1,1 @@
-{"version":3,"file":"ChartTitle.js","sourceRoot":"","sources":["../../src/models/ChartTitle.ts"],"names":[],"mappings":"AAAA,MAAM,OAAO,UAAU;IAKnB,YAAY,IAAa;QACrB,IAAI,CAAC,OAAO,GAAG,IAAI,CAAC;QACpB,IAAI,CAAC,IAAI,GAAG,IAAI,CAAC;IACrB,CAAC;CAGJ"}
+{"version":3,"file":"ChartTitle.js","sourceRoot":"","sources":["../../src/models/ChartTitle.ts"],"names":[],"mappings":"AAAA,MAAM,OAAO,UAAU;IAEnB,OAAO,CAAS;IAChB,IAAI,CAAe;IAEnB,YAAY,IAAa;QACrB,IAAI,CAAC,OAAO,GAAG,IAAI,CAAC;QACpB,IAAI,CAAC,IAAI,GAAG,IAAI,CAAC;IACrB,CAAC;CAGJ"}
