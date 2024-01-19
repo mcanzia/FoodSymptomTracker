@@ -1,8 +1,8 @@
 FROM node:16-alpine
 WORKDIR /app
-COPY package*.json ./
+COPY server/package*.json ./
 RUN npm install
-COPY . .
+COPY server ./
 RUN npm run build
 RUN npm prune --production
 EXPOSE 7500

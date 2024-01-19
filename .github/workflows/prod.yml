@@ -35,7 +35,7 @@ jobs:
           tags: ${{ secrets.DOCKER_USERNAME }}/alimenti-server:latest
 
   build-and-deploy-front:
-    name: Build and Deploy Front-end
+    name: Build and Deploy Server
     runs-on: ubuntu-latest
     steps:
       -
