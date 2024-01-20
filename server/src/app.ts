@@ -9,7 +9,7 @@ import { CustomError } from './util/error/CustomError';
 import { AuthServiceImpl } from './services/AuthServiceImpl';
 
 const app : Express = express();
-const port : number = Number(process.env.VITE_PORT) || 7500;
+const port : number = Number(process.env.VITE_SERVER_PORT) || 7500;
 
 // Middleware
 app.set('view engine', 'ejs');

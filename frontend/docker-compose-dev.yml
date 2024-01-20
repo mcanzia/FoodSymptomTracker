@@ -4,11 +4,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    container_name: flt-frontend
-    environment:
-      - NODE_ENV=development
+    container_name: alimenti-front
     env_file:
-    - ./.env.development
+      - .env.front.development
     ports:
       - "3000:3000"
     restart: unless-stopped

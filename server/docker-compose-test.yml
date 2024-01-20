@@ -3,11 +3,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.test
-    container_name: flt-server-test
-    environment:
-      - NODE_ENV=test
-      - FIRESTORE_EMULATOR_HOST=firebase-emulator:8080
-      - FIREBASE_AUTH_EMULATOR_HOST=firebase-emulator:9099
+    container_name: alimenti-server-test
+    env_file:
+      - .env.server.test
     ports:
       - "7500:7500"
     depends_on:

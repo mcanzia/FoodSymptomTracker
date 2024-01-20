@@ -4,9 +4,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: flt-server
-    environment:
-      - NODE_ENV=production
+    container_name: alimenti-server
+    env_file:
+      - .env.server.production
     volumes:
       - ./logs/server/:/app/logs/server/
     ports:

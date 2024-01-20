@@ -4,10 +4,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    container_name: flt-server
-    environment:
-      - NODE_ENV=development
-      - VITE_PORT=7500
+    container_name: alimenti-server
+    env_file:
+      - .env.server.development
     volumes:
       - ./logs/server/:/app/logs/server/
     ports:
