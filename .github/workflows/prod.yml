@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-and-deploy-back:
-    name: Build and Deploy Front-end
+    name: Build and Deploy Server
     runs-on: ubuntu-latest
     steps:
       -
@@ -33,9 +33,11 @@ jobs:
           file: server/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/alimenti-server:latest
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KEY }}
 
   build-and-deploy-front:
-    name: Build and Deploy Server
+    name: Build and Deploy FrontEnd
     runs-on: ubuntu-latest
     steps:
       -
@@ -58,3 +60,5 @@ jobs:
           file: frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/alimenti-front:latest
+        env:
+          FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
