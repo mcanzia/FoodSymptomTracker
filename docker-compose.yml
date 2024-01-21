@@ -26,14 +26,14 @@ services:
       - local_net
     ports:
       - "7500:7500"
-  watchtower:
-    image: containrrr/watchtower
-    environment:
-        DOCKER_CONFIG: /config
-    volumes:
-      - /etc/watchtower/config/:/config/
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 30
+  # watchtower:
+  #   image: containrrr/watchtower
+  #   environment:
+  #       DOCKER_CONFIG: /config
+  #   volumes:
+  #     - /etc/watchtower/config/:/config/
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   command: --interval 30
 networks:
   local_net:
     driver: bridge
