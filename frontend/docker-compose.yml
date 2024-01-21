@@ -8,7 +8,7 @@ services:
     env_file:
       - .env.front.production
     volumes:
-      - ./certs/alimenti.io.pem:/etc/ssl/certs/alimenti.io.pem
+      - ./certs/alimenti.io.crt:/etc/ssl/certs/alimenti.io.crt
       - ./certs/alimenti.io.key:/etc/ssl/private/alimenti.io.key
       - ./certs/cloudflare.crt:/etc/ssl/certs/cloudflare.crt
     ports:
