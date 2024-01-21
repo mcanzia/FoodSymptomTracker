@@ -60,7 +60,6 @@ jobs:
             echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
             chmod 600 ~/.ssh/id_rsa
             ssh-keyscan -H '${{ secrets.DIGITAL_OCEAN_IP }}' >> ~/.ssh/known_hosts
-
       - name: Copy docker-compose.yml to Droplet
         run: |
           scp ./docker-compose.yml root@${{ secrets.DIGITAL_OCEAN_IP }}:/root/devops/docker-compose.yml
