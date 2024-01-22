@@ -5,8 +5,6 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: alimenti-front
-    env_file:
-      - .env.front.production
     volumes:
       - ./certs/alimenti.io.crt:/etc/ssl/certs/alimenti.io.crt
       - ./certs/alimenti.io.key:/etc/ssl/private/alimenti.io.key

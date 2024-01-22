@@ -25,7 +25,7 @@
     --angle: 27deg; /*  // max pan's angle while flipping (in deg) */
     --peak: 40%; /* // pancake's highest level, obviously ;) */
     --color_back: #ffde6b; /* background */
-    --color: #333; /* the rest */
+    --color: #EEE; /* the rest */
 }
 
 /* body {
@@ -47,7 +47,7 @@
 .bubble {
     position: absolute;
     border-radius: 100%;
-    box-shadow: 0 0 .25vh #595959;
+    box-shadow: 0 0 .25vh #D6D6D6;
     opacity: 0;
 }
 
@@ -56,7 +56,7 @@
     left: 58%;
     width: 2.5vh;
     height: 2.5vh;
-    background-color: #474747;
+    background-color: #D6D6D6;
     animation: bubble 2s cubic-bezier(.53, .16, .39, .96) infinite;
   }
 #cooking .bubble:nth-child(2) {
@@ -64,7 +64,7 @@
     left: 52%;
     width: 2vh;
     height: 2vh;
-    background-color: #404040;
+    background-color: #DCDCDC;
     animation: bubble 2s ease-in-out .35s infinite;
   }
 
@@ -73,7 +73,7 @@
     left: 50%;
     width: 1.5vh;
     height: 1.5vh;
-    background-color: #333;
+    background-color: #EEE;
     animation: bubble 1.5s cubic-bezier(.53, .16, .39, .96) .55s infinite;
   }
 
@@ -82,7 +82,7 @@
     left: 56%;
     width: 1.2vh;
     height: 1.2vh;
-    background-color: #303030;
+    background-color: #E8E8E8;
     animation: bubble 1.8s cubic-bezier(.53, .16, .39, .96) .9s infinite;
   }
 
@@ -91,7 +91,7 @@
     left: 63%;
     width: 1.1vh;
     height: 1.1vh;
-    background-color: #2e2e2e;
+    background-color: #E9E9E9;
     animation: bubble 1.6s ease-in-out 1s infinite;
 }
 
@@ -122,7 +122,7 @@
         width: 35%;
         height: 20%;
         background-color: transparent;
-        border-top: 1vh solid #333;
+        border-top: 1vh solid #EEE;
         border-left: 1vh solid transparent;
         border-radius: 100%;
         transform: rotate(20deg) rotateX(0deg) scale(1.3, .9);
@@ -133,7 +133,7 @@
         right: 30%;
         width: 50%;
         height: 8%;
-        background-color: #333;
+        background-color: #EEE;
         border-radius: 0 0 1.4em 1.4em;
         transform-origin: -15% 0;
 }
@@ -153,8 +153,8 @@
         right: 37%;
         width: 40%;
         height: 45%;
-        background-color: #333;
-        box-shadow: 0 0 3px 0 #333;
+        background-color: #EEE;
+        box-shadow: 0 0 3px 0 #EEE;
         border-radius: 100%;
         transform-origin: -20% 0;
         animation: fly 2.1s ease-in-out infinite;

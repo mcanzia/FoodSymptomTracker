@@ -2,8 +2,15 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInAnonymously, signInWithPopup } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-console.log('help meee' + process.env.VITE_FIREBASE_CONFIG);
-const firebaseConfig = JSON.parse(process.env.VITE_FIREBASE_CONFIG);
+const firebaseConfig = {
+    apiKey: "AIzaSyAjFwD4yxlxQhu-BH_s6GBkN4mmsk4wJkg",
+    authDomain: "crohns-food-tracker.firebaseapp.com",
+    projectId: "crohns-food-tracker",
+    storageBucket: "crohns-food-tracker.appspot.com",
+    messagingSenderId: "214611572141",
+    appId: "1:214611572141:web:9004ff3e3531e9f8ae5d24",
+    measurementId: "G-0RV46C1JM5"
+};
 const firebaseApp = initializeApp(firebaseConfig);
 let auth = getAuth(firebaseApp);
 auth.createUserWithEmailAndPassword = createUserWithEmailAndPassword;

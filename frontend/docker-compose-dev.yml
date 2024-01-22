@@ -5,8 +5,6 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     container_name: alimenti-front
-    env_file:
-      - .env.front.development
     ports:
       - "80:3000"
     restart: unless-stopped

@@ -30,8 +30,7 @@ userStore.initalizeAuthListener();
 body {
   background-color:#143542;
   margin: 0;
-  display: grid;
-  padding: 0px 20px 20px 20px;
+  overflow: hidden;
 }
 
 .center {

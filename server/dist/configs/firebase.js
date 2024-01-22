@@ -5,7 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.firebaseAdmin = exports.db = void 0;
 const firebase_admin_1 = __importDefault(require("firebase-admin"));
-const serviceAccountKey_json_1 = __importDefault(require("./serviceAccountKey.json"));
+const serviceKey = process.env.FIREBASE_SERVICE_ACCOUNT_KEY
+    ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY)
+    : require('./serviceAccountKey.json');
 if (process.env.NODE_ENV === 'test') {
     process.env.FIRESTORE_EMULATOR_HOST = 'localhost:8080';
     process.env.FIREBASE_AUTH_EMULATOR_HOST = 'localhost:9099';
@@ -15,7 +17,7 @@ if (process.env.NODE_ENV === 'test') {
 }
 else {
     firebase_admin_1.default.initializeApp({
-        credential: firebase_admin_1.default.credential.cert(serviceAccountKey_json_1.default)
+        credential: firebase_admin_1.default.credential.cert(serviceKey)
     });
 }
 exports.db = firebase_admin_1.default.firestore();

@@ -2,7 +2,7 @@
       <nav>
             <ul>
               <li id="logoButton">
-                <a @click="redirectToHome()" class="title"><b>LOGO</b></a>
+                <a @click="redirectToHome()" class="title"><b>Alimenti</b></a>
               </li>
               <li id="logsButton">
                 <a @click="redirectToHome()">Logs</a>
@@ -71,6 +71,7 @@ li a {
 
 .title {
   font-size: x-large;
+  font-family: 'Nickainley', Helvetica, Arial, sans-serif;
 }
 
 </style>
