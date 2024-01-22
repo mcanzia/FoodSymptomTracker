@@ -5,7 +5,7 @@ import { Auth, getAuth, GoogleAuthProvider,
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
-
+console.log(import.meta.env.VITE_FIREBASE_CONFIG);
 const firebaseConfig = JSON.parse(import.meta.env.VITE_FIREBASE_CONFIG);
 
 const firebaseApp = initializeApp(firebaseConfig);
