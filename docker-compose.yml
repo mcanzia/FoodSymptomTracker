@@ -3,8 +3,6 @@ services:
   app:
     container_name: alimenti-front
     image: index.docker.io/mcanziani1/alimenti-front:latest
-    env_file:
-      - .env.front.production
     volumes:
       - ./certs/alimenti.io.crt:/etc/ssl/certs/alimenti.io.crt
       - ./certs/alimenti.io.key:/etc/ssl/private/alimenti.io.key
