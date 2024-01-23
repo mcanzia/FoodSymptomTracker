@@ -7,7 +7,8 @@
           <router-view />
         </div>
     </div>
-    <Login v-else-if="!userStore.isLoading" />
+    <Login v-else-if="!userStore.isLoading && !isMobile()" />
+    <LoginMobile v-else-if="!userStore.isLoading && isMobile()" />
     <div v-else class="center">
         <PancakeLoader />
     </div>
@@ -16,6 +17,7 @@
 
 <script setup>
 import Login from './components/Login.vue';
+import LoginMobile from './components/LoginMobile.vue';
 import Navbar from './components/Navbar.vue';
 import PancakeLoader from './components/PancakeLoader.vue';
 import ErrorToast from './components/ErrorToast.vue';
@@ -23,6 +25,10 @@ import { useUserStore } from './stores/userStore';
 
 const userStore = useUserStore();
 userStore.initalizeAuthListener();
+
+function isMobile() {
+  return screen.width <= 770 ? true : false;
+}
 
 </script>
 

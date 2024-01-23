@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 // import { auth } from '../firebase'
 import Home from '../components/Home.vue';
 import Login from '../components/Login.vue';
+import LoginMobile from '../components/LoginMobile.vue';
 import UserProfile from '../components/UserProfile.vue';
 import Layout from '../components/Layout.vue';
 import Summary from '../components/Summary.vue';
@@ -19,6 +20,11 @@ const routes = [
         path: '/login',
         name: 'login',
         component: Login
+    },
+    {
+        path: '/login-mobile',
+        name: 'login-mobile',
+        component: LoginMobile
     },
     {
         path: '/profile',
