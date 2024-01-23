@@ -38,6 +38,7 @@ button {
   border-radius: 10px;
   cursor: pointer;
   margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 </style>

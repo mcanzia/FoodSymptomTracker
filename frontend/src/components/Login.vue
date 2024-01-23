@@ -102,7 +102,6 @@ function sendPasswordResetEmail() {
 }
 
 function validateLoginForm() {
-    console.log("ok");
     return validateEmailField() && validatePasswordField();
 }
 
@@ -125,7 +124,6 @@ function validateEmailField() {
 
 function validatePasswordField() {
     if (loginForm.password === null || loginForm.password === "") {
-        console.log("haha");
         setWarningMessage(passwordInputRef.value, "Password field is required");
         return false;
     }
