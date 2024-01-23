@@ -14,7 +14,9 @@ export const useUserStore = defineStore('userStore', {
             this.isLoading = true;
             await auth.onAuthStateChanged(authUser => {
                 this.user = authUser ? authUser : null;
-                this.isLoading = false;
+                setTimeout(() => {
+                    this.isLoading = false;
+                }, 1000);
             });
         },
         async getAccessToken() {
