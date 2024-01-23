@@ -3,6 +3,7 @@ import { RequestType } from "../../models/RequestType";
 import { useErrorStore } from '../../stores/errorStore';
 
 import * as Sentry from "@sentry/vue";
+import { FirebaseError } from 'firebase/app';
 
 export class ErrorHandler {
 
@@ -10,9 +11,13 @@ export class ErrorHandler {
         console.log("Error occurred. Please try again.");
     }
 
-    static handleUserAuthError<T>(user : any, error : Error) {
+    static handleUserAuthError<T>(user : any, error : FirebaseError) {
         const errorStore = useErrorStore();
-        errorStore.setError("Error occurred during user authentication. Please try again.");
+        if (error.code === 'auth/email-already-in-use') {
+            errorStore.setError("This email is already in use. Please try a different one.");
+        } else {
+            errorStore.setError("Error occurred during user authentication. Please try again.");
+        }
 
         Sentry.captureException(error, {
             tags: {

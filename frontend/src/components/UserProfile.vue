@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <p>Logged in as {{ auth.currentUser.displayName }}</p>
+        <!-- <p>Logged in as {{ auth.currentUser.displayName }}</p> -->
         <button @click="logout()">Sign Out</button>
     </div>
 </template>

@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInAnonymously, signInWithPopup } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInAnonymously, signInWithPopup, sendPasswordResetEmail } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 const firebaseConfig = {
@@ -18,6 +18,7 @@ auth.signInWithEmailAndPassword = signInWithEmailAndPassword;
 auth.signInAnonymously = signInAnonymously;
 auth.signInWithPopup = signInWithPopup;
 auth.GoogleAuthProvider = GoogleAuthProvider;
+auth.sendPasswordResetEmail = sendPasswordResetEmail;
 let db = getFirestore(firebaseApp);
 db.doc = doc;
 db.getDoc = getDoc;

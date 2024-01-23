@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { Auth, getAuth, GoogleAuthProvider, 
   createUserWithEmailAndPassword, signInWithEmailAndPassword, 
-  signInAnonymously, signInWithPopup} from 'firebase/auth';
+  signInAnonymously, signInWithPopup, sendPasswordResetEmail} from 'firebase/auth';
 import { getFirestore, doc, getDoc, Firestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
@@ -23,6 +23,7 @@ interface AuthFunctions extends Auth {
   signInAnonymously: any;
   signInWithPopup: any;
   GoogleAuthProvider: any;
+  sendPasswordResetEmail : any;
 }
 
 let auth = getAuth(firebaseApp) as AuthFunctions;
@@ -31,6 +32,7 @@ auth.signInWithEmailAndPassword = signInWithEmailAndPassword;
 auth.signInAnonymously = signInAnonymously;
 auth.signInWithPopup = signInWithPopup;
 auth.GoogleAuthProvider = GoogleAuthProvider;
+auth.sendPasswordResetEmail = sendPasswordResetEmail;
 
 interface FirestoreFunctions extends Firestore {
   doc : any;

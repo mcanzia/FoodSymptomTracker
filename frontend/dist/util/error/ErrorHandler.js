@@ -7,7 +7,12 @@ export class ErrorHandler {
     }
     static handleUserAuthError(user, error) {
         const errorStore = useErrorStore();
-        errorStore.setError("Error occurred during user authentication. Please try again.");
+        if (error.code === 'auth/email-already-in-use') {
+            errorStore.setError("This email is already in use. Please try a different one.");
+        }
+        else {
+            errorStore.setError("Error occurred during user authentication. Please try again.");
+        }
         Sentry.captureException(error, {
             tags: {
                 operation: "Authentication"

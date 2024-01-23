@@ -37,6 +37,7 @@ export const useUserStore = defineStore('userStore', {
       async registerUser(email : string, password : string) {
         try {
           await auth.createUserWithEmailAndPassword(auth, email, password);
+          await this.setUpNewUser();
         } catch (error : any) {
           ErrorHandler.handleUserAuthError(this.user, error);
         }
@@ -44,6 +45,7 @@ export const useUserStore = defineStore('userStore', {
       async loginUser(email : string, password : string) {
         try {
           await auth.signInWithEmailAndPassword(auth, email, password);
+          await this.setUpNewUser();
         } catch (error : any) {
           ErrorHandler.handleUserAuthError(this.user, error);
         }
@@ -66,6 +68,13 @@ export const useUserStore = defineStore('userStore', {
       async logoutUser() {
         try {
           await auth.signOut();
+        } catch (error : any) {
+          ErrorHandler.handleUserAuthError(this.user, error);
+        }
+      },
+      async sendPasswordResetEmail(email : string) {
+        try {
+          await auth.sendPasswordResetEmail(email);
         } catch (error : any) {
           ErrorHandler.handleUserAuthError(this.user, error);
         }

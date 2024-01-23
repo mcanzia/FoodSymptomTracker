@@ -4,11 +4,11 @@
                 <div class="form-wrapper">
                     <h1>{{ newUser ? 'Create Your Account' : 'Alimenti' }}</h1>
                     <label id="email-label" for="email-input"><b>Email</b></label>
-                    <input type="email" id="email-input" placeholder="Enter email" v-model="loginForm.email" required>
+                    <input type="email" id="email-input" placeholder="Enter email" v-model="loginForm.email" required ref="emailInputRef">
                     <label id="password-label" for="password-input"><b>Password</b></label>
-                    <input type="password" id="password-input" placeholder="Enter password" v-model="loginForm.password" required>
+                    <input type="password" id="password-input" placeholder="Enter password" v-model="loginForm.password" required ref="passwordInputRef">
                     <label v-if="newUser" id="confirm-password-label" for="confirm-password-input"><b>Confirm Password</b></label>
-                    <input v-if="newUser" type="password" id="confirm-password-input" placeholder="Enter password" v-model="loginForm.confirmPassword" required>
+                    <input v-if="newUser" type="password" id="confirm-password-input" placeholder="Enter password" v-model="loginForm.confirmPassword" required ref="confirmPasswordInputRef">
                     <button @click="signInOrCreateUser()" class="default-button">{{ newUser ? 'Register' : 'Login' }}</button>
                     <button class="accent-button" @click="toggleNewUser()">{{ newUser ? 'Already have an account?' : 'Don\'t have an account?' }}</button>
                     <button v-if="!newUser" class="google-signin" @click="googleSignIn()">
@@ -19,8 +19,8 @@
                 </div>
                 <div class="spacer"></div>
                 <div class="link-container">
-                    <a href="#">Forgot password?</a>
-                    <a href="#" @click="signInAnonymously()">Try it out?</a>
+                    <a href="#" @click="sendPasswordResetEmail()">Forgot password?</a>
+                    <!-- <a href="#" @click="signInAnonymously()">Try it out?</a> -->
                 </div>
             </div>
             <div class="flex-column">
@@ -45,6 +45,11 @@ let loginForm = {
     confirmPassword: ''
 }
 
+const emailInputRef = ref(null);
+const passwordInputRef = ref(null);
+const confirmPasswordInputRef = ref(null);
+
+
 //Functions
 async function signInAnonymously() {
     errorMessage.value = '';
@@ -56,13 +61,13 @@ async function signInOrCreateUser() {
     errorMessage.value = '';
     try {
         if (newUser.value) {
-            if (loginForm.confirmPassword && loginForm.password === loginForm.confirmPassword) {
+            if (validateRegistrationForm()) {
                 userStore.registerUser(loginForm.email, loginForm.password);
-            } else {
-                throw new Error("Passwords do not match");
             }
         } else {
-            userStore.loginUser(loginForm.email, loginForm.password);
+            if (validateLoginForm()) {
+                userStore.loginUser(loginForm.email, loginForm.password);
+            }
         }
     } catch (error) {
         errorMessage.value = error.message;
@@ -88,6 +93,71 @@ function onReset() {
 
 function toggleNewUser() {
     newUser.value = !newUser.value;
+}
+
+function sendPasswordResetEmail() {
+    if (validateEmailField()) {
+        userStore.sendPasswordResetEmail(loginForm.email);
+    }
+}
+
+function validateLoginForm() {
+    console.log("ok");
+    return validateEmailField() && validatePasswordField();
+}
+
+function validateRegistrationForm() {
+    return validateEmailField() && validatePasswordField() && validateConfirmPasswordField();
+}
+
+function validateEmailField() {
+    if (loginForm.email === null || loginForm.email === "") {
+        setWarningMessage(emailInputRef.value, "Email field is required");
+        return false;
+    }
+    let regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    if (!regex.test(loginForm.email)) {
+        setWarningMessage(emailInputRef.value, "Email field is improper format");
+        return false;
+    }
+    return true;
+}
+
+function validatePasswordField() {
+    if (loginForm.password === null || loginForm.password === "") {
+        console.log("haha");
+        setWarningMessage(passwordInputRef.value, "Password field is required");
+        return false;
+    }
+    if (loginForm.password.length < 6) {
+        setWarningMessage(passwordInputRef.value, "Password must be longer than 6 characters");
+        return false;
+    }
+    return true;
+}
+
+function validateConfirmPasswordField() {
+    if (loginForm.confirmPassword === null || loginForm.confirmPassword === "") {
+        setWarningMessage(confirmPasswordInputRef.value, "Confirm password field is required");
+        return false;
+    }
+    if (loginForm.confirmPassword.length < 6) {
+        setWarningMessage(confirmPasswordInputRef.value, "Password must be longer than 6 characters");
+        return false;
+    }
+    if (loginForm.confirmPassword !== loginForm.password) {
+        setWarningMessage(confirmPasswordInputRef.value, "Passwords must match");
+        return false;
+    }
+    return true;
+}
+
+function setWarningMessage(refTarget, message) {
+  refTarget.setCustomValidity(message);
+  refTarget.reportValidity();
+  setTimeout(() => {
+    refTarget.setCustomValidity("");
+  },2000);
 }
 
 </script>
