@@ -18,12 +18,13 @@
             </span>
         </div>
         <div class="component-options-container" id="component-checkbox">
-            <div class="component-checkbox" v-for="(option, index) in component.selectOptions" :key="index">
+            <div class="component-checkbox" v-for="(option, index) in component.selectOptions" :key="option">
                 <input 
                     type="checkbox" 
                     :name="'btncheckbox_' + component.id"
                     :id="'btncheckbox_' + index" 
                     :disabled="disabled"
+                    :value="option.value"
                     v-model="component.values[index]">
                 <label :for="'btncheckbox_' + index" >{{ option.text }}</label>
             </div>

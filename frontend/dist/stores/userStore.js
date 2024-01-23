@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import { ErrorHandler } from '../util/error/ErrorHandler';
+import { useComponentStore } from './componentStore';
 export const useUserStore = defineStore('userStore', {
     state: () => ({
         user: null,
@@ -53,7 +54,8 @@ export const useUserStore = defineStore('userStore', {
         },
         async loginUserGoogle() {
             try {
-                await auth.signInWithPopup(auth, new auth.GoogleAuthProvider());
+                const response = await auth.signInWithPopup(auth, new auth.GoogleAuthProvider());
+                await this.setUpNewUser();
             }
             catch (error) {
                 ErrorHandler.handleUserAuthError(this.user, error);
@@ -62,6 +64,19 @@ export const useUserStore = defineStore('userStore', {
         async logoutUser() {
             try {
                 await auth.signOut();
+            }
+            catch (error) {
+                ErrorHandler.handleUserAuthError(this.user, error);
+            }
+        },
+        async setUpNewUser() {
+            try {
+                const userDocRef = db.doc(db, "users", this.user.uid);
+                const userDoc = await db.getDoc(userDocRef);
+                if (!userDoc.exists()) {
+                    const componentStore = useComponentStore();
+                    await componentStore.addNewUserComponents();
+                }
             }
             catch (error) {
                 ErrorHandler.handleUserAuthError(this.user, error);

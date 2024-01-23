@@ -2,7 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { Auth, getAuth, GoogleAuthProvider, 
   createUserWithEmailAndPassword, signInWithEmailAndPassword, 
   signInAnonymously, signInWithPopup} from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, Firestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
@@ -32,7 +32,15 @@ auth.signInAnonymously = signInAnonymously;
 auth.signInWithPopup = signInWithPopup;
 auth.GoogleAuthProvider = GoogleAuthProvider;
 
-const db = getFirestore(firebaseApp);
+interface FirestoreFunctions extends Firestore {
+  doc : any;
+  getDoc : any;
+}
+
+let db = getFirestore(firebaseApp) as FirestoreFunctions;
+db.doc = doc;
+db.getDoc = getDoc;
+
 const storage = getStorage(firebaseApp);
 
 export {auth, db, storage};

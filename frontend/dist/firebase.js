@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInAnonymously, signInWithPopup } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 const firebaseConfig = {
     apiKey: "AIzaSyAjFwD4yxlxQhu-BH_s6GBkN4mmsk4wJkg",
@@ -18,7 +18,9 @@ auth.signInWithEmailAndPassword = signInWithEmailAndPassword;
 auth.signInAnonymously = signInAnonymously;
 auth.signInWithPopup = signInWithPopup;
 auth.GoogleAuthProvider = GoogleAuthProvider;
-const db = getFirestore(firebaseApp);
+let db = getFirestore(firebaseApp);
+db.doc = doc;
+db.getDoc = getDoc;
 const storage = getStorage(firebaseApp);
 export { auth, db, storage };
 //# sourceMappingURL=firebase.js.map
