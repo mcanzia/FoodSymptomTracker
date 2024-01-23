@@ -159,8 +159,8 @@ function setWarningMessage(refTarget, message) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 100%;
-    width: 80%;
+    height: 93vh;
+    width: 80vw;
     padding: 0px 20px;
 }
 
@@ -169,21 +169,14 @@ function setWarningMessage(refTarget, message) {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     gap: 20px;
     flex-grow: 1;
 }
 
 .spacer {
     flex-grow: 1;
-}
-
-.flex-column:last-of-type {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
 }
 
 h1 {

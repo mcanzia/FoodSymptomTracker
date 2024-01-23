@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-container">
     <ErrorToast id="error-notification" aria-label="error-notification"></ErrorToast>
     <div v-if="!userStore.isLoading && userStore.isLoggedIn">
         <Navbar />
@@ -33,10 +33,19 @@ function isMobile() {
 </script>
 
 <style>
+html {
+  height: 100vh;
+}
+
 body {
   background-color:#143542;
+  height: 100vh;
   margin: 0;
   overflow: hidden;
+}
+
+.app-container {
+  height: 100vh;
 }
 
 .center {
