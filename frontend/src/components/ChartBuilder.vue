@@ -121,11 +121,10 @@ async function resetChartForm() {
 
 async function saveChart() {
     await chartStore.addCharts();
-    this.closeChartBuilder();
+    closeChartBuilder();
 }
 
 async function closeChartBuilder() {
-    // resetNewChart();
     await router.push({ name: 'summary'});
 }
 
