@@ -207,6 +207,7 @@ h1 {
     font-size: 500%;
     margin: 0;
     margin-top: 10px;
+    text-align: center;
 }
 
 img {

@@ -185,6 +185,15 @@ h1 {
     font-size: 500%;
     margin: 0;
     margin-top: 10px;
+    text-align: center;
+    letter-spacing: -0.5px;
+}
+
+@media only screen and (max-width: 399px) {
+    h1 {
+        font-size: 250%;
+        width: 80vw;
+    }
 }
 
 .link-container {
@@ -205,6 +214,17 @@ button {
     min-width: 45%;
     font-size: large;
 }
+
+.default-button:hover {
+    background-color: #846F91;
+    border: #846F91;
+}
+
+.accent-button:hover {
+    background-color: none;
+    border: #846F91;
+}
+
 .google-signin {
     height: 50px;
     width: 250px;
@@ -223,12 +243,6 @@ button {
 
 .google-signin > ion-icon {
     color: #1b63c1;
-}
-
-.google-signin:hover {
-    background-color: #423748;
-    border: #423748;
-    color: #FFFFFF;
 }
 
 input {
