@@ -1,5 +1,8 @@
 <template>
-    <div class="container">
+    <div class="container"
+        @touchstart="handleTouchStart" 
+        @touchmove="handleTouchMove" 
+        @touchend="handleTouchEnd">
         <div class="date-header-container">
             <div id="homeHeader" @click.self="closeCalendar()" role="heading" aria-labelledby="calendarLabel" aria-level="1">
                 <div>
@@ -24,12 +27,14 @@
                     </template>
                 </DropDown>
         </div>
-        <FoodLogBase id="homeBody" :editMode="logEditMode" @click="closeCalendar()" role="main" />
+        <FoodLogBase v-if="!isMobile()" id="homeBody" :editMode="logEditMode" @click="closeCalendar()" role="main" />
+        <FoodLogBaseMobile v-else id="homeBody" :editMode="logEditMode" @click="closeCalendar()" role="main" />
     </div>
 </template>
 
 <script setup>
 import FoodLogBase from './FoodLogBase.vue';
+import FoodLogBaseMobile from './FoodLogBaseMobile.vue';
 import AirCalendar from './AirCalendar.vue';
 import { storeToRefs } from 'pinia';
 import DropDown from './DropDown.vue';
@@ -55,6 +60,13 @@ let dayTitle = "";
 let calendarSelection = new Date();
 let allFoods = [];
 let calendarActive = ref(false);
+let touchCoordinates = {
+    touchStartX: 0,
+    touchStartY: 0,
+    touchEndX: 0,
+    touchEndY: 0
+}
+      
 
 let currentDateString = computed(() => {
   return new Date().toLocaleDateString();
@@ -63,6 +75,10 @@ let currentDateString = computed(() => {
 let currentDate = computed(() => {
   return new Date();
 });
+
+function isMobile() {
+  return screen.width <= 770 ? true : false;
+}
 
 async function saveOrEdit() {
     if (logEditMode.value) {
@@ -107,6 +123,30 @@ function closeCalendar() {
 function closeEditMode() {
     dateLogStore.selectedDateLog = JSON.parse(JSON.stringify(dateLogStore.dateLogCopy));
     logEditMode.value = false;
+}
+
+function handleTouchStart(event) {
+    touchCoordinates.touchStartX = event.changedTouches[0].screenX;
+    touchCoordinates.touchStartY = event.changedTouches[0].screenY;
+}
+function handleTouchEnd(event) {
+    touchCoordinates.touchEndX = event.changedTouches[0].screenX;
+    touchCoordinates.touchEndY = event.changedTouches[0].screenY;
+    if (!logEditMode.value) {
+        handleSwipeGesture();
+    }
+}
+function handleSwipeGesture() {
+    const deltaX = touchCoordinates.touchEndX - touchCoordinates.touchStartX;
+    const deltaY = touchCoordinates.touchEndY - touchCoordinates.touchStartY;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX >= 100) {
+            goToPreviousDay();
+        } else if (deltaX <= -100) {
+            goToNextDay();
+        }
+    }
 }
 
 function testEndpoints() {
@@ -194,17 +234,28 @@ a:link, a:visited, a:hover, a:active {
     text-decoration: none;
 }
 
-
-#homeHeader a, h1 {
-    display: inline;
-    margin: 10px;
-}
-
 #homeHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-top: 20px;
+}
+
+@media only screen and (max-width: 700px) {
+    #homeHeader {
+        flex-direction: column;
+    }
+
+    #homeHeader button {
+        margin-top: 10px;
+        margin-bottom: 5px;
+        margin-right: 15px;
+    }
+}
+
+#homeHeader a, h1 {
+    display: inline;
+    margin: 10px;
 }
 
 #homeHeader a {
