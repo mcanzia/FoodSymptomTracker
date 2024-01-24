@@ -159,9 +159,8 @@ function setWarningMessage(refTarget, message) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 93vh;
-    width: 80vw;
-    padding: 0px 20px;
+    height: 90vh;
+    width: 100vw;
 }
 
 .form-wrapper {
@@ -173,6 +172,7 @@ function setWarningMessage(refTarget, message) {
     height: 100vh;
     gap: 20px;
     flex-grow: 1;
+    overflow-y: scroll;
 }
 
 .spacer {
@@ -190,8 +190,8 @@ h1 {
 .link-container {
     display: flex;
     justify-content: space-between;
-    width: 100%;
-    padding: 0px 20px;
+    width: 100vw;
+    padding-left: 10vw;
   }
 
 a {
