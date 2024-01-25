@@ -7,6 +7,7 @@ import UserProfile from '../components/UserProfile.vue';
 import Layout from '../components/Layout.vue';
 import Summary from '../components/Summary.vue';
 import ChartBuilder from '../components/ChartBuilder.vue';
+import ChartBuilderMobile from '../components/ChartBuilderMobile.vue';
 const routes = [
     {
         path: '/',
@@ -54,6 +55,14 @@ const routes = [
         path: '/chart-builder',
         name: 'chart-builder',
         component: ChartBuilder,
+        meta: {
+            requiresAuth: true
+        }
+    },
+    {
+        path: '/chart-builder-mobile',
+        name: 'chart-builder-mobile',
+        component: ChartBuilderMobile,
         meta: {
             requiresAuth: true
         }

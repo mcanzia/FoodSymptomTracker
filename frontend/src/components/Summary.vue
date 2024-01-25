@@ -38,7 +38,7 @@ const chartBuilderActive = ref(false);
 const datePickerActive = ref(false);
 
 onBeforeMount(async() => {
-    chartStore.initializeChartShapeParams();
+    // chartStore.initializeChartShapeParams();
     await chartStore.initializeCharts();
     chartBuilderActive.value = false;
 });
@@ -70,7 +70,11 @@ let minEndDate = computed(() => {
 
 async function openChartBuilder() {
     createTempChart();
-    await router.push({ name: 'chart-builder'});
+    if (isMobile()) {
+        await router.push({ name: 'chart-builder-mobile'});
+    } else {
+        await router.push({ name: 'chart-builder'});
+    }
 }
 
 function createTempChart() {
@@ -98,6 +102,10 @@ async function setDateRange(selectedDateRange) {
         datePickerActive.value = false;
         await chartStore.recalculateCharts();
     }
+}
+
+function isMobile() {
+  return screen.width <= 770 ? true : false;
 }
 
 </script>

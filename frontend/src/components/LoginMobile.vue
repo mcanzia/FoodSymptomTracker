@@ -186,7 +186,7 @@ h1 {
     margin: 0;
     margin-top: 10px;
     text-align: center;
-    letter-spacing: -1px;
+    letter-spacing: -1.5px;
 }
 
 @media only screen and (max-width: 399px) {

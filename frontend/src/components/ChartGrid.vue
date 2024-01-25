@@ -1,6 +1,6 @@
 <template>
   <div class="chart-grid-container">
-        <div class="type-layer" v-for="(shapeParam) in chartStore.chartShapeParams" :key="shapeParam.name">
+        <div class="type-layer" v-for="(shapeParam, index) in chartStore.chartShapeParams" :key="shapeParam.name" :ref="setTypeLayerRef(index)">
           <div class="type-label-dropdown" @click="shapeParam.isOpen = !shapeParam.isOpen">
             <h3>{{ shapeParam.name.toLocaleUpperCase() }}</h3>
             <span class="toggle-icon">
@@ -27,12 +27,36 @@
   </template>
   
 <script setup>
-import { ref, computed, onBeforeMount } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useChartStore } from '../stores/chartStore';
 import router from "../router/index";
 import Chart from './Chart.vue';
 
 const chartStore = useChartStore();
+const typeLayerRefs = ref([]);
+typeLayerRefs.value.push(ref(null));
+typeLayerRefs.value.push(ref(null));
+typeLayerRefs.value.push(ref(null));
+typeLayerRefs.value.push(ref(null));
+typeLayerRefs.value.push(ref(null));
+typeLayerRefs.value.push(ref(null));
+typeLayerRefs.value.push(ref(null));
+
+function setTypeLayerRef(index) {
+  return el => {
+    if (el) {
+      typeLayerRefs.value[index] = el;
+    }
+  };
+}
+
+onMounted(() => {
+    if (typeLayerRefs.value[0].value) {
+      const typeLayerWidth = typeLayers[0].value.offsetWidth;
+      chartStore.initializeChartShapeParams(typeLayerWidth);
+    }
+    
+});
 
 let charts = computed(() => chartStore.charts);
 

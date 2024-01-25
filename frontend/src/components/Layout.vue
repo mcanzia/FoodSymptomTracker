@@ -179,6 +179,7 @@ h2 {
 
     .add-component-container button {
       width: 100%;
+      margin: 0;
     }
 }
 
