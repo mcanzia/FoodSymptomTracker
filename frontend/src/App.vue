@@ -7,7 +7,7 @@
           <router-view />
         </div>
     </div>
-    <div v-if="!userStore.isLoading && userStore.isLoggedIn && isMobile()">
+    <div v-else-if="!userStore.isLoading && userStore.isLoggedIn && isMobile()">
         <div class="display-box-mobile">
           <router-view />
         </div>
@@ -80,8 +80,8 @@ body {
   padding-right: 20px;
   width: 90vw;
   max-width: 90vw;
-  height: 90vh;
-  max-height: 90vh;
+  height: 80vh;
+  max-height: 80vh;
 }
 
 </style>

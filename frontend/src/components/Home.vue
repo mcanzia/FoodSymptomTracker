@@ -241,7 +241,7 @@ a:link, a:visited, a:hover, a:active {
   padding-top: 20px;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 770px) {
     #homeHeader {
         flex-direction: column;
     }

@@ -1,7 +1,16 @@
 <template>
    <div class="container" @click.self="closeNewComponentModal()">
         <div class="flex-column component-container">
-            <div class="add-component-container">
+            <div v-if="isMobile()" class="add-component-container">
+              <button  @click="toggleNewComponentModal">Add Component</button>
+              <h2>Available Components: </h2>
+              <DropDown v-if="newComponentModalActive" class="add-component-dropdown">
+                <template v-slot:body>
+                  <AddComponent @closeAddComponentPanel="closeNewComponentModal"/>
+                </template>
+              </DropDown>
+            </div>
+            <div v-else class="add-component-container">
               <h2>Available Components: </h2>
               <button @click="toggleNewComponentModal">Add Component</button>
               <DropDown v-if="newComponentModalActive" class="add-component-dropdown">
@@ -88,6 +97,10 @@ function closeNewComponentModal() {
   newComponentModalActive.value = false;
 }
 
+function isMobile() {
+  return screen.width <= 770 ? true : false;
+}
+
 </script>
 
 <style scoped>
@@ -142,5 +155,31 @@ h2 {
     animation: fade 0.3s linear forwards;
     z-index: 100;
   }
+
+@media only screen and (max-width: 770px) {
+    .container {
+      flex-direction: column-reverse;
+      flex-wrap: nowrap;
+      height: 80vh;
+      overflow-y: scroll;
+      overflow-x: hidden;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    .component-display {
+      overflow: hidden;
+    }
+
+    .add-component-container {
+      flex-direction: column;
+    }
+
+    .add-component-container button {
+      width: 100%;
+    }
+}
 
 </style>
