@@ -12,7 +12,7 @@ const logger_1 = __importDefault(require("./util/logs/logger"));
 const ErrorHandler_1 = require("./util/error/ErrorHandler");
 const AuthServiceImpl_1 = require("./services/AuthServiceImpl");
 const app = (0, express_1.default)();
-const port = Number(process.env.VITE_SERVER_PORT) || 7500;
+const port = Number(process.env.VITE_PORT) || 7500;
 // Middleware
 app.set('view engine', 'ejs');
 app.set('views', path_1.default.join(__dirname, 'views'));
@@ -48,6 +48,6 @@ app.use((request : Request, response : Response, next : NextFunction) => {
   response.status(404).render('404', { title: 'Page Not Found' });
 })*/
 //Server Activation
-app.listen(port, '0.0.0.0', () => {
+app.listen(port, () => {
     logger_1.default.info(`Listening to requests on http://localhost:${port}`);
 });

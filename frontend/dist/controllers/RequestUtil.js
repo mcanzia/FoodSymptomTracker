@@ -1,7 +1,7 @@
 import { RequestType } from "../models/RequestType";
 export class RequestUtil {
     static getAPIUrl() {
-        return "http://localhost:7500";
+        return import.meta.env.VITE_SERVER_API_URL ? import.meta.env.VITE_SERVER_API_URL : "http://alimenti-back:7500";
     }
     static GETRequestParams(userAuthToken) {
         const bearer = 'Bearer ' + userAuthToken;

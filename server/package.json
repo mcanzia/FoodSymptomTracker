@@ -11,7 +11,7 @@
     "docker-test-build": "docker-compose -f docker-compose-test.yml up --build --remove-orphans -d",
     "test": "cross-env NODE_ENV=test vitest --reporter verbose --config dist/vitest.config.js",
     "coverage": "cross-env NODE_ENV=test vitest run --coverage",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -r dotenv/config -q dist/app.js\""
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -r dotenv/config dist/app.js dotenv_config_path=.env.server.development -q\""
   },
   "keywords": [],
   "author": "",
