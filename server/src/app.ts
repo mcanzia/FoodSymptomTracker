@@ -58,8 +58,8 @@ if (process.env.ENV === 'development') {
   });
 } else {
   //HTTPS Setup
-  const privateKey = fs.readFileSync('key.pem', 'utf8');
-  const certificate = fs.readFileSync('cert.pem', 'utf8');
+  const privateKey = fs.readFileSync('alimenti-back.key', 'utf8');
+  const certificate = fs.readFileSync('alimenti-back.crt', 'utf8');
   const credentials = { key: privateKey, cert: certificate };
   const httpsServer = https.createServer(credentials, app);
 
