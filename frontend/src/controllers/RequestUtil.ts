@@ -2,7 +2,7 @@ import { RequestType } from "../models/RequestType";
 
 export class RequestUtil {
     static getAPIUrl() {
-        return import.meta.env.VITE_SERVER_API_URL ? import.meta.env.VITE_SERVER_API_URL : "https://alimenti-back:7500";
+        return import.meta.env.VITE_SERVER_API_URL ? import.meta.env.VITE_SERVER_API_URL : "https://localhost:7500";
     }
 
     static GETRequestParams(userAuthToken : any) {
