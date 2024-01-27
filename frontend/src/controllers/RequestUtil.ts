@@ -2,7 +2,7 @@ import { RequestType } from "../models/RequestType";
 
 export class RequestUtil {
     static getAPIUrl() {
-        return import.meta.env.VITE_SERVER_API_URL ? import.meta.env.VITE_SERVER_API_URL : "https://alimenti-back:443/api";
+        return import.meta.env.VITE_SERVER_API_URL ? import.meta.env.VITE_SERVER_API_URL : "http://alimenti-back:443/api";
     }
 
     static GETRequestParams(userAuthToken : any) {
