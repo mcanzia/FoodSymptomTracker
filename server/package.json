@@ -37,6 +37,7 @@
     "express-rate-limit": "^7.1.1",
     "firebase": "^9.9.4",
     "firebase-admin": "^11.3.0",
+    "https": "^1.0.0",
     "winston": "^3.10.0"
   }
 }

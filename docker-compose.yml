@@ -18,20 +18,15 @@ services:
   api:
     container_name: alimenti-back
     image: index.docker.io/mcanziani1/alimenti-server:latest
+    volumes:
+      - ./certs/alimenti-back.crt:/etc/ssl/certs/alimenti-back.crt
+      - ./certs/alimenti-back.key:/etc/ssl/private/alimenti-back.key
     env_file:
       - .env.server.production
     networks:
       - local_net
     ports:
-      - "7500:7500"
-  # watchtower:
-  #   image: containrrr/watchtower
-  #   environment:
-  #       DOCKER_CONFIG: /config
-  #   volumes:
-  #     - /etc/watchtower/config/:/config/
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   command: --interval 30
+      - "443:443"
 networks:
   local_net:
     driver: bridge

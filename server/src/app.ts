@@ -1,6 +1,8 @@
 import express, { Express, NextFunction, Request, Response } from 'express';
 import path from 'path';
 import cors from 'cors';
+import https from 'https';
+import fs from 'fs';
 import rateLimit from 'express-rate-limit';
 import routes from './routes/index';
 import Logger from './util/logs/logger';
@@ -50,7 +52,20 @@ app.use((request : Request, response : Response, next : NextFunction) => {
   response.status(404).render('404', { title: 'Page Not Found' });
 })*/
 
-//Server Activation
-app.listen(port, () => {
-  Logger.info(`Listening to requests on http://localhost:${port}`);
-});
+if (process.env.ENV === 'development') {
+  app.listen(port, () => {
+    Logger.info(`Listen to requests on http://localhost:${port}`);
+  });
+} else {
+  //HTTPS Setup
+  const privateKey = fs.readFileSync('key.pem', 'utf8');
+  const certificate = fs.readFileSync('cert.pem', 'utf8');
+  const credentials = { key: privateKey, cert: certificate };
+  const httpsServer = https.createServer(credentials, app);
+
+  //Server Activation
+  httpsServer.listen(443, () => {
+    Logger.info(`Listening to requests on http://localhost:443`);
+  });
+}
+
