@@ -10,8 +10,7 @@ services:
     environment:
       HOST: 0.0.0.0
     ports:
-      - "80:80"
-      - "443:443"
+      - "3000:3000"
   api:
     container_name: alimenti-back
     image: index.docker.io/mcanziani1/alimenti-server:latest
