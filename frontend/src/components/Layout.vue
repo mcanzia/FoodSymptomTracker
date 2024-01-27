@@ -27,7 +27,7 @@
                 :disabled="true"
                 :layout="true"
                 @toggleComponentSelection="toggleSelected(component)"
-                @deleteComponent="componentStore.deleteComponents([component])"
+                @deleteComponent="toggleConfirmDelete(component)"
               />
             </div>
         </div>
@@ -44,6 +44,7 @@
               />
             </div>
         </div>
+        <ConfirmDelete v-if="confirmModalActive" @confirm="confirmDelete" />
     </div>
 </template>
 
@@ -55,7 +56,7 @@ import { onBeforeMount, computed, ref } from 'vue';
 import DropDown from './DropDown.vue';
 import AddComponent from './AddComponent.vue';
 import ComponentDisplay from './ComponentDisplay.vue';
-
+import ConfirmDelete from './ConfirmDelete.vue';
 const dateLogStore = useDateLogStore();
 const componentStore = useComponentStore();
 
@@ -67,6 +68,8 @@ onBeforeMount(async() => {
 });
 
 const newComponentModalActive = ref(false);
+const confirmModalActive = ref(false);
+const componentToDelete = ref(null);
 
 let currentDateString = computed(() => {
   return new Date().toLocaleDateString();
@@ -99,6 +102,19 @@ function closeNewComponentModal() {
 
 function isMobile() {
   return screen.width <= 770 ? true : false;
+}
+
+function toggleConfirmDelete(component) {
+  confirmModalActive.value = true;
+  componentToDelete.value = component;
+}
+
+async function confirmDelete(confirmation) {
+  if (confirmation) {
+    await componentStore.deleteComponents([componentToDelete.value]); 
+  }
+  confirmModalActive.value = false;
+  componentToDelete.value = null;
 }
 
 </script>

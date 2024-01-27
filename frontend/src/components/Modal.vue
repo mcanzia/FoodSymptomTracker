@@ -35,16 +35,16 @@ function close() {
 
   .modal-backdrop {
     position: fixed;
-    border: 2px solid black;
-    border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0.3);
     display: flex;
+    border: solid 2px black;
+    border-radius: 10px;
     justify-content: center;
     align-content: center;
   }
 
   .modal {
     background: #FFFFFF;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     height: auto;

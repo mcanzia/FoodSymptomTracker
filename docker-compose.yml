@@ -7,8 +7,6 @@ services:
       - local_net
     depends_on:
       - api
-    environment:
-      HOST: 0.0.0.0
     ports:
       - "3000:3000"
   api:
