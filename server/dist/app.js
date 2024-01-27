@@ -47,7 +47,18 @@ app.use((request : Request, response : Response, next : NextFunction) => {
   // move to controller
   response.status(404).render('404', { title: 'Page Not Found' });
 })*/
-//Server Activation
+// if (process.env.ENV === 'development') {
 app.listen(port, () => {
-    logger_1.default.info(`Listening to requests on http://localhost:${port}`);
+    logger_1.default.info(`Listen to requests on http://localhost:${port}`);
 });
+// } else {
+//   //HTTPS Setup
+//   const privateKey = fs.readFileSync('/etc/ssl/private/alimenti-back.key', 'utf8');
+//   const certificate = fs.readFileSync('/etc/ssl/certs/alimenti-back.crt', 'utf8');
+//   const credentials = { key: privateKey, cert: certificate };
+//   const httpsServer = https.createServer(credentials, app);
+//   //Server Activation
+//   httpsServer.listen(443, () => {
+//     Logger.info(`Listening to requests on http://localhost:443`);
+//   });
+// }

@@ -3,30 +3,37 @@ services:
   app:
     container_name: alimenti-front
     image: index.docker.io/mcanziani1/alimenti-front:latest
-    volumes:
-      - ./certs/alimenti.io.crt:/etc/ssl/certs/alimenti.io.crt
-      - ./certs/alimenti.io.key:/etc/ssl/private/alimenti.io.key
-      - ./certs/cloudflare.crt:/etc/ssl/certs/cloudflare.crt
-      - ./cloudflare-ips.conf:/etc/nginx/cloudflare-ips.conf
     networks:
       - local_net
     depends_on:
       - api
+    environment:
+      HOST: 0.0.0.0
     ports:
       - "80:80"
       - "443:443"
   api:
     container_name: alimenti-back
     image: index.docker.io/mcanziani1/alimenti-server:latest
-    volumes:
-      - ./certs/alimenti-back.crt:/etc/ssl/certs/alimenti-back.crt
-      - ./certs/alimenti-back.key:/etc/ssl/private/alimenti-back.key
     env_file:
       - .env.server.production
     networks:
       - local_net
     ports:
-      - "7500:443"
+      - "7500:7500"
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./certs/alimenti.io.crt:/etc/ssl/certs/alimenti.io.crt
+      - ./certs/alimenti.io.key:/etc/ssl/private/alimenti.io.key
+      - ./certs/cloudflare.crt:/etc/ssl/certs/cloudflare.crt
+      - ./cloudflare-ips.conf:/etc/nginx/cloudflare-ips.conf
+    networks:
+      - local_net
 networks:
   local_net:
     driver: bridge
