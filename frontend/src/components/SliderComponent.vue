@@ -8,12 +8,15 @@
             <span class="change-icon" v-if="layout">
                 <ion-icon 
                     :name="component.selected ? 'remove-circle-outline' : 'add-circle-outline'" 
-                    :class="component.selected ? 'bi red' : 'bi green'">
-                </ion-icon>
-                <ion-icon 
-                    :name="component.selected ? 'remove-circle' : 'add-circle'" 
                     :class="component.selected ? 'bi red' : 'bi green'"
                     @click="toggleComponentSelection(component)">
+                </ion-icon>
+                <ion-icon 
+                    v-if="!userStore.isMobile()"
+                    :name="component.selected ? 'remove-circle' : 'add-circle'" 
+                    :class="component.selected ? 'bi red' : 'bi green'"
+                    @click="toggleComponentSelection(component)"
+                    >
                 </ion-icon>
             </span>
         </div>
@@ -45,7 +48,7 @@
 </template>
 
 <script setup>
-
+import { useUserStore } from '../stores/userStore';
 import { computed } from 'vue'
 
 const props = defineProps({
@@ -54,6 +57,7 @@ const props = defineProps({
     layout: Boolean
 });
 
+const userStore = useUserStore();
 const defaultValues = 5;
 
 let sliderGradient = computed(() => {
@@ -150,13 +154,6 @@ h4 {
 
 h3 {
     margin-left: 20px;
-}
-.trash-icon {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 5px;
-    opacity: 0;
 }
 
 </style>

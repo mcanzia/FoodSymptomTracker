@@ -25,6 +25,7 @@
 import router from "../router/index";
 import { useChartStore } from '../stores/chartStore';
 import { useUserStore } from '../stores/userStore';
+import { useComponentStore } from "../stores/componentStore";
 import ChartGrid from './ChartGrid.vue';
 import { Chart } from '../models/Chart';
 import { ChartOptions } from '../models/ChartOptions';
@@ -35,13 +36,15 @@ import { onBeforeMount, ref, computed } from 'vue';
 
 const chartStore = useChartStore();
 const userStore = useUserStore();
+const componentStore = useComponentStore();
 
 const chartBuilderActive = ref(false);
 const datePickerActive = ref(false);
 
 onBeforeMount(async() => {
-    chartStore.initializeChartShapeParams();
+    await chartStore.initializeChartShapeParams();
     await chartStore.initializeCharts();
+    await componentStore.initializeComponentLists();
     chartBuilderActive.value = false;
 });
 
@@ -82,7 +85,7 @@ async function openChartBuilder() {
 function createTempChart() {
     const id = "chart_" + (chartStore.charts.length + 1);
     const defaultTitle = "New Chart - " + (chartStore.charts.length + 1);
-    chartStore.newChartDetails = new Chart(id, defaultTitle, null, ChartShape.BAR, null, new ChartOptions(defaultTitle), null, null, "", "");
+    chartStore.newChartDetails = new Chart(id, defaultTitle, null, ChartShape.BAR, null, new ChartOptions(defaultTitle), componentStore.selectedComponents[0], null, "", "");
 }
 
 function toggleDatePicker() {

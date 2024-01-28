@@ -20,7 +20,7 @@ app.set('views', path_1.default.join(__dirname, 'views'));
 app.use((0, cors_1.default)());
 const limiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000,
-    max: 100 // limit each IP to 100 requests per 15 minutes
+    max: 200 // limit each IP to 100 requests per 15 minutes
 });
 app.use(limiter);
 // User Authorization

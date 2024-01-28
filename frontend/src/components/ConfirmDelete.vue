@@ -46,7 +46,7 @@ h3 {
 
 .confirm-button {
     height: 50px;
-    width: 250px;
+    width: 40vw;
     border-radius: 10px;
     background-color: #846F91;
     border: solid #846F91;
@@ -57,7 +57,7 @@ h3 {
 
 .cancel-button {
     height: 50px;
-    width: 250px;
+    width: 40vw;
     border-radius: 10px;
     background-color: none;
     border: solid #846F91;

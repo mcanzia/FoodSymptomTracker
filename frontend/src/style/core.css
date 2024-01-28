@@ -29,11 +29,6 @@
     cursor: pointer;
 }
 
-.default-button:hover {
-    background-color: #423748;
-    border: #423748;
-}
-
 .accent-button {
     height: 50px;
     width: 250px;
@@ -43,11 +38,6 @@
     color: #FFFFFF;
     font-family: Lato, sans-serif;
     cursor: pointer;
-}
-
-.accent-button:hover {
-    background-color: #423748;
-    border: #423748;
 }
 
 .flex-column {
@@ -73,19 +63,6 @@ a:link, a:visited, a:hover, a:active {
     border: 2px #846F91 solid;
 }
 
-.component-box:hover {
-    background-color: #e9ecef;
-}
-
-.component-box:hover .change-icon {
-    opacity: 1;
-}
-
-.component-box:hover .trash-icon {
-    opacity: 1;
-    animation: normalFade 0.5s linear forwards;
-}
-
 .content-wrapper {
     display: flex;
     position: relative;
@@ -100,6 +77,74 @@ a:link, a:visited, a:hover, a:active {
     padding: 5px;
   }
   
+  .bi {   
+      cursor: pointer;
+  }
+  
+  .red {
+      color: #dc3545;
+  }
+  
+  .green {
+      color: #143542;
+  }
+  
+  .trash-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 5px;
+    opacity: 1;
+  }
+
+  .edit-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px;
+  } 
+
+@media only screen and (min-width: 770px) {
+
+  .chart-slot > span {
+    opacity: 0;
+  }
+  
+  .chart-slot:hover .edit-icon {
+    opacity: 1;
+  }
+  
+  .chart-slot:hover .trash-icon {
+    opacity: 1;
+  }
+
+  .trash-icon {
+    opacity: 0;
+  }
+
+  .default-button:hover {
+    background-color: #423748;
+    border: #423748;
+  }
+
+  .accent-button:hover {
+    background-color: #423748;
+    border: #423748;
+  }
+
+  .component-box:hover {
+    background-color: #e9ecef;
+  }
+
+  .component-box:hover .change-icon {
+    opacity: 1;
+  }
+
+  .component-box:hover .trash-icon {
+      opacity: 1;
+      animation: normalFade 0.5s linear forwards;
+  }
+
   .change-icon > .bi + .bi,
   .change-icon:hover > .bi {
       display: none;
@@ -108,24 +153,15 @@ a:link, a:visited, a:hover, a:active {
   .change-icon:hover > .bi + .bi {
       display: inherit;
   }
-  
-  .bi {   
-      cursor: pointer;
-  }
-  
-  .red {
-      color: #dc3545;
-  }
+
   .red:hover {
-      color: #c82333;
+    color: #c82333;
   }
-  
-  .green {
-      color: #143542;
-  }
+
   .green:hover {
       color: #143542;
   }
+}
 
 /* Scrollbar */
 *::-webkit-scrollbar {

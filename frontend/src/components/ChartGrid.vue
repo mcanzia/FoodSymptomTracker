@@ -51,7 +51,7 @@ let charts = computed(() => chartStore.charts);
 
 function editChart(chart) {
     chartStore.newChartDetails = chart;
-    router.push({ name: 'chart-builder'});
+    router.push({ name: 'chart-builder-mobile'});
 }
 
 function deleteChart(chart) {
@@ -141,24 +141,7 @@ async function confirmDelete(confirmation) {
   background-color: whitesmoke;
 }
 
-.chart-slot > span {
-  opacity: 0;
-}
 
-.edit-icon {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 5px;
-} 
-
-.chart-slot:hover .edit-icon {
-  opacity: 1;
-}
-
-.chart-slot:hover .trash-icon {
-  opacity: 1;
-}
 
 </style>
   

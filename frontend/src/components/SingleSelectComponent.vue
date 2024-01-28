@@ -8,9 +8,11 @@
             <span class="change-icon" v-if="layout">
                 <ion-icon 
                     :name="component.selected ? 'remove-circle-outline' : 'add-circle-outline'" 
-                    :class="component.selected ? 'bi red' : 'bi green'">
+                    :class="component.selected ? 'bi red' : 'bi green'"
+                    @click="toggleComponentSelection(component)">
                 </ion-icon>
                 <ion-icon 
+                    v-if="!userStore.isMobile()"
                     :name="component.selected ? 'remove-circle' : 'add-circle'" 
                     :class="component.selected ? 'bi red' : 'bi green'"
                     @click="toggleComponentSelection(component)">
@@ -34,12 +36,14 @@
 </template>
 
 <script setup>
-
+import { useUserStore } from '../stores/userStore';
 const props = defineProps({
     component: Object,
     disabled: Boolean,
     layout: Boolean
 });
+
+const userStore = useUserStore();
 
 const emits = defineEmits(['toggleComponentSelection', 'deleteComponent']);
 function toggleComponentSelection(component) {
@@ -121,13 +125,5 @@ label {
 h3 {
     margin-left: 20px;
 }
-.trash-icon {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 5px;
-    opacity: 0;
-}
-
 
 </style>

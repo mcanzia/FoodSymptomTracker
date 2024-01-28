@@ -71,6 +71,7 @@ const chartBuilderActive = ref(true);
 onBeforeMount(async() => {
     await componentStore.initializeComponentLists();
     await foodStore.initializeFoodList();
+    await updateTempChartComponent();
 });
 
 let chartStoreLastIndex = computed(() => {
