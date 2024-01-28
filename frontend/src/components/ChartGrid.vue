@@ -17,12 +17,13 @@
                       <ion-icon name="pencil" class="bi" @click="editChart(chart)" />
                   </span>
                   <span class="trash-icon">
-                      <ion-icon name="trash-outline" class="bi" @click="deleteChart(chart)" />
+                      <ion-icon name="trash-outline" class="bi" @click="toggleConfirmDelete(chart)" />
                   </span>
                 <Chart :chart-details="chart" />
             </div>
           </div>
         </div>
+        <ConfirmDelete v-if="confirmModalActive" @confirm="confirmDelete" />
     </div>
   </template>
   
@@ -31,8 +32,11 @@ import { ref, computed, onMounted } from 'vue';
 import { useChartStore } from '../stores/chartStore';
 import router from "../router/index";
 import Chart from './Chart.vue';
+import ConfirmDelete from './ConfirmDelete.vue';
 
 const chartStore = useChartStore();
+const confirmModalActive = ref(false);
+const componentToDelete = ref(null); 
 const typeLayerRefs = ref([]);
 typeLayerRefs.value.push(ref(null));
 typeLayerRefs.value.push(ref(null));
@@ -80,6 +84,20 @@ function maxWidth(chartShape) {
 
 function chartsByShape(chartShape) {
   return chartStore.charts.filter(chart => chart.chartShape === chartShape);
+}
+
+function toggleConfirmDelete(component) {
+  confirmModalActive.value = true;
+  componentToDelete.value = component;
+}
+
+
+async function confirmDelete(confirmation) {
+  if (confirmation) {
+    await deleteChart(componentToDelete.value);
+  }
+  confirmModalActive.value = false;
+  componentToDelete.value = null;
 }
 
 </script>

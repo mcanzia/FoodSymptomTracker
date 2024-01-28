@@ -2,7 +2,7 @@
     <div class="overlay">
         <Modal :header-active="true" :footer-active="true">
             <template v-slot:header>
-                <h3>Are you sure you want to delete?</h3>
+                <h3>{{customMessage ? customMessage : 'Are you sure you want to delete?' }}</h3>
             </template>
             <template v-slot:footer>
                 <button class="confirm-button" @click="confirm(true)">Confirm</button>
@@ -14,6 +14,10 @@
 
 <script setup>
 import Modal from './Modal.vue';
+
+defineProps(() => {
+    customMessage : string
+})
 
 const emits = defineEmits(['confirm']);
 function confirm(confirmation) {

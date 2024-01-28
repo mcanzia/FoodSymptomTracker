@@ -24,6 +24,7 @@
 <script setup>
 import router from "../router/index";
 import { useChartStore } from '../stores/chartStore';
+import { useUserStore } from '../stores/userStore';
 import ChartGrid from './ChartGrid.vue';
 import { Chart } from '../models/Chart';
 import { ChartOptions } from '../models/ChartOptions';
@@ -33,12 +34,13 @@ import ChartShape from "../models/ChartShape";
 import { onBeforeMount, ref, computed } from 'vue';
 
 const chartStore = useChartStore();
+const userStore = useUserStore();
 
 const chartBuilderActive = ref(false);
 const datePickerActive = ref(false);
 
 onBeforeMount(async() => {
-    // chartStore.initializeChartShapeParams();
+    chartStore.initializeChartShapeParams();
     await chartStore.initializeCharts();
     chartBuilderActive.value = false;
 });
@@ -70,7 +72,7 @@ let minEndDate = computed(() => {
 
 async function openChartBuilder() {
     createTempChart();
-    if (isMobile()) {
+    if (userStore.isMobile()) {
         await router.push({ name: 'chart-builder-mobile'});
     } else {
         await router.push({ name: 'chart-builder'});
@@ -103,13 +105,7 @@ async function setDateRange(selectedDateRange) {
         await chartStore.recalculateCharts();
     }
 }
-
-function isMobile() {
-  return screen.width <= 770 ? true : false;
-}
-
 </script>
-
 
 <style scoped>
 .container {

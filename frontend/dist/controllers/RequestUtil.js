@@ -1,7 +1,7 @@
 import { RequestType } from "../models/RequestType";
 export class RequestUtil {
     static getAPIUrl() {
-        return import.meta.env.VITE_SERVER_API_URL ? import.meta.env.VITE_SERVER_API_URL : "/api";
+        return import.meta.env.VITE_SERVER_API_URL ? import.meta.env.VITE_SERVER_API_URL : "";
     }
     static GETRequestParams(userAuthToken) {
         const bearer = 'Bearer ' + userAuthToken;

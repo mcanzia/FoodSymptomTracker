@@ -91,6 +91,9 @@ export const useUserStore = defineStore('userStore', {
             catch (error) {
                 ErrorHandler.handleUserAuthError(this.user, error);
             }
+        },
+        isMobile() {
+            return screen.width <= 770 ? true : false;
         }
     }
 });

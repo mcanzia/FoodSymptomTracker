@@ -69,7 +69,7 @@ onBeforeMount(async() => {
 
 const newComponentModalActive = ref(false);
 const confirmModalActive = ref(false);
-const componentToDelete = ref(null);
+const componentToDelete = ref(null); 
 
 let currentDateString = computed(() => {
   return new Date().toLocaleDateString();

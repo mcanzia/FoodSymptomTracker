@@ -123,13 +123,16 @@ export const useChartStore = defineStore('chartStore', {
             console.log("Show error");
           }
         },
+        isMobile() {
+          return screen.width <= 770 ? true : false;
+        },
         initializeChartShapeParams(typeBarLength : number) {
           this.chartShapeParams = [];
-          this.chartShapeParams.push(new ChartShapeParams(ChartShape.BAR, true, '250px', typeBarLength + 'px'));
-          this.chartShapeParams.push(new ChartShapeParams(ChartShape.LINE, true, '250px', typeBarLength + 'px'));
-          this.chartShapeParams.push(new ChartShapeParams(ChartShape.PIE, true, '350px', typeBarLength - 100 + 'px'));
-          this.chartShapeParams.push(new ChartShapeParams(ChartShape.DOUGHNUT, true, '350px', typeBarLength - 100 + 'px'));
-          this.chartShapeParams.push(new ChartShapeParams(ChartShape.RADAR, true, '350px', typeBarLength - 100 + 'px'));
+          this.chartShapeParams.push(new ChartShapeParams(ChartShape.BAR, true, '250px', this.isMobile() ? typeBarLength + 'px' : '400px'));
+          this.chartShapeParams.push(new ChartShapeParams(ChartShape.LINE, true, '250px', this.isMobile() ? typeBarLength + 'px' : '400px'));
+          this.chartShapeParams.push(new ChartShapeParams(ChartShape.PIE, true, '350px', this.isMobile() ? typeBarLength - 100 + 'px' : '300px'));
+          this.chartShapeParams.push(new ChartShapeParams(ChartShape.DOUGHNUT, true, '350px', this.isMobile() ? typeBarLength - 100 + 'px' : '300px'));
+          this.chartShapeParams.push(new ChartShapeParams(ChartShape.RADAR, true, '350px', this.isMobile() ? typeBarLength - 100 + 'px' : '300px'));
         }
       },
     });
