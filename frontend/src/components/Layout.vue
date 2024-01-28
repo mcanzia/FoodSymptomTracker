@@ -201,6 +201,12 @@ h2 {
       flex-direction: column;
     }
 
+    .add-component-dropdown {
+      width: 80%;
+      left: 0;
+      margin-left: 10%;
+    }
+
     .add-component-container button {
       width: 100%;
       margin: 0;

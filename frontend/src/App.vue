@@ -77,8 +77,8 @@ body {
   top: 0;
   width: 90vw;
   max-width: 90vw;
-  height: 85vh;
-  max-height: 85vh;
+  height: 82vh;
+  max-height: 82vh;
 }
 
 </style>

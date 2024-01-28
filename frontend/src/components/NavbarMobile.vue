@@ -1,16 +1,16 @@
 <template>
     <nav>
           <ul>
-            <li id="logsButton">
+            <li id="logsButton" :class="{ active: currentRoute() === 'home' }">
               <a @click="redirectToHome()">Logs</a>
             </li>
-            <li id="layoutButton" @click="redirectToLayout()">
+            <li id="layoutButton" @click="redirectToLayout()" :class="{ active: currentRoute() === 'layout' }">
               <a v-if="userStore.isLoggedIn">Layout</a>
             </li>
-            <li id="summaryButton" @click="redirectToSummary()">
+            <li id="summaryButton" @click="redirectToSummary()" :class="{ active: currentRoute() === 'summary' || currentRoute() === 'chart-builder-mobile' }">
               <a v-if="userStore.isLoggedIn">Summary</a>
             </li>
-            <li id="settingsButton" @click="redirectToProfile()">
+            <li id="settingsButton" @click="redirectToProfile()" :class="{ active: currentRoute() === 'profile' }">
               <a v-if="userStore.isLoggedIn">Settings</a>
             </li>
           </ul>
@@ -23,12 +23,16 @@ import { useUserStore } from "../stores/userStore";
 
 const userStore = useUserStore();
 
+function currentRoute() {
+  return router.currentRoute.value.name;
+};
+
 function redirectToProfile() {
 router.push({ name: 'profile' })
 }
 
 function redirectToHome() {
-router.push({ name: 'home' })
+  router.push({ name: 'home' })
 }
 
 function redirectToLayout() {
@@ -67,7 +71,7 @@ cursor: pointer;
 transition: color 0.3s ease, background-color 0.3s ease;
 }
 
-ul > li:first-of-type {
+li.active {
     background-color: #846F91;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
