@@ -1,7 +1,7 @@
 <template>
    <div class="container" @click.self="closeNewComponentModal()">
         <div class="flex-column component-container">
-            <div v-if="isMobile()" class="add-component-container">
+            <div v-if="userStore.isMobile()" class="add-component-container">
               <button  @click="toggleNewComponentModal">Add Component</button>
               <h2>Available Components: </h2>
               <DropDown v-if="newComponentModalActive" class="add-component-dropdown">
@@ -27,7 +27,7 @@
                 :disabled="true"
                 :layout="true"
                 @toggleComponentSelection="toggleSelected(component)"
-                @deleteComponent="toggleConfirmDelete(component)"
+                @deleteComponent="toggleConfirmDelete(component, deleteComponent, null)"
               />
             </div>
         </div>
@@ -40,17 +40,18 @@
                 :component="component"
                 :disabled="true"
                 :layout="true"
-                @toggleComponentSelection="toggleSelected(component)"
+                @toggleComponentSelection="toggleConfirmDelete(component, toggleSelected, 'Are you sure you want to unselect this component?')"
               />
             </div>
         </div>
-        <ConfirmDelete v-if="confirmModalActive" @confirm="confirmDelete" />
+        <ConfirmDelete v-if="confirmModalActive" :customMessage="customDeleteMessage" @confirm="confirmDelete" />
     </div>
 </template>
 
 <script setup>
 import { useDateLogStore } from '../stores/dateLogStore';
 import { useComponentStore } from '../stores/componentStore';
+import { useUserStore } from '../stores/userStore';
 import { storeToRefs } from 'pinia';
 import { onBeforeMount, computed, ref } from 'vue';
 import DropDown from './DropDown.vue';
@@ -59,6 +60,7 @@ import ComponentDisplay from './ComponentDisplay.vue';
 import ConfirmDelete from './ConfirmDelete.vue';
 const dateLogStore = useDateLogStore();
 const componentStore = useComponentStore();
+const userStore = useUserStore();
 
 const { availableComponents, selectedComponents, newComponent } = storeToRefs(componentStore);
 
@@ -69,7 +71,9 @@ onBeforeMount(async() => {
 
 const newComponentModalActive = ref(false);
 const confirmModalActive = ref(false);
-const componentToDelete = ref(null); 
+const componentToDelete = ref(null);
+const deleteMethod = ref(null);
+const customDeleteMessage = ref(null);
 
 let currentDateString = computed(() => {
   return new Date().toLocaleDateString();
@@ -100,21 +104,25 @@ function closeNewComponentModal() {
   newComponentModalActive.value = false;
 }
 
-function isMobile() {
-  return screen.width <= 770 ? true : false;
+async function deleteComponent(component) {
+  await componentStore.deleteComponents([component]);
 }
 
-function toggleConfirmDelete(component) {
+function toggleConfirmDelete(component, method, message) {
   confirmModalActive.value = true;
   componentToDelete.value = component;
+  deleteMethod.value = method;
+  customDeleteMessage.value = message;
 }
 
 async function confirmDelete(confirmation) {
   if (confirmation) {
-    await componentStore.deleteComponents([componentToDelete.value]); 
+    await deleteMethod.value(componentToDelete.value); 
   }
   confirmModalActive.value = false;
   componentToDelete.value = null;
+  deleteMethod.value = null;
+  customDeleteMessage.value = null;
 }
 
 </script>

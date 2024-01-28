@@ -1,20 +1,20 @@
 <template>
   <div class="app-container">
     <ErrorToast id="error-notification" aria-label="error-notification"></ErrorToast>
-    <div v-if="!userStore.isLoading && userStore.isLoggedIn && !isMobile()">
+    <div v-if="!userStore.isLoading && userStore.isLoggedIn && !userStore.isMobile()">
         <Navbar />
         <div class="display-box">
           <router-view />
         </div>
     </div>
-    <div v-else-if="!userStore.isLoading && userStore.isLoggedIn && isMobile()">
+    <div v-else-if="!userStore.isLoading && userStore.isLoggedIn && userStore.isMobile()">
         <div class="display-box-mobile">
           <router-view />
         </div>
         <NavbarMobile />
     </div>
-    <Login v-else-if="!userStore.isLoading && !isMobile()" />
-    <LoginMobile v-else-if="!userStore.isLoading && isMobile()" />
+    <Login v-else-if="!userStore.isLoading && !userStore.isMobile()" />
+    <LoginMobile v-else-if="!userStore.isLoading && userStore.isMobile()" />
     <div v-else class="center">
         <PancakeLoader />
     </div>
@@ -32,10 +32,6 @@ import { useUserStore } from './stores/userStore';
 
 const userStore = useUserStore();
 userStore.initalizeAuthListener();
-
-function isMobile() {
-  return screen.width <= 770 ? true : false;
-}
 
 </script>
 

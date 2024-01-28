@@ -15,9 +15,9 @@
 <script setup>
 import Modal from './Modal.vue';
 
-defineProps(() => {
-    customMessage : string
-})
+defineProps({
+    customMessage : String
+});
 
 const emits = defineEmits(['confirm']);
 function confirm(confirmation) {

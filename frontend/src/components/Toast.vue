@@ -42,8 +42,9 @@ position: fixed;
 bottom: 20px;
 left: 20px;
 padding: 10px;
-border-radius: 5px;
-background-color: #f44336; /* Red for error */
+border-radius: 10px;
+font-family: Lato, sans-serif;
+background-color: #DC143C; /* Red for error */
 color: white;
 z-index: 1000;
 transition: opacity 0.6s, bottom 0.6s;
@@ -54,7 +55,7 @@ background-color: #4CAF50; /* Green for success */
 }
 
 .toast.error {
-background-color: #f44336; /* Red for error */
+background-color: #DC143C; /* Red for error */
 }
 
 .toast:not(.visible) {

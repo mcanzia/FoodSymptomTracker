@@ -27,7 +27,7 @@
                     </template>
                 </DropDown>
         </div>
-        <FoodLogBase v-if="!isMobile()" id="homeBody" :editMode="logEditMode" @click="closeCalendar()" role="main" />
+        <FoodLogBase v-if="!userStore.isMobile()" id="homeBody" :editMode="logEditMode" @click="closeCalendar()" role="main" />
         <FoodLogBaseMobile v-else id="homeBody" :editMode="logEditMode" @click="closeCalendar()" role="main" />
     </div>
 </template>
@@ -41,11 +41,13 @@ import DropDown from './DropDown.vue';
 import { useDateLogStore } from '../stores/dateLogStore';
 import { useComponentStore } from '../stores/componentStore';
 import { useFoodStore } from '../stores/foodStore';
+import { useUserStore } from '../stores/userStore';
 import { onBeforeMount, computed, ref, watch } from 'vue';
 
 const dateLogStore = useDateLogStore();
 const componentStore = useComponentStore();
 const foodStore = useFoodStore();
+const userStore = useUserStore();
 
 onBeforeMount(async() => {
     await componentStore.initializeComponentLists();
@@ -75,10 +77,6 @@ let currentDateString = computed(() => {
 let currentDate = computed(() => {
   return new Date();
 });
-
-function isMobile() {
-  return screen.width <= 770 ? true : false;
-}
 
 async function saveOrEdit() {
     if (logEditMode.value) {
