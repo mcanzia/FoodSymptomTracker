@@ -6,6 +6,12 @@ export default defineConfig({
     port: 3000
   },
   plugins: [
-    vue()
+    vue({
+      template: {
+        compilerOptions: {
+          isCustomElement: (tag) => ['ion-icon'].includes(tag),
+        }
+      }
+    })
   ]
 })

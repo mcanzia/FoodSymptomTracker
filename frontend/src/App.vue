@@ -74,10 +74,11 @@ body {
   background-color: #D9D9D9;
   padding-left: 30px;
   padding-right: 20px;
+  top: 0;
   width: 90vw;
   max-width: 90vw;
-  height: 80vh;
-  max-height: 80vh;
+  height: 85vh;
+  max-height: 85vh;
 }
 
 </style>
