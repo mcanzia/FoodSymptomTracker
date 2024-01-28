@@ -1,7 +1,7 @@
 <template>
   <div class="chart-grid-container">
-        <div class="type-layer" v-for="(shapeParam, index) in chartStore.chartShapeParams" :key="shapeParam.name" :ref="setTypeLayerRef(index)">
-          <div class="type-label-dropdown" @click="shapeParam.isOpen = !shapeParam.isOpen">
+        <div class="type-layer" v-for="(shapeParam) in chartStore.chartShapeParams" :key="shapeParam.name">
+          <div class="type-label-dropdown" @click="shapeParam.isOpen = !shapeParam.isOpen" ref="typeLayerRef">
             <h3>{{ shapeParam.name.toLocaleUpperCase() }}</h3>
             <span class="toggle-icon">
               <ion-icon name="caret-down-outline" v-if="shapeParam.isOpen"></ion-icon>
@@ -37,26 +37,11 @@ import ConfirmDelete from './ConfirmDelete.vue';
 const chartStore = useChartStore();
 const confirmModalActive = ref(false);
 const componentToDelete = ref(null); 
-const typeLayerRefs = ref([]);
-typeLayerRefs.value.push(ref(null));
-typeLayerRefs.value.push(ref(null));
-typeLayerRefs.value.push(ref(null));
-typeLayerRefs.value.push(ref(null));
-typeLayerRefs.value.push(ref(null));
-typeLayerRefs.value.push(ref(null));
-typeLayerRefs.value.push(ref(null));
-
-function setTypeLayerRef(index) {
-  return el => {
-    if (el) {
-      typeLayerRefs.value[index] = el;
-    }
-  };
-}
+const typeLayerRef = ref([]);
 
 onMounted(() => {
-    if (typeLayerRefs.value[0].value) {
-      const typeLayerWidth = typeLayers[0].value.offsetWidth;
+    if (typeLayerRef.value) {
+      const typeLayerWidth = typeLayerRef.value[0].offsetWidth;
       chartStore.initializeChartShapeParams(typeLayerWidth);
     }
     

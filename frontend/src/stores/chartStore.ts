@@ -128,8 +128,8 @@ export const useChartStore = defineStore('chartStore', {
         },
         initializeChartShapeParams(typeBarLength : number) {
           this.chartShapeParams = [];
-          this.chartShapeParams.push(new ChartShapeParams(ChartShape.BAR, true, '250px', this.isMobile() ? typeBarLength + 'px' : '400px'));
-          this.chartShapeParams.push(new ChartShapeParams(ChartShape.LINE, true, '250px', this.isMobile() ? typeBarLength + 'px' : '400px'));
+          this.chartShapeParams.push(new ChartShapeParams(ChartShape.BAR, true, '250px', this.isMobile() ? typeBarLength - 30 + 'px' : '400px'));
+          this.chartShapeParams.push(new ChartShapeParams(ChartShape.LINE, true, '250px', this.isMobile() ? typeBarLength - 30 + 'px' : '400px'));
           this.chartShapeParams.push(new ChartShapeParams(ChartShape.PIE, true, '350px', this.isMobile() ? typeBarLength - 100 + 'px' : '300px'));
           this.chartShapeParams.push(new ChartShapeParams(ChartShape.DOUGHNUT, true, '350px', this.isMobile() ? typeBarLength - 100 + 'px' : '300px'));
           this.chartShapeParams.push(new ChartShapeParams(ChartShape.RADAR, true, '350px', this.isMobile() ? typeBarLength - 100 + 'px' : '300px'));

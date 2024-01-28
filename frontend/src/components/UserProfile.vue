@@ -25,7 +25,9 @@ function logout() {
 .container {
     display: flex;
     flex-direction: column;
-    align-content: left;
+    height: 100%;
+    justify-content: center;
+    align-content: center;
     font-family: Lato, sans-serif;
 }
 
