@@ -104,6 +104,14 @@ a:link, a:visited, a:hover, a:active {
     padding: 5px;
   } 
 
+  .edit-component-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px;
+    margin-right: 20px;
+  }
+
 @media only screen and (min-width: 770px) {
 
   .chart-slot > span {
@@ -119,6 +127,10 @@ a:link, a:visited, a:hover, a:active {
   }
 
   .trash-icon {
+    opacity: 0;
+  }
+
+  .edit-component-icon {
     opacity: 0;
   }
 
@@ -144,6 +156,11 @@ a:link, a:visited, a:hover, a:active {
       opacity: 1;
       animation: normalFade 0.5s linear forwards;
   }
+
+  .component-box:hover .edit-component-icon {
+    opacity: 1;
+    animation: normalFade 0.5s linear forwards;
+}
 
   .change-icon > .bi + .bi,
   .change-icon:hover > .bi {

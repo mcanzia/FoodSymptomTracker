@@ -41,7 +41,7 @@ html {
 }
 
 body {
-  background-color:#143542;
+  background-color:#D9D9D9;
   height: 100vh;
   margin: 0;
   overflow: hidden;

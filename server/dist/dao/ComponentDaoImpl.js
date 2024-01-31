@@ -35,7 +35,7 @@ class ComponentDaoImpl {
             const existingComponents = await this.getAllComponents(authId);
             const batch = firebase_1.db.batch();
             for (const component of components) {
-                const matchingComponent = existingComponents.find(existingComponent => existingComponent.name === component.name);
+                const matchingComponent = existingComponents.find(existingComponent => existingComponent.id === component.id);
                 const document = matchingComponent ?
                     firebase_1.db.collection('users').doc(authId).collection('components').doc(matchingComponent.id) :
                     firebase_1.db.collection('users').doc(authId).collection('components').doc();

@@ -33,12 +33,7 @@
             <div class="form-column-item">
                 <label for="new-chart-food-select">Target Food:</label>
                 <div class="form-input-container">
-                    <select class="add-chart-dropdown" id="new-chart-food-select" v-model="chartStore.newChartDetails.selectedFood" @change="updateTempChartComponent">
-                        <option v-for="option in foodStore.foods" :key="option.id" :value="option">
-                            {{ option.name }}
-                        </option>
-                    </select>
-                    <ion-icon name="close" @click="resetSelectedFood()"></ion-icon>
+                    <FoodItemSearch @submitFood="selectFoodItem" @resetFood="resetSelectedFood" />
                 </div>
             </div>
             <div class="form-column-item form-button-container">
@@ -61,6 +56,7 @@ import ChartType from '../models/ChartType';
 import { Chart } from '../models/Chart';
 import { ChartOptions } from '../models/ChartOptions';
 import { onBeforeMount, computed, ref } from 'vue';
+import FoodItemSearch from "./FoodItemSearch.vue";
 
 const componentStore = useComponentStore();
 const foodStore = useFoodStore();
@@ -69,6 +65,7 @@ const chartStore = useChartStore();
 const chartBuilderActive = ref(true);
 
 onBeforeMount(async() => {
+    await chartStore.initializeChartShapeParams();
     await componentStore.initializeComponentLists();
     await foodStore.initializeFoodList();
     await updateTempChartComponent();
@@ -77,6 +74,11 @@ onBeforeMount(async() => {
 let chartStoreLastIndex = computed(() => {
     return chartStore.charts.length - 1;
 });
+
+function selectFoodItem(foodItem) {
+    chartStore.newChartDetails.selectedFood = foodItem;
+    updateTempChartComponent();
+}
 
 function updateTempChartTitle() {
     chartStore.newChartDetails.chartOptions = new ChartOptions(chartStore.newChartDetails.chartTitle);
@@ -117,7 +119,7 @@ async function updateTempChartComponent() {
 
 async function resetChartForm() {
     await chartStore.resetNewChartDetails();
-    updateTempChartDetails();
+    updateTempChartComponent();
 }
 
 async function saveChart() {
@@ -146,12 +148,12 @@ function resetChartType() {
 }
 
 function resetSelectedComponent()  {
-    chartStore.newChartDetails.selectedComponent = '';
+    chartStore.newChartDetails.selectedComponent = null;
     updateTempChartComponent();
 }
 
 function resetSelectedFood() {
-    chartStore.newChartDetails.selectedFood = '';
+    chartStore.newChartDetails.selectedFood = null;
     updateTempChartComponent();
 }
 

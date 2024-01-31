@@ -72,6 +72,14 @@ const router = createRouter({
     history: createWebHistory(),
     routes
 });
+router.beforeEach((to, from, next) => {
+    if ((to.name === 'chart-builder' || to.name === 'chart-builder-mobile') && (!from.name || from.path === '/')) {
+        next({ name: 'summary' });
+    }
+    else {
+        next();
+    }
+});
 // router.beforeEach((to, from, next) => {
 //    const currentUser = auth.currentUser;
 //    const requiresAuth = to.matched.some(record => record.meta.requiresAuth);

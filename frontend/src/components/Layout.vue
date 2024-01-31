@@ -6,7 +6,7 @@
               <h2>Available Components: </h2>
               <DropDown v-if="newComponentModalActive" class="add-component-dropdown">
                 <template v-slot:body>
-                  <AddComponent @closeAddComponentPanel="closeNewComponentModal"/>
+                  <AddComponent @closeAddComponentPanel="closeNewComponentModal" :editMode="editMode"/>
                 </template>
               </DropDown>
             </div>
@@ -15,7 +15,7 @@
               <button @click="toggleNewComponentModal">Add Component</button>
               <DropDown v-if="newComponentModalActive" class="add-component-dropdown">
                 <template v-slot:body>
-                  <AddComponent @closeAddComponentPanel="closeNewComponentModal"/>
+                  <AddComponent @closeAddComponentPanel="closeNewComponentModal" :editMode="editMode"/>
                 </template>
               </DropDown>
             </div>
@@ -28,6 +28,7 @@
                 :layout="true"
                 @toggleComponentSelection="toggleSelected(component)"
                 @deleteComponent="toggleConfirmDelete(component, deleteComponent, null)"
+                @editComponent="toggleEditComponent(component)"
               />
             </div>
         </div>
@@ -70,6 +71,7 @@ onBeforeMount(async() => {
 });
 
 const newComponentModalActive = ref(false);
+const editMode = ref(false);
 const confirmModalActive = ref(false);
 const componentToDelete = ref(null);
 const deleteMethod = ref(null);
@@ -102,6 +104,13 @@ function openNewComponentModal() {
 function closeNewComponentModal() {
   componentStore.clearNewComponentForm();
   newComponentModalActive.value = false;
+  editMode.value = false;
+}
+
+function toggleEditComponent(component) {
+  componentStore.newComponent = {...component};
+  editMode.value = true;
+  openNewComponentModal();
 }
 
 async function deleteComponent(component) {

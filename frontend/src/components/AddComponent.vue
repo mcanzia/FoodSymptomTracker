@@ -1,6 +1,6 @@
 <template>
   <form id="add-component-form" class="add-component-container" @submit.prevent="addNewComponent()">
-    <h3>Add New Component</h3>
+    <h3>{{editMode ? 'Update Component' : 'Add New Component' }}</h3>
     <div class="flex-item">
       <label for="new-component-name">Name:</label>
       <input
@@ -20,6 +20,7 @@
         class="add-component-dropdown"
         id="new-component-type"
         v-model="newComponent.typeId"
+        @change="refreshOptions()"
         required
       >
         <option
@@ -64,6 +65,10 @@
 import { storeToRefs } from 'pinia';
 import { ref, watch, computed } from 'vue';
 import { useComponentStore } from '../stores/componentStore';
+
+const props = defineProps({
+  editMode: Boolean
+});
 
 const componentStore = useComponentStore();
 
@@ -129,12 +134,14 @@ function validateForm() {
         return false;
     }
 
-    const nameIsDuplicate = availableComponents.value.find(component => component.name === newComponent.value.name) ||
-      selectedComponents.value.find(component => component.name === newComponent.value.name);
-    
-    if (nameIsDuplicate) {
-      setWarningMessage(nameInputRef.value, "An existing component already has this name.");
-      return false;
+    if (!props.editMode) {
+      const nameIsDuplicate = availableComponents.value.find(component => component.name === newComponent.value.name) ||
+        selectedComponents.value.find(component => component.name === newComponent.value.name);
+      
+      if (nameIsDuplicate) {
+        setWarningMessage(nameInputRef.value, "An existing component already has this name.");
+        return false;
+      }
     }
 
     if (newComponent.value.typeId === null || newComponent.value.typeId === -1) {
@@ -179,6 +186,12 @@ function setWarningMessage(refTarget, message) {
 
 function closePanel() {
     emits('closeAddComponentPanel');
+}
+
+function refreshOptions() {
+  if (newComponent.value.typeId === 1) {
+    newComponent.value.selectOptions = newComponent.value.selectOptions.filter(option => option === null);
+  }
 }
 
 watch(optionsVisible, (newValue, oldValue) => {

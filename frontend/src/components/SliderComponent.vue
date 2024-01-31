@@ -5,6 +5,9 @@
                 <ion-icon name="trash-outline" class="bi" @click="deleteComponent(component)" />
             </span>
             <h3 :id="'component-name-'+component.id" class="component-name">{{component.name}}</h3>
+            <span class="edit-component-icon" v-if="layout && !component.selected">
+                <ion-icon name="pencil" class="bi" @click="editComponent(component)" />
+            </span>
             <span class="change-icon" v-if="layout">
                 <ion-icon 
                     :name="component.selected ? 'remove-circle-outline' : 'add-circle-outline'" 
@@ -71,12 +74,15 @@ let sliderGradient = computed(() => {
     };
 });
 
-const emits = defineEmits(['toggleComponentSelection', 'deleteComponent']);
+const emits = defineEmits(['toggleComponentSelection', 'deleteComponent', 'editComponent']);
 function toggleComponentSelection(component) {
     emits('toggleComponentSelection', component);
 }
 function deleteComponent(component) {
     emits('deleteComponent', component);
+}
+function editComponent(component) {
+    emits('editComponent', component)
 }
 
 </script>

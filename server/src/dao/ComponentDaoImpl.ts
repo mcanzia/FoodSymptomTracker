@@ -36,7 +36,7 @@ export class ComponentDaoImpl {
             const existingComponents : Array<Component> = await this.getAllComponents(authId);
             const batch = db.batch();
             for (const component of components) {
-                const matchingComponent = existingComponents.find(existingComponent => existingComponent.name === component.name);
+                const matchingComponent = existingComponents.find(existingComponent => existingComponent.id === component.id);
                 const document = matchingComponent ? 
                     db.collection('users').doc(authId).collection('components').doc(matchingComponent.id) :
                     db.collection('users').doc(authId).collection('components').doc();

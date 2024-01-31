@@ -3,16 +3,7 @@
       <div class="flex-column">
         <h2>What you ate today: </h2>
         <div v-if="editMode" class="search-container">
-          <input
-            list="existing-food-items"
-            id="food-item-search"
-            placeholder="Type to search..."
-            v-model="foodItem"
-            @keyup.enter="addFoodItem()"
-            class="search-input"
-            ref="foodItemInput"
-          />
-          <button @click="addFoodItem()" class="search-button">Add</button>
+          <FoodItemSearch @submitFood="addFoodItem" :clear-after-chosen="true" ref="foodSearchComponentRef"/>
         </div>
         <div class="list-wrapper">
           <FoodItemList :foodItems="dateLogStore.selectedDateLog.foodItems" :editMode="editMode" />
@@ -38,6 +29,7 @@ import { useDateLogStore } from '../stores/dateLogStore';
 import { ref } from 'vue';
 import ComponentDisplay from './ComponentDisplay.vue';
 import FoodItemList from './FoodItemList.vue';
+import FoodItemSearch from './FoodItemSearch.vue';
 
 const props = defineProps({
     editMode: Boolean
@@ -45,26 +37,19 @@ const props = defineProps({
 
 const dateLogStore = useDateLogStore();
 
-const foodItem = ref("");
-const foodItemInput = ref(null);
+const foodSearchComponentRef = ref(null);
 
-function addFoodItem() {
-  if (foodItem.value === "") {
-      return;
-  }
-
-  if (dateLogStore.containsFoodDuplicate(foodItem.value)) {
-      setWarningMessage(foodItemInput.value, "This food is already in the list");
+function addFoodItem(foodItem) {
+  if (foodItem === "") {
       return;
   }
   
   const newFoodItem = {
       id: null,
-      name: foodItem.value
+      name: foodItem
   }
 
   dateLogStore.selectedDateLog.foodItems.push(newFoodItem);
-  foodItem.value = "";
 }
 
 function setWarningMessage(refTarget, message) {
@@ -102,38 +87,6 @@ h2 {
   align-items: center;
   gap: 10px;
   margin-bottom: 20px;
-}
-
-.search-input {
-  flex-grow: 1;
-  padding: 8px 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-  background-color: #fff;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #846F91;
-  box-shadow: 0 0 3px rgba(0, 184, 255, 0.3);
-}
-
-.search-button {
-  padding: 8px 16px;
-  font-size: 16px;
-  color: #fff;
-  background-color: #846F91;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.search-button:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
 }
 
 </style>

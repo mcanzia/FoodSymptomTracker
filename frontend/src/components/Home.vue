@@ -18,7 +18,7 @@
                 </div>
                 <div>
                     <button id="closeEditButton" v-if="logEditMode" @click="closeEditMode()">Close</button>
-                    <button id="saveEditButton" @click="saveOrEdit()">{{ logEditMode ? 'Save' : 'Edit' }}</button>
+                    <button id="saveEditButton" @click="saveOrEdit()">{{ logEditMode ? 'Save Date Log' : 'Edit Date Log' }}</button>
                 </div>
             </div>
                 <DropDown class="date-dropdown" v-if="calendarActive && !logEditMode" role="dialog" aria-modal="true">
