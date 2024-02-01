@@ -29,7 +29,7 @@
 }
 
 /* body {
-  background-color: #ffde6b;
+  background-color: #143542;
   height: 100vh;
   width: 100vw;
   overflow: hidden;

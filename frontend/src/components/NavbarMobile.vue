@@ -48,6 +48,7 @@ router.push({ name: 'summary'})
 <style scoped>
 nav {
 width: 100vw;
+height: 100vh;
 background-color: #143542;
 }
 

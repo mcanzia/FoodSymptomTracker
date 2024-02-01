@@ -38,17 +38,23 @@ userStore.initalizeAuthListener();
 <style>
 html {
   height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  background-color:#D9D9D9;
+  background-color:#143542;
   height: 100vh;
   margin: 0;
+  padding: 0;
   overflow: hidden;
 }
 
 .app-container {
   height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
 }
 
 .center {
@@ -56,6 +62,9 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
+    background-color: #143542;
+    height: 100vh;
+    width: 100vw;
 }
 
 .display-box {
@@ -73,12 +82,17 @@ body {
 .display-box-mobile {
   background-color: #D9D9D9;
   padding-left: 30px;
-  padding-right: 20px;
   top: 0;
   width: 90vw;
   max-width: 90vw;
   height: 82vh;
   max-height: 82vh;
+}
+
+@media only screen and (max-width: 770px) {
+  body {
+    background-color:#D9D9D9;
+  }
 }
 
 </style>
