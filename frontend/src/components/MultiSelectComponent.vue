@@ -96,7 +96,6 @@ input[type='checkbox']:after {
     content: '';
     display: inline-block;
     visibility: visible;
-    border: 1px solid #d1d3d1;
 }
 
 input[type='checkbox']:disabled:after {
@@ -113,7 +112,6 @@ input[type='checkbox']:checked:after {
     content: '';
     display: inline-block;
     visibility: visible;
-    border: 1px solid #d1d3d1;
 }
 
 input[type='checkbox']:disabled:checked:after {
@@ -126,7 +124,6 @@ input[type='checkbox']:disabled:checked:after {
     content: '';
     display: inline-block;
     visibility: visible;
-    border: 1px solid #d1d3d1;
 }
 
 h3 {

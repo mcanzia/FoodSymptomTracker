@@ -89,7 +89,6 @@ input[type='radio']:after {
     content: '';
     display: inline-block;
     visibility: visible;
-    border: 1px solid #d1d3d1;
 }
 
 input[type='radio']:checked:after {
@@ -103,7 +102,6 @@ input[type='radio']:checked:after {
     content: '';
     display: inline-block;
     visibility: visible;
-    border: 1px solid #d1d3d1;
 }
 
 input[type='radio']:disabled:after {
@@ -121,7 +119,6 @@ input[type='radio']:disabled:checked:after {
     content: '';
     display: inline-block;
     visibility: visible;
-    border: 1px solid #d1d3d1;
 }
 
 label {
