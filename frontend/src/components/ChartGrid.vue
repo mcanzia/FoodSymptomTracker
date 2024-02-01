@@ -93,7 +93,7 @@ async function confirmDelete(confirmation) {
   margin-top: 10px;
   margin-bottom: 10px;
   overflow-y: scroll;
-  max-height: 80%;
+  max-height: 85%;
 }
 
 .type-layer {
