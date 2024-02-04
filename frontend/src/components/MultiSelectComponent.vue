@@ -75,11 +75,13 @@ function editComponent(component) {
 }
 
 .component-checkbox {
-    padding-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-bottom: 10px;
 }
 
 label {
-    padding-left: 5px;
     font-size: 15px;
     font-weight: 500;
     font-family: Lato, sans-serif;

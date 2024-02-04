@@ -78,6 +78,13 @@ function editComponent(component) {
     padding-bottom: 10px;
 }
 
+.component-radio {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding-bottom: 10px;
+}
+
 input[type='radio'] {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -115,7 +122,6 @@ input[type='radio']:disabled:checked:after {
 }
 
 label {
-    padding-left: 5px;
     font-size: 15px;
     font-weight: 500;
     font-family: Lato, sans-serif;
