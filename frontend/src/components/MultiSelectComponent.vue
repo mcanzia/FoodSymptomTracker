@@ -96,6 +96,9 @@ input[type='checkbox'] {
 }
 
 input[type='checkbox']:after {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     width: 15px;
     height: 15px;
     transform: translate(0, 15%);
@@ -106,6 +109,9 @@ input[type='checkbox']:after {
 }
 
 input[type='checkbox']:checked:after {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     width: 15px;
     height: 15px;
     position: relative;
@@ -116,10 +122,16 @@ input[type='checkbox']:checked:after {
 }
 
 input[type='checkbox']:disabled:after {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     background-color: lightgray;
 }
 
 input[type='checkbox']:disabled:checked:after {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     width: 15px;
     height: 15px;
     background-color: #999999;

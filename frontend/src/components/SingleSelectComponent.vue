@@ -88,6 +88,9 @@ input[type='radio'] {
 }
 
 input[type='radio']:after {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     width: 15px;
     height: 15px;
     border-radius: 15px;
@@ -99,6 +102,9 @@ input[type='radio']:after {
 }
 
 input[type='radio']:checked:after {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     width: 15px;
     height: 15px;
     border-radius: 15px;
@@ -110,10 +116,16 @@ input[type='radio']:checked:after {
 }
 
 input[type='radio']:disabled:after {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     background-color: lightgray;
 }
 
 input[type='radio']:disabled:checked:after {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     width: 15px;
     height: 15px;
     border-radius: 15px;

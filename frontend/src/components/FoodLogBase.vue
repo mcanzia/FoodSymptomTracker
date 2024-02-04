@@ -38,7 +38,6 @@ const props = defineProps({
 const dateLogStore = useDateLogStore();
 
 const foodSearchComponentRef = ref(null);
-const foodItemSelection = ref("");
 
 function addFoodItem(foodItem) {
   if (foodItem === "") {
