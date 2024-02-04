@@ -85,53 +85,33 @@ input[type='radio'] {
     position: relative;
     width: 15px;
     height: 15px;
+    background-color: transparent;
+    border: none;
 }
 
 input[type='radio']:after {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    width: 15px;
-    height: 15px;
-    border-radius: 15px;
-    transform: translate(0, 15%);
-    background-color: white;
     content: '';
     display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: white;
+    position: absolute;
+    top: 0;
+    left: 0;
     visibility: visible;
 }
 
 input[type='radio']:checked:after {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    width: 15px;
-    height: 15px;
-    border-radius: 15px;
-    position: relative;
     background-color: #846F91;
-    content: '';
-    display: inline-block;
-    visibility: visible;
 }
 
 input[type='radio']:disabled:after {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
     background-color: lightgray;
 }
 
 input[type='radio']:disabled:checked:after {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    width: 15px;
-    height: 15px;
-    border-radius: 15px;
     background-color: #999999;
-    content: '';
-    visibility: visible;
 }
 
 label {
