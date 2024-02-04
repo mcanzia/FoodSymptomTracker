@@ -32,6 +32,7 @@ import { ChartOptions } from '../models/ChartOptions';
 import DropDown from "./DropDown.vue";
 import AirDateRange from "./AirDateRange.vue";
 import ChartShape from "../models/ChartShape";
+import { FoodItem } from "../models/FoodItem";
 import { onBeforeMount, ref, computed } from 'vue';
 
 const chartStore = useChartStore();

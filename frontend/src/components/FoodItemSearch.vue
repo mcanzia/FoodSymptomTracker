@@ -3,7 +3,7 @@
         <div class="form-input-container">
           <input
                 id="food-item-search"
-                placeholder="Type to search..."
+                :placeholder="placeholder"
                 v-model="searchTerm"
                 @keyup.enter="submitFood"
                 class="search-input"
@@ -27,15 +27,20 @@ import { useFoodStore } from '../stores/foodStore';
 import { useDateLogStore } from '../stores/dateLogStore';
 
 const props = defineProps({
+  modelValue : Object,
   clearAfterChosen: Boolean
 });
 
-const emits = defineEmits(['submitFood', 'resetFood']);
+const emits = defineEmits(['submitFood', 'resetFood', 'update:modelValue']);
 
 onMounted(async () => {
   await foodStore.initializeFoodList();
-  if (foodStore.foods.length === 0) {
+  if (foodStore.foods.length === 0 && !props.clearAfterChosen) {
     disabled.value = true;
+    placeholder = "No Foods Added Yet";
+  }
+  if (props.modelValue && props.modelValue.name) {
+    searchTerm.value = props.modelValue.name;
   }
 });
 
@@ -45,6 +50,7 @@ const searchTerm = ref("");
 const foodItemSearchRef = ref(null);
 const searching = ref(false);
 const disabled = ref(false);
+let placeholder = "Type to search...";
 
 const filteredList = computed(() => {
   return foodStore.foods.filter(food => 
@@ -67,7 +73,7 @@ function submitFood() {
         setWarningMessage(foodItemSearchRef.value, "This food is already in the list");
         return;
       }
-      emits('submitFood', searchTerm.value);
+      emits('update:modelValue', searchTerm.value);
       resetFood();
     } else {
       const chosenFoodItem = foodStore.foods.find(food => food.name === searchTerm.value);
@@ -75,7 +81,7 @@ function submitFood() {
         setWarningMessage(foodItemSearchRef.value, "This is not one of your chosen foods");
         return;
       }
-      emits('submitFood', chosenFoodItem);
+      emits('update:modelValue', chosenFoodItem);
       searching.value = false;
     }
 }

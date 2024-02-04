@@ -51,7 +51,11 @@ let charts = computed(() => chartStore.charts);
 
 function editChart(chart) {
     chartStore.newChartDetails = chart;
-    router.push({ name: 'chart-builder-mobile'});
+    if (chartStore.isMobile()) {
+      router.push({ name: 'chart-builder-mobile'});
+    } else {
+      router.push({ name: 'chart-builder'});
+    }
 }
 
 function deleteChart(chart) {

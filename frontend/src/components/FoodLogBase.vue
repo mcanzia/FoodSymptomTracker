@@ -3,7 +3,7 @@
       <div class="flex-column">
         <h2>What you ate today: </h2>
         <div v-if="editMode" class="search-container" >
-          <FoodItemSearch @submitFood="addFoodItem" :clear-after-chosen="true" ref="foodSearchComponentRef"/>
+          <FoodItemSearch @update:modelValue="addFoodItem" :clear-after-chosen="true" ref="foodSearchComponentRef"/>
         </div>
         <div class="list-wrapper">
           <FoodItemList :foodItems="dateLogStore.selectedDateLog.foodItems" :editMode="editMode" />
@@ -38,6 +38,7 @@ const props = defineProps({
 const dateLogStore = useDateLogStore();
 
 const foodSearchComponentRef = ref(null);
+const foodItemSelection = ref("");
 
 function addFoodItem(foodItem) {
   if (foodItem === "") {

@@ -33,7 +33,7 @@
             <div class="form-column-item">
                 <label for="new-chart-food-select">Target Food:</label>
                 <div class="form-input-container">
-                    <FoodItemSearch @submitFood="selectFoodItem" @resetFood="resetSelectedFood" />
+                    <FoodItemSearch @resetFood="resetSelectedFood" v-model="selectedFoodComputed" />
                 </div>
             </div>
             <div class="form-column-item form-button-container">
@@ -53,7 +53,6 @@ import { useChartStore } from '../stores/chartStore';
 import ChartComponent from './Chart.vue';
 import ChartShape from '../models/ChartShape';
 import ChartType from '../models/ChartType';
-import { Chart } from '../models/Chart';
 import { ChartOptions } from '../models/ChartOptions';
 import { onBeforeMount, computed, ref } from 'vue';
 import FoodItemSearch from "./FoodItemSearch.vue";
@@ -73,6 +72,14 @@ onBeforeMount(async() => {
 
 let chartStoreLastIndex = computed(() => {
     return chartStore.charts.length - 1;
+});
+
+const selectedFoodComputed = computed({
+  get: () => chartStore.newChartDetails.selectedFood,
+  set: (foodItem) => {
+    chartStore.newChartDetails.selectedFood = foodItem;
+    updateTempChartComponent();
+  }
 });
 
 function selectFoodItem(foodItem) {
@@ -129,12 +136,6 @@ async function saveChart() {
 
 async function closeChartBuilder() {
     await router.push({ name: 'summary'});
-}
-
-function resetNewChart() {
-    const id = "chart_" + (chartStore.charts.length + 1);
-    const defaultTitle = "New Chart - " + (chartStore.charts.length + 1);
-    chartStore.newChartDetails = new Chart(id, defaultTitle, null, ChartShape.BAR, null, new ChartOptions(defaultTitle), null, null, "", "");
 }
 
 function resetChartTitle() {

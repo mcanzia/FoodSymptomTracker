@@ -78,13 +78,20 @@ function editComponent(component) {
     padding-bottom: 10px;
 }
 
+input[type='radio'] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    position: relative;
+    width: 15px;
+    height: 15px;
+}
+
 input[type='radio']:after {
     width: 15px;
     height: 15px;
     border-radius: 15px;
-    top: -2px;
-    left: -2px;
-    position: relative;
+    transform: translate(0, 15%);
     background-color: white;
     content: '';
     display: inline-block;
@@ -95,8 +102,6 @@ input[type='radio']:checked:after {
     width: 15px;
     height: 15px;
     border-radius: 15px;
-    top: -2px;
-    left: -2px;
     position: relative;
     background-color: #846F91;
     content: '';
@@ -112,12 +117,8 @@ input[type='radio']:disabled:checked:after {
     width: 15px;
     height: 15px;
     border-radius: 15px;
-    top: -2px;
-    left: -2px;
-    position: relative;
     background-color: #999999;
     content: '';
-    display: inline-block;
     visibility: visible;
 }
 

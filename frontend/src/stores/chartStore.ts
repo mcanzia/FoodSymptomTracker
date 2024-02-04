@@ -5,6 +5,7 @@ import { ChartOptions } from '../models/ChartOptions';
 import { ChartShapeParams } from '../models/ChartShapeParams';
 import ChartShape from '../models/ChartShape';
 import ChartType from '../models/ChartType';
+import { FoodItem } from '../models/FoodItem';
 
 interface IChartState {
   charts : Array<Chart>

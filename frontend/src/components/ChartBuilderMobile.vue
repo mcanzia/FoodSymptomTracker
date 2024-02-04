@@ -33,7 +33,7 @@
             <div class="form-column-item">
                 <label for="new-chart-food-select">Target Food:</label>
                 <div class="form-input-container">
-                    <FoodItemSearch @submitFood="selectFoodItem" @resetFood="resetSelectedFood" />
+                    <FoodItemSearch @resetFood="resetSelectedFood" v-model="selectedFoodComputed"/>
                 </div>
             </div>
             <div class="form-column-item form-button-container">
@@ -75,10 +75,13 @@ let chartStoreLastIndex = computed(() => {
     return chartStore.charts.length - 1;
 });
 
-function selectFoodItem(foodItem) {
+const selectedFoodComputed = computed({
+  get: () => chartStore.newChartDetails.selectedFood,
+  set: (foodItem) => {
     chartStore.newChartDetails.selectedFood = foodItem;
     updateTempChartComponent();
-}
+  }
+});
 
 function updateTempChartTitle() {
     chartStore.newChartDetails.chartOptions = new ChartOptions(chartStore.newChartDetails.chartTitle);
@@ -129,12 +132,6 @@ async function saveChart() {
 
 async function closeChartBuilder() {
     await router.push({ name: 'summary'});
-}
-
-function resetNewChart() {
-    const id = "chart_" + (chartStore.charts.length + 1);
-    const defaultTitle = "New Chart - " + (chartStore.charts.length + 1);
-    chartStore.newChartDetails = new Chart(id, defaultTitle, null, ChartShape.BAR, null, new ChartOptions(defaultTitle), null, null, "", "");
 }
 
 function resetChartTitle() {
