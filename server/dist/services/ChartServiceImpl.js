@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChartServiceImpl = void 0;
 const ChartData_1 = require("../models/ChartData");
@@ -6,10 +9,40 @@ const DataSet_1 = require("../models/DataSet");
 const date_fns_1 = require("date-fns");
 const FoodDaoImpl_1 = require("../dao/FoodDaoImpl");
 const DateLogDaoImpl_1 = require("../dao/DateLogDaoImpl");
+const ChartType_1 = __importDefault(require("../models/ChartType"));
 class ChartServiceImpl {
+    async recalculateCharts(authId, charts) {
+        try {
+            const chartPromises = charts.map(async (chart) => {
+                switch (chart.chartType) {
+                    case ChartType_1.default.AVERAGE:
+                        chart.chartData = await this.createAverageChart(authId, chart.selectedComponent);
+                        return chart;
+                    case ChartType_1.default.FOODVALUE:
+                        if (!chart.selectedFood) {
+                            throw new Error();
+                        }
+                        chart.chartData = await this.createFoodValueChart(authId, chart.selectedComponent, chart.selectedFood);
+                        return chart;
+                    case ChartType_1.default.SVCWEIGHTBYFOOD:
+                        chart.chartData = await this.createSingleValueComponentWeightByFoodChart(authId, chart.selectedComponent, chart.selectedFood);
+                        return chart;
+                    case ChartType_1.default.MVCWEIGHTBYFOOD:
+                        chart.chartData = await this.createMultiValueComponentWeightByFoodChart(authId, chart.selectedComponent, chart.selectedFood);
+                        return chart;
+                    default:
+                        return chart;
+                }
+            });
+            return await Promise.all(chartPromises);
+        }
+        catch (error) {
+            console.log("Show error");
+        }
+    }
     async createAverageChart(authId, selectedComponent, startDate, endDate) {
         const chartData = new ChartData_1.ChartData();
-        chartData.datasets.push(new DataSet_1.DataSet([], "Average Value"));
+        chartData.datasets.push(new DataSet_1.DataSet([], "Average Value - " + selectedComponent.name));
         const foodDao = new FoodDaoImpl_1.FoodDaoImpl();
         const dateLogDao = new DateLogDaoImpl_1.DateLogDaoImpl();
         const foods = await foodDao.getAllFoods(authId);
@@ -31,7 +64,7 @@ class ChartServiceImpl {
     }
     async createFoodValueChart(authId, selectedComponent, selectedFood, startDate, endDate) {
         const chartData = new ChartData_1.ChartData();
-        chartData.datasets.push(new DataSet_1.DataSet([], "Monthly Value - " + selectedFood.name));
+        chartData.datasets.push(new DataSet_1.DataSet([], selectedComponent.name + " - " + selectedFood.name));
         const dateLogDao = new DateLogDaoImpl_1.DateLogDaoImpl();
         const dateLogs = await dateLogDao.getDateLogsWithFood(authId, selectedFood, startDate, endDate);
         const dateMonthFoodValueMap = new Map();
@@ -69,7 +102,7 @@ class ChartServiceImpl {
                 weightValueMap.set(componentValue, Number(weightValueMap.get(componentValue)) + 1);
             }
         });
-        const chartLabel = selectedFood ? "Component Value Weight - " + selectedFood.name : "Component Value Weight";
+        const chartLabel = selectedFood ? selectedComponent.name + " - " + selectedFood.name : selectedComponent.name;
         return this.setChartData(weightValueMap, chartLabel);
     }
     async createMultiValueComponentWeightByFoodChart(authId, selectedComponent, selectedFood, startDate, endDate) {
@@ -80,13 +113,14 @@ class ChartServiceImpl {
         const weightValueMap = new Map(selectedComponent.selectOptions.map(selectOption => [selectOption.value, 0]));
         dateLogs.map(dateLog => {
             const componentValues = dateLog.components.find(component => component.id === selectedComponent.id)?.values ?? new Array();
+            console.log(componentValues);
             componentValues.map(componentValue => {
                 if (componentValue !== undefined && componentValue != "") {
                     weightValueMap.set(componentValue, Number(weightValueMap.get(componentValue)) + 1);
                 }
             });
         });
-        const chartLabel = selectedFood ? "Component Value Weight - " + selectedFood.name : "Component Value Weight";
+        const chartLabel = selectedFood ? selectedComponent.name + " - " + selectedFood.name : selectedComponent.name;
         return this.setChartData(weightValueMap, chartLabel);
     }
     setChartData(weightValueMap, chartLabel) {

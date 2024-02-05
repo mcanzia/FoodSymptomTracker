@@ -18,8 +18,10 @@ class ChartControllerImpl {
         try {
             logger_1.default.info("Retrieving charts for user: " + response.locals.userAuth);
             const chartDao = new ChartDaoImpl_1.ChartDaoImpl();
+            const chartService = new ChartServiceImpl_1.ChartServiceImpl();
             const userAuth = response.locals.userAuth;
-            const charts = await chartDao.getAllCharts(userAuth);
+            let charts = await chartDao.getAllCharts(userAuth);
+            charts = await chartService.recalculateCharts(userAuth, charts) ?? charts;
             logger_1.default.info("Number of charts retrieved successfully: " + charts.length);
             response.status(200).json(JSON.stringify(charts));
         }

@@ -29,8 +29,9 @@
                     :name="'btncheckbox_' + component.id"
                     :id="'btncheckbox_' + index" 
                     :disabled="disabled"
-                    :value="option.value"
-                    v-model="component.values[index]">
+                    :checked="isSelected(option)"
+                    :value="isSelected(option)"
+                    @change="checkboxSetValue(option, $event.target.checked)">
                 <label :for="'btncheckbox_' + index" >{{ option.text }}</label>
             </div>
         </div>
@@ -39,6 +40,7 @@
 
 <script setup>
 import { useUserStore } from '../stores/userStore';
+import { computed } from 'vue';
 
 const props = defineProps({
     component: Object,
@@ -47,6 +49,17 @@ const props = defineProps({
 });
 
 const userStore = useUserStore();
+
+function checkboxSetValue(option, checked) {
+    props.component.values = props.component.values.filter(value => value !== option.value);
+    if (checked) {
+        props.component.values.push(option.value);
+    }
+}
+
+function isSelected(option) {
+  return props.component.values.includes(option.value);
+}
 
 const emits = defineEmits(['toggleComponentSelection', 'deleteComponent', 'editComponent']);
 function toggleComponentSelection(component) {
