@@ -13,12 +13,13 @@ export class Chart {
     chartOptions : ChartOptions;
     selectedComponent : Component;
     selectedFood? : FoodItem;
+    chartMaxFoods? : number | null;
     startDate? : string;
     endDate? : string;
 
 
     constructor(id : string, chartTitle : string, chartType : string, chartShape : string, chartData : ChartData, chartOptions : ChartOptions, 
-        selectedComponent : Component, selectedFood? : FoodItem, startDate? : string, endDate? : string) {
+        selectedComponent : Component, selectedFood? : FoodItem, chartMaxFoods? : number | null, startDate? : string, endDate? : string) {
             this.id = id;
             this.chartTitle = chartTitle;
             this.chartType = chartType;
@@ -27,6 +28,7 @@ export class Chart {
             this.chartOptions = chartOptions;
             this.selectedComponent = selectedComponent;
             this.selectedFood = selectedFood;
+            this.chartMaxFoods = chartMaxFoods;
             this.startDate = startDate;
             this.endDate = endDate;
     }
@@ -41,6 +43,7 @@ export class Chart {
             chartOptions: this.chartOptions.toObject ? this.chartOptions.toObject() : this.chartOptions,
             selectedComponent: this.selectedComponent.toObject ? this.selectedComponent.toObject() : this.selectedComponent,
             selectedFood: this.selectedFood ? (this.selectedFood.toObject ? this.selectedFood.toObject() : this.selectedFood) : undefined,
+            chartMaxFoods: this.chartMaxFoods,
             startDate: this.startDate,
             endDate: this.endDate
         };

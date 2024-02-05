@@ -36,6 +36,13 @@
                     <FoodItemSearch @resetFood="resetSelectedFood" v-model="selectedFoodComputed"/>
                 </div>
             </div>
+            <div class="form-column-item">
+                <label for="new-chart-max-foods">Max Foods Displayed:</label>
+                <div class="form-input-container">
+                    <input class="add-chart-input" id="new-chart-max-foods" type="number" min="1" placeholder="All Foods" v-model="chartStore.newChartDetails.chartMaxFoods" @blur="updateTempChartComponent">
+                    <ion-icon name="close" @click="resetChartMaxFoods()"></ion-icon>
+                </div>
+            </div>
             <div class="form-column-item form-button-container">
                 <button id="closeEditButton" @click="closeChartBuilder()">Close</button>
                 <button id="saveEditButton" @click="saveChart()">Save</button>
@@ -151,6 +158,11 @@ function resetSelectedComponent()  {
 
 function resetSelectedFood() {
     chartStore.newChartDetails.selectedFood = null;
+    updateTempChartComponent();
+}
+
+function resetChartMaxFoods() {
+    chartStore.newChartDetails.chartMaxFoods = null;
     updateTempChartComponent();
 }
 

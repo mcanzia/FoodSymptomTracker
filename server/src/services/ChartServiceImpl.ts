@@ -21,7 +21,7 @@ export class ChartServiceImpl
           const chartPromises = charts.map(async chart => {
             switch(chart.chartType) {
               case ChartType.AVERAGE:
-                chart.chartData = await this.createAverageChart(authId, chart.selectedComponent);
+                chart.chartData = await this.createAverageChart(authId, chart.selectedComponent, chart.chartMaxFoods);
                 return chart;
               case ChartType.FOODVALUE:
                 if (!chart.selectedFood) {
@@ -45,13 +45,14 @@ export class ChartServiceImpl
         }
       }
 
-    async createAverageChart(authId : any, selectedComponent : Component, startDate? : string, endDate? : string) {
+    async createAverageChart(authId : any, selectedComponent : Component, chartMaxFoods? : number | null, startDate? : string, endDate? : string) {
         const chartData : ChartData = new ChartData();
         chartData.datasets.push(new DataSet([], "Average Value - " + selectedComponent.name));
         const foodDao : FoodDaoImpl = new FoodDaoImpl();
         const dateLogDao : DateLogDaoImpl = new DateLogDaoImpl();
         const foods = await foodDao.getAllFoods(authId);
         const dateLogs = await dateLogDao.getAllDateLogs(authId, startDate, endDate);
+        const foodAverageMap : Map<string, number> = new Map();
         foods.map(food => {
             const filteredDateLogs : Array<DateLog> = dateLogs.filter(dateLog => { return dateLog.foodItems.some(foodItem => foodItem.id === food.id);});
             let average : number = 0;
@@ -61,10 +62,27 @@ export class ChartServiceImpl
                     average += componentValue;
                 }
             });
-            average = average !== 0 ? Number((average / filteredDateLogs.length).toFixed(2)) : 0;            
-            chartData.datasets[0].data.push(average);
-            chartData.labels.push(food.name);
+            if (average === 0) {
+                return;
+            }
+            average = Number((average / filteredDateLogs.length).toFixed(2));
+            if (chartMaxFoods && chartMaxFoods > 0) {
+                foodAverageMap.set(food.name, average);
+            } else {
+                chartData.datasets[0].data.push(average);
+                chartData.labels.push(food.name);
+            }
         });
+        if (chartMaxFoods && chartMaxFoods > 0) {
+            const sortedMap = new Map([...foodAverageMap.entries()]
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, chartMaxFoods));
+                
+            for (const [key, value] of sortedMap.entries()) {
+                chartData.datasets[0].data.push(value);
+                chartData.labels.push(key);
+            }
+        }
         return chartData;
     }
 

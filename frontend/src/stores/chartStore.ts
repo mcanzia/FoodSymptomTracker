@@ -18,7 +18,7 @@ export const useChartStore = defineStore('chartStore', {
     state: () : IChartState => ({
         charts : [],
         dateRange: [],
-        newChartDetails : new Chart(null, "", "", "", null, null, null, null, "", ""),
+        newChartDetails : new Chart(null, "", "", "", null, null, null, null, null, "", ""),
         chartShapeParams: []
       }),
     actions: {
@@ -57,12 +57,13 @@ export const useChartStore = defineStore('chartStore', {
         resetNewChartDetails() {
           const chartTitle = "New Chart - " + this.charts.length;
           const chartOptions = new ChartOptions(chartTitle);
-          this.newChartDetails = new Chart(this.newChartDetails.id, chartTitle, null, this.newChartDetails.chartShape, null, chartOptions, null, null, "", "");
+          this.newChartDetails = new Chart(this.newChartDetails.id, chartTitle, null, this.newChartDetails.chartShape, null, chartOptions, null, null, null, "", "");
         },
         async addCharts() {
           try {
             const chartService = new ChartService();
             const newCharts : Array<Chart> = [this.newChartDetails];
+            console.log('newCharts', newCharts);
             await chartService.addCharts(newCharts);
             if (this.newChartDetails.id?.startsWith('chart')) {
               await this.charts.push(this.newChartDetails);

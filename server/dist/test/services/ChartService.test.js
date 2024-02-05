@@ -33,7 +33,7 @@ const DateLogDaoImpl_1 = require("../../dao/DateLogDaoImpl");
             const mockDateLogs = [MockDateLogs_1.MockDateLogs.createDateLog()];
             const mockDateLogDao = vitest_1.vi.spyOn(DateLogDaoImpl_1.DateLogDaoImpl.prototype, "getAllDateLogs");
             mockDateLogDao.mockImplementation(async () => mockDateLogs);
-            const result = await chartService.createAverageChart(mockAuthId, mockComponent, startDate, endDate);
+            const result = await chartService.createAverageChart(mockAuthId, mockComponent, null, startDate, endDate);
             (0, vitest_1.expect)(result.labels).toEqual(['Apple', 'Banana', 'Grape']);
             (0, vitest_1.expect)(result.datasets[0].data).toEqual([5, 5, 0]);
         });

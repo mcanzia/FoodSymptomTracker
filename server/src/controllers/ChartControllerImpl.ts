@@ -108,7 +108,7 @@ export class ChartControllerImpl {
             const chartService : ChartServiceImpl = new ChartServiceImpl();
             const userAuth = response.locals.userAuth;
             const chart : Chart = request.body;
-            chart.chartData = await chartService.createAverageChart(userAuth, chart.selectedComponent, chart.startDate, chart.endDate);
+            chart.chartData = await chartService.createAverageChart(userAuth, chart.selectedComponent, chart.chartMaxFoods, chart.startDate, chart.endDate);
             Logger.info("Successfully created average chart");
             response.status(200).json(JSON.stringify(chart));
         } catch (error) {

@@ -6,7 +6,6 @@
 </template>
 
 <script setup>
-import { auth } from "../firebase";
 import { useUserStore } from "../stores/userStore";
 
 const userStore = useUserStore();
@@ -29,6 +28,7 @@ function logout() {
     justify-content: center;
     align-content: center;
     font-family: Lato, sans-serif;
+    gap: 20px;
 }
 
 button {

@@ -35,7 +35,7 @@ describe('chart service method tests', () => {
         const mockDateLogs = [MockDateLogs.createDateLog()];
         const mockDateLogDao = vi.spyOn(DateLogDaoImpl.prototype, "getAllDateLogs");
         mockDateLogDao.mockImplementation(async () => mockDateLogs);
-        const result = await chartService.createAverageChart(mockAuthId, mockComponent, startDate, endDate);
+        const result = await chartService.createAverageChart(mockAuthId, mockComponent, null, startDate, endDate);
         expect(result.labels).toEqual(['Apple', 'Banana', 'Grape']);
         expect(result.datasets[0].data).toEqual([5, 5, 0]);
     });

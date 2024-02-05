@@ -10,7 +10,7 @@ class ChartDaoImpl {
             const charts = new Array();
             const documents = await firebase_1.db.collection('users').doc(authId).collection('charts').get();
             documents.forEach(document => {
-                const chart = new Chart_1.Chart(document.id, document.data().chartTitle, document.data().chartType, document.data().chartShape, document.data().chartData, document.data().chartOptions, document.data().selectedComponent, document.data().selectedFood, document.data().startDate, document.data().endDate);
+                const chart = new Chart_1.Chart(document.id, document.data().chartTitle, document.data().chartType, document.data().chartShape, document.data().chartData, document.data().chartOptions, document.data().selectedComponent, document.data().selectedFood, document.data().chartMaxFoods, document.data().startDate, document.data().endDate);
                 charts.push(chart);
             });
             return charts;
@@ -23,7 +23,7 @@ class ChartDaoImpl {
         try {
             const document = await firebase_1.db.collection('users').doc(authId).collection('charts').doc(chartId).get();
             const documentData = document.data();
-            const chart = new Chart_1.Chart(document.id, documentData.chartTitle, documentData.chartType, documentData.chartShape, documentData.chartData, documentData.chartOptions, documentData.selectedComponent, documentData.selectedFood, documentData.startDate, documentData.endDate);
+            const chart = new Chart_1.Chart(document.id, documentData.chartTitle, documentData.chartType, documentData.chartShape, documentData.chartData, documentData.chartOptions, documentData.selectedComponent, documentData.selectedFood, documentData.chartMaxFoods, documentData.startDate, documentData.endDate);
             return chart;
         }
         catch (error) {
