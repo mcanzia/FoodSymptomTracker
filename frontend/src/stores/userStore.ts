@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { auth, db } from '../firebase';
 import { ErrorHandler } from '../util/error/ErrorHandler';
 import { useComponentStore } from './componentStore';
+import { SuccessHandler } from '../util/SuccessHandler';
 
 interface IUserState {
   user : any,
@@ -74,7 +75,8 @@ export const useUserStore = defineStore('userStore', {
       },
       async sendPasswordResetEmail(email : string) {
         try {
-          await auth.sendPasswordResetEmail(email);
+          await auth.sendPasswordResetEmail(auth, email);
+          SuccessHandler.showNotification("Password reset instructions sent to your email.")
         } catch (error : any) {
           ErrorHandler.handleUserAuthError(this.user, error);
         }

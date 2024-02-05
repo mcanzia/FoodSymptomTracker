@@ -1,0 +1,1 @@
+{"version":3,"file":"CustomNotification.js","sourceRoot":"","sources":["../../src/models/CustomNotification.ts"],"names":[],"mappings":"AAAA,MAAM,OAAO,kBAAkB;IAE3B,OAAO,CAAU;IACjB,IAAI,CAAS;IAEb,YAAa,OAAe,EAAE,IAAY;QACtC,IAAI,CAAC,OAAO,GAAG,OAAO,CAAC;QACvB,IAAI,CAAC,IAAI,GAAG,IAAI,CAAC;IACrB,CAAC;CACJ"}

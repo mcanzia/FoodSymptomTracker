@@ -1,4 +1,4 @@
-export class CustomError {
+export class CustomNotification {
     message;
     constructor(message) {
         this.message = message;

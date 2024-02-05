@@ -63,7 +63,6 @@ export const useChartStore = defineStore('chartStore', {
           try {
             const chartService = new ChartService();
             const newCharts : Array<Chart> = [this.newChartDetails];
-            console.log('newCharts', newCharts);
             await chartService.addCharts(newCharts);
             if (this.newChartDetails.id?.startsWith('chart')) {
               await this.charts.push(this.newChartDetails);

@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <ErrorToast id="error-notification" aria-label="error-notification"></ErrorToast>
+    <SuccessToast id="success-notification" aria-label="success-notification"></SuccessToast>
     <div v-if="!userStore.isLoading && userStore.isLoggedIn && !userStore.isMobile()">
         <Navbar />
         <div class="display-box">
@@ -28,6 +29,7 @@ import Navbar from './components/Navbar.vue';
 import NavbarMobile from './components/NavbarMobile.vue';
 import PancakeLoader from './components/PancakeLoader.vue';
 import ErrorToast from './components/ErrorToast.vue';
+import SuccessToast from './components/SuccessToast.vue';
 import { useUserStore } from './stores/userStore';
 
 const userStore = useUserStore();

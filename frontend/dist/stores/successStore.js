@@ -1,16 +1,10 @@
-import { defineStore } from 'pinia'
-import { CustomError } from '../models/CustomError';
-
-interface IErrorState {
-    errorMessage : CustomError | null
-}
-
+import { defineStore } from 'pinia';
 export const useErrorStore = defineStore('errorStore', {
-    state: () : IErrorState => ({
+    state: () => ({
         errorMessage: null
-      }),
+    }),
     actions: {
-        setError(message : string) {
+        setError(message) {
             if (this.errorMessage === null) {
                 this.errorMessage = new CustomError(message);
             }
@@ -19,4 +13,5 @@ export const useErrorStore = defineStore('errorStore', {
             this.errorMessage = null;
         }
     }
-})
+});
+//# sourceMappingURL=successStore.js.map

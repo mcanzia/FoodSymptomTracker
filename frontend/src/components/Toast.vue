@@ -44,7 +44,6 @@ left: 20px;
 padding: 10px;
 border-radius: 10px;
 font-family: Lato, sans-serif;
-background-color: #DC143C; /* Red for error */
 color: white;
 z-index: 1000;
 transition: opacity 0.6s, bottom 0.6s;

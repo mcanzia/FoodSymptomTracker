@@ -1,6 +1,7 @@
 import { Chart } from '@/models/Chart';
 import { RequestType } from "../../models/RequestType";
-import { useErrorStore } from '../../stores/errorStore';
+import { useNotificationStore } from '../../stores/notificationStore';
+import { NotificationType } from '../../models/NotificationType';
 
 import * as Sentry from "@sentry/vue";
 import { FirebaseError } from 'firebase/app';
@@ -12,11 +13,11 @@ export class ErrorHandler {
     }
 
     static handleUserAuthError<T>(user : any, error : FirebaseError) {
-        const errorStore = useErrorStore();
+        const notificationStore = useNotificationStore();
         if (error.code === 'auth/email-already-in-use') {
-            errorStore.setError("This email is already in use. Please try a different one.");
+            notificationStore.setMessage("This email is already in use. Please try a different one.", NotificationType.ERROR);
         } else {
-            errorStore.setError("Error occurred during user authentication. Please try again.");
+            notificationStore.setMessage("Error occurred during user authentication. Please try again.", NotificationType.ERROR);
         }
 
         Sentry.captureException(error, {
@@ -30,8 +31,8 @@ export class ErrorHandler {
     }
     
     static handleGetAllError<T>(userAuthToken : any, itemType : string, error : Error) {
-        const errorStore = useErrorStore();
-        errorStore.setError(`Error retrieving data. Please try again.`);
+        const notificationStore = useNotificationStore();
+        notificationStore.setMessage(`Error retrieving data. Please try again.`, NotificationType.ERROR);
 
         Sentry.captureException(error, {
             tags: { 
@@ -46,8 +47,8 @@ export class ErrorHandler {
     }
 
     static handleGetByIdError<T>(userAuthToken : any, itemType : string, itemId : string, error : Error) {
-        const errorStore = useErrorStore();
-        errorStore.setError(`Error retrieving data. Please try again.`);
+        const notificationStore = useNotificationStore();
+        notificationStore.setMessage(`Error retrieving data. Please try again.`, NotificationType.ERROR);
 
         Sentry.captureException(error, {
             tags: { 
@@ -61,8 +62,8 @@ export class ErrorHandler {
     }
 
     static handleAddError<T>(userAuthToken : any, itemType : string, itemsToAdd : T[], error : Error) {
-        const errorStore = useErrorStore();
-        errorStore.setError(`Error updating ${itemType}s. Please try again.`);
+        const notificationStore = useNotificationStore();
+        notificationStore.setMessage(`Error updating ${itemType}s. Please try again.`, NotificationType.ERROR);
 
         Sentry.captureException(error, {
             tags: { 
@@ -77,8 +78,8 @@ export class ErrorHandler {
     }
 
     static handleUpdateError<T>(userAuthToken : any, itemType : string, itemToUpdate : T, error : Error) {
-        const errorStore = useErrorStore();
-        errorStore.setError(`Error updating ${itemType}. Please try again.`);
+        const notificationStore = useNotificationStore();
+        notificationStore.setMessage(`Error updating ${itemType}. Please try again.`, NotificationType.ERROR);
 
         Sentry.captureException(error, {
             tags: { 
@@ -93,8 +94,8 @@ export class ErrorHandler {
     }
 
     static handleDeleteError<T>(userAuthToken : any, itemType : string, itemsToDelete : T[], error : Error) {
-        const errorStore = useErrorStore();
-        errorStore.setError(`Error deleting ${itemType}s. Please try again.`);
+        const notificationStore = useNotificationStore();
+        notificationStore.setMessage(`Error deleting ${itemType}s. Please try again.`, NotificationType.ERROR);
 
         Sentry.captureException(error, {
             tags: { 
@@ -109,8 +110,8 @@ export class ErrorHandler {
     }
 
     static handleChartError<T>(userAuthToken : any, chartType : string, chart : Chart, error : Error) {
-        const errorStore = useErrorStore();
-        errorStore.setError(`Error editing chart. Please try again.`);
+        const notificationStore = useNotificationStore();
+        notificationStore.setMessage(`Error editing chart. Please try again.`, NotificationType.ERROR);
 
         Sentry.captureException(error, {
             tags: { 

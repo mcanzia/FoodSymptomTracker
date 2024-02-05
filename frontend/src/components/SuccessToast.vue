@@ -1,5 +1,5 @@
 <template>
-    <Toast :message="errorMessage?.message" :type="NotificationType.ERROR" @toast-close="notificationStore.resetMessage"></Toast>
+    <Toast :message="successMessage?.message" :type="NotificationType.SUCCESS" @toast-close="notificationStore.resetMessage"></Toast>
 </template>
   
 <script setup>
@@ -9,7 +9,7 @@ import { storeToRefs } from "pinia";
 import { NotificationType } from "../models/NotificationType";
 
 const notificationStore = useNotificationStore();
-let { errorMessage } = storeToRefs(notificationStore);
+let { successMessage } = storeToRefs(notificationStore);
 
 </script>
 

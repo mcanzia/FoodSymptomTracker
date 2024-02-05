@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia';
-import { CustomError } from '../models/CustomError';
 export const useErrorStore = defineStore('errorStore', {
     state: () => ({
         errorMessage: null

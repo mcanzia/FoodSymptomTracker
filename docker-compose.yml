@@ -14,6 +14,9 @@ services:
     image: index.docker.io/mcanziani1/alimenti-server:latest
     env_file:
       - .env.server.production
+    volumes:
+      - /var/log/alimenti/all.log:/app/logs/server/all.log
+      - /var/log/alimenti/error.log:/app/logs/server/error.log
     networks:
       - local_net
     ports:
