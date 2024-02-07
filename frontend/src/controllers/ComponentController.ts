@@ -53,4 +53,14 @@ export class ComponentController {
             ErrorHandler.handleDeleteError<Component>(userAuthToken, ObjectType.COMPONENT, components, error);
         }
     }
+
+    async addNewUserComponents(userAuthToken: any) {
+        try {
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/components/newUser`;
+            const response = await fetch(requestUrl, RequestUtil.POSTRequestParams(userAuthToken, []));
+            return response;
+        } catch (error: any) {
+            ErrorHandler.handleAddError<Component>(userAuthToken, ObjectType.COMPONENT, [], error);
+        }
+    }
 }

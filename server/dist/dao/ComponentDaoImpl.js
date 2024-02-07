@@ -1,9 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ComponentDaoImpl = void 0;
 const firebase_1 = require("../configs/firebase");
 const Component_1 = require("../models/Component");
+const Option_1 = require("../models/Option");
 const CustomError_1 = require("../util/error/CustomError");
+const logger_1 = __importDefault(require("../util/logs/logger"));
 class ComponentDaoImpl {
     async getAllComponents(authId) {
         try {
@@ -39,7 +44,8 @@ class ComponentDaoImpl {
                 const document = matchingComponent ?
                     firebase_1.db.collection('users').doc(authId).collection('components').doc(matchingComponent.id) :
                     firebase_1.db.collection('users').doc(authId).collection('components').doc();
-                let { id, ...newComponent } = component;
+                const serializedComponent = component.toObject ? component.toObject() : component;
+                let { id, ...newComponent } = serializedComponent;
                 batch.set(document, newComponent);
             }
             await batch.commit();
@@ -69,6 +75,29 @@ class ComponentDaoImpl {
         }
         catch (error) {
             throw new CustomError_1.DatabaseError("Could not delete components from database: " + error);
+        }
+    }
+    async addNewUserComponents(authId) {
+        try {
+            logger_1.default.info("Adding new user components for user: " + authId);
+            const components = [
+                new Component_1.Component('', "Pain Level", [], true, 1, [5]),
+                new Component_1.Component('', "Trouble Sleeping?", [
+                    new Option_1.Option("Not at all", "Not at all"),
+                    new Option_1.Option("Somewhat", "Somewhat"),
+                    new Option_1.Option("All night", "All night")
+                ], true, 2, []),
+                new Component_1.Component('', "Symptoms", [
+                    new Option_1.Option("Headache", "Headache"),
+                    new Option_1.Option("Bloating", "Bloating"),
+                    new Option_1.Option("Heart Burn", "Heart Burn")
+                ], true, 3, [])
+            ];
+            await this.addComponents(authId, components);
+            logger_1.default.info("Successfully added components");
+        }
+        catch (error) {
+            throw new CustomError_1.DatabaseError("Could not add new user components: " + error);
         }
     }
 }

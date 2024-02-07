@@ -96,5 +96,18 @@ export class ComponentControllerImpl {
             response.send(error);
         }
     }
+    
+    async addNewUserComponents(request : Request, response : Response, next : NextFunction) {
+        try {
+            const componentDao : ComponentDaoImpl = new ComponentDaoImpl();
+            const userAuth = response.locals.userAuth;
+            await componentDao.addNewUserComponents(userAuth);
+            response.status(200).send('Success');
+        } catch (error) {
+            Logger.error("Error adding charts for user " + 
+                response.locals.userAuth + ": " + error);
+            response.send(error);
+        }
+    }
 
 }

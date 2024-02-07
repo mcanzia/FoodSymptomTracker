@@ -52,5 +52,15 @@ export class ComponentController {
             ErrorHandler.handleDeleteError(userAuthToken, ObjectType.COMPONENT, components, error);
         }
     }
+    async addNewUserComponents(userAuthToken) {
+        try {
+            const requestUrl = `${RequestUtil.getAPIUrl()}/api/components/newUser`;
+            const response = await fetch(requestUrl, RequestUtil.POSTRequestParams(userAuthToken, []));
+            return response;
+        }
+        catch (error) {
+            ErrorHandler.handleAddError(userAuthToken, ObjectType.COMPONENT, [], error);
+        }
+    }
 }
 //# sourceMappingURL=ComponentController.js.map

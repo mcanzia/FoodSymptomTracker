@@ -31,6 +31,7 @@ router.use(express_1.default.json());
 router.get('/', componentController.getAllComponents);
 router.get('/:componentId', componentController.getComponentById);
 router.post('/', componentController.addComponents);
+router.post('/newUser', componentController.addNewUserComponents);
 router.put('/:componentId', componentController.updateComponent);
 router.delete('/', componentController.deleteComponents);
 exports.default = router;

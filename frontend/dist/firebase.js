@@ -26,8 +26,6 @@ auth.signInWithPopup = signInWithPopup;
 auth.GoogleAuthProvider = GoogleAuthProvider;
 auth.sendPasswordResetEmail = sendPasswordResetEmail;
 let db = getFirestore(firebaseApp);
-db.doc = doc;
-db.getDoc = getDoc;
 const storage = getStorage(firebaseApp);
-export { auth, db, storage };
+export { auth, db, doc, getDoc, storage };
 //# sourceMappingURL=firebase.js.map

@@ -39,15 +39,8 @@ auth.signInWithPopup = signInWithPopup;
 auth.GoogleAuthProvider = GoogleAuthProvider;
 auth.sendPasswordResetEmail = sendPasswordResetEmail;
 
-interface FirestoreFunctions extends Firestore {
-  doc : any;
-  getDoc : any;
-}
-
-let db = getFirestore(firebaseApp) as FirestoreFunctions;
-db.doc = doc;
-db.getDoc = getDoc;
+let db = getFirestore(firebaseApp);
 
 const storage = getStorage(firebaseApp);
 
-export {auth, db, storage};
+export {auth, db, doc, getDoc, storage};

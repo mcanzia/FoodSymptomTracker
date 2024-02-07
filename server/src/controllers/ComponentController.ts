@@ -10,5 +10,6 @@ export interface ComponentController {
     addComponents(request : Request, response : Response, next : NextFunction) : void;
     updateComponent(request : Request, response : Response, next : NextFunction) : void;
     deleteComponents(request : Request, response : Response, next : NextFunction) : void;
+    addNewUserComponents(request : Request, response : Response, next : NextFunction) : void;
 
 }

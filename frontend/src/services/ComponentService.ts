@@ -62,4 +62,14 @@ export class ComponentService {
             throw error;
         }
     }
+
+    async addNewUserComponents() {
+        try {
+            const userAccessToken = await this.userStore.getAccessToken();
+            const component = await this.componentController.addNewUserComponents(userAccessToken);
+            return component;
+        } catch (error) {
+            throw error;
+        }
+    }
 }

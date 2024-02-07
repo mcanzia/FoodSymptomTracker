@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { auth, db } from '../firebase';
+import { auth } from '../firebase';
 import { ErrorHandler } from '../util/error/ErrorHandler';
 import { useComponentStore } from './componentStore';
 import { SuccessHandler } from '../util/SuccessHandler';
@@ -32,7 +32,6 @@ export const useUserStore = defineStore('userStore', {
         async registerUser(email, password) {
             try {
                 await auth.createUserWithEmailAndPassword(auth, email, password);
-                await this.setUpNewUser();
             }
             catch (error) {
                 ErrorHandler.handleUserAuthError(this.user, error);
@@ -41,7 +40,6 @@ export const useUserStore = defineStore('userStore', {
         async loginUser(email, password) {
             try {
                 await auth.signInWithEmailAndPassword(auth, email, password);
-                await this.setUpNewUser();
             }
             catch (error) {
                 ErrorHandler.handleUserAuthError(this.user, error);
@@ -57,8 +55,7 @@ export const useUserStore = defineStore('userStore', {
         },
         async loginUserGoogle() {
             try {
-                const response = await auth.signInWithPopup(auth, new auth.GoogleAuthProvider());
-                await this.setUpNewUser();
+                await auth.signInWithPopup(auth, new auth.GoogleAuthProvider());
             }
             catch (error) {
                 ErrorHandler.handleUserAuthError(this.user, error);
@@ -83,12 +80,8 @@ export const useUserStore = defineStore('userStore', {
         },
         async setUpNewUser() {
             try {
-                const userDocRef = db.doc(db, "users", this.user.uid);
-                const userDoc = await db.getDoc(userDocRef);
-                if (!userDoc.exists()) {
-                    const componentStore = useComponentStore();
-                    await componentStore.addNewUserComponents();
-                }
+                const componentStore = useComponentStore();
+                await componentStore.addNewUserComponents();
             }
             catch (error) {
                 ErrorHandler.handleUserAuthError(this.user, error);

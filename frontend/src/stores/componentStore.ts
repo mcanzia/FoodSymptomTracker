@@ -28,20 +28,8 @@ export const useComponentStore = defineStore('componentStore', {
         }
       },
       async addNewUserComponents() {
-        const newComponents : Array<Component> = [
-          new Component('', "Pain Level", 1, true, [], 5),
-          new Component('', "Trouble Sleeping?", 2, true, [
-            new Option("Not at all", "Not at all"),
-            new Option("Somewhat", "Somewhat"),
-            new Option("All night", "All night")
-          ], ""),
-          new Component('', "Symptoms", 3, true, [
-            new Option("Headache", "Headache"),
-            new Option("Bloating", "Bloating"),
-            new Option("Heart Burn", "Heart Burn")
-          ], [])
-        ];
-        await this.addComponents(newComponents);
+        const componentService = new ComponentService();
+        await componentService.addNewUserComponents();
       },
       async addComponents(components : Array<Component>) {
         try {

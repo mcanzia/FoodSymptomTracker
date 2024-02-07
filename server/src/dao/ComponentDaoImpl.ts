@@ -1,5 +1,6 @@
 import { db } from '../configs/firebase';
 import { Component } from '../models/Component';
+import { Option } from '../models/Option';
 import { DatabaseError } from '../util/error/CustomError';
 import Logger from '../util/logs/logger';
 import { ComponentDao } from './ComponentDao';
@@ -40,7 +41,8 @@ export class ComponentDaoImpl {
                 const document = matchingComponent ? 
                     db.collection('users').doc(authId).collection('components').doc(matchingComponent.id) :
                     db.collection('users').doc(authId).collection('components').doc();
-                let {id, ...newComponent } = component;
+                const serializedComponent = component.toObject ? component.toObject() : component
+                let {id, ...newComponent } = serializedComponent;
                 batch.set(document, newComponent);
             }
             await batch.commit();
@@ -70,6 +72,29 @@ export class ComponentDaoImpl {
             await batch.commit();
         } catch (error) {
             throw new DatabaseError("Could not delete components from database: " + error);
+        }
+    }
+
+    async addNewUserComponents(authId : any) {
+        try {    
+                Logger.info("Adding new user components for user: " + authId);
+                const components : Array<Component> = [
+                    new Component('', "Pain Level", [], true, 1, [5]),
+                    new Component('', "Trouble Sleeping?", [
+                      new Option("Not at all", "Not at all"),
+                      new Option("Somewhat", "Somewhat"),
+                      new Option("All night", "All night")
+                    ], true, 2, []),
+                    new Component('', "Symptoms",[
+                      new Option("Headache", "Headache"),
+                      new Option("Bloating", "Bloating"),
+                      new Option("Heart Burn", "Heart Burn")
+                    ], true, 3, [])
+                ];
+                await this.addComponents(authId, components);
+                Logger.info("Successfully added components");
+        } catch (error) {
+            throw new DatabaseError("Could not add new user components: " + error);
         }
     }
 
