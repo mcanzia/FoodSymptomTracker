@@ -85,6 +85,7 @@ function editComponent(component) {
 .component-options-container {
     display: flex;
     justify-content: space-evenly;
+    flex-wrap: wrap;
 }
 
 .component-checkbox {

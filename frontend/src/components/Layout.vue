@@ -1,6 +1,6 @@
 <template>
    <div class="container" @click.self="closeNewComponentModal()">
-        <div class="flex-column component-container">
+        <div class="flex-column">
             <div v-if="userStore.isMobile()" class="add-component-container">
               <button  @click="toggleNewComponentModal">Add Component</button>
               <h2>Available Components: </h2>
@@ -32,7 +32,7 @@
               />
             </div>
         </div>
-        <div class="flex-column component-container">
+        <div class="flex-column">
             <h2>Selected Components: </h2>
             <div class="component-display">
               <ComponentDisplay
@@ -146,11 +146,7 @@ async function confirmDelete(confirmation) {
 
 .flex-column {
   flex-basis: calc(50% - 2rem);
-}
-
-.component-display {
-  overflow-y: scroll;
-  max-height: 80%;
+  max-height: 100%;
 }
 
 .component-display > * {
@@ -189,6 +185,14 @@ h2 {
     z-index: 100;
   }
 
+  
+@media only screen and (min-width: 770px) {
+  .component-display {
+    overflow-y: scroll;
+    max-height: 80%;
+  }
+}
+
 @media only screen and (max-width: 770px) {
     .container {
       flex-direction: column-reverse;
@@ -203,7 +207,7 @@ h2 {
     }
 
     .component-display {
-      overflow: hidden;
+      flex-grow:1;
     }
 
     .add-component-container {
