@@ -11,7 +11,7 @@
       </div>
       <div class="flex-column">
         <h2>Components: </h2>
-        <div class="list-wrapper">
+        <div class="list-wrapper" v-if="componentsPresent">
           <ComponentDisplay
             v-for="component in dateLogStore.selectedDateLog.components"
             :key="component.id"
@@ -20,13 +20,16 @@
             :layout="false"
           />
         </div>
+        <div v-else>
+          <p>New components can be added in Layout page</p>
+        </div>
       </div>
     </div>
   </template>
 
 <script setup>
 import { useDateLogStore } from '../stores/dateLogStore';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import ComponentDisplay from './ComponentDisplay.vue';
 import FoodItemList from './FoodItemList.vue';
 import FoodItemSearch from './FoodItemSearch.vue';
@@ -36,6 +39,10 @@ const props = defineProps({
 })
 
 const dateLogStore = useDateLogStore();
+
+const componentsPresent = computed(() => {
+  return dateLogStore.selectedDateLog.components && dateLogStore.selectedDateLog.components.length !== 0;
+});
 
 const foodSearchComponentRef = ref(null);
 
@@ -78,7 +85,7 @@ function setWarningMessage(refTarget, message) {
   margin-bottom: 20px;
 }
 
-h2 {
+h2, p {
   font-family: Lato, sans-serif;
 }
 

@@ -22,7 +22,7 @@
             <div class="form-column-item">
                 <label for="new-chart-component">Chart Component:</label>
                 <div class="form-input-container">
-                    <select class="add-chart-dropdown" id="new-chart-component" v-model="chartStore.newChartDetails.selectedComponent" @change="updateTempChartComponent">
+                    <select class="add-chart-dropdown" id="new-chart-component" :disabled="!componentSelectEnabled" v-model="chartStore.newChartDetails.selectedComponent" @change="updateTempChartComponent">
                         <option v-for="option in componentStore.selectedComponents" :key="option.id" :value="option">
                             {{ option.name }}
                         </option> 
@@ -88,6 +88,10 @@ const selectedFoodComputed = computed({
     chartStore.newChartDetails.selectedFood = foodItem;
     updateTempChartComponent();
   }
+});
+
+const componentSelectEnabled = computed(() => {
+  return componentStore.selectedComponents && componentStore.selectedComponents.length !== 0;
 });
 
 function updateTempChartTitle() {

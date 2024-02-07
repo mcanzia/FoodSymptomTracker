@@ -86,7 +86,7 @@ async function openChartBuilder() {
 function createTempChart() {
     const id = "chart_" + (chartStore.charts.length + 1);
     const defaultTitle = "New Chart - " + (chartStore.charts.length + 1);
-    chartStore.newChartDetails = new Chart(id, defaultTitle, null, ChartShape.BAR, null, new ChartOptions(defaultTitle), componentStore.selectedComponents[0], null, null, "", "");
+    chartStore.newChartDetails = new Chart(id, defaultTitle, null, ChartShape.BAR, null, new ChartOptions(defaultTitle), componentStore.selectedComponents[0] ? componentStore.selectedComponents[0] : null, null, null, "", "");
 }
 
 function toggleDatePicker() {
