@@ -159,7 +159,7 @@ function setWarningMessage(refTarget, message) {
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 90vh;
+    height: 100vh;
     width: 100vw;
 }
 
