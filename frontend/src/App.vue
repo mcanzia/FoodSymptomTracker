@@ -78,8 +78,8 @@ body {
   margin-right: auto;
   width: 90vw;
   max-width: 90vw;
-  height: 75vh;
-  max-height: 75vh;
+  height: 80vh;
+  max-height: 80vh;
 }
 .display-box-mobile {
   background-color: #D9D9D9;
@@ -87,8 +87,8 @@ body {
   top: 0;
   width: 90vw;
   max-width: 90vw;
-  height: 82vh;
-  max-height: 82vh;
+  height: 75vh;
+  max-height: 75vh;
 }
 
 @media only screen and (max-width: 770px) {
