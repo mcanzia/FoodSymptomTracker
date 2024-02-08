@@ -141,7 +141,7 @@ async function confirmDelete(confirmation) {
   display: flex;
   flex-wrap: wrap;
   gap: 2rem;
-  height: 100%;
+  height: 80%;
 }
 
 .flex-column {
@@ -196,7 +196,7 @@ h2 {
     .container {
       flex-direction: column-reverse;
       flex-wrap: nowrap;
-      height: 80vh;
+      height: 70vh;
       overflow-y: scroll;
       overflow-x: hidden;
     }
