@@ -146,7 +146,6 @@ async function confirmDelete(confirmation) {
 
 .flex-column {
   flex-basis: calc(50% - 2rem);
-  max-height: 100%;
 }
 
 .component-display > * {
