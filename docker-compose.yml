@@ -17,7 +17,7 @@ services:
     volumes:
       - /var/log/alimenti/all.log:/app/logs/server/all.log
       - /var/log/alimenti/error.log:/app/logs/server/error.log
-    networks:
+    networks: 
       - local_net
     ports:
       - "7500:7500"
