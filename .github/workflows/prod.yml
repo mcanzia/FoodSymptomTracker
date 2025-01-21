@@ -51,8 +51,8 @@ jobs:
           # Optional: Pull the latest docker-compose.yml from the repository if not already present
           # cp ./path/to/docker-compose.yml .
 
-          cp ./docker-compose.yml ~/devops/docker-compose.yml
-          cp ./nginx/nginx.conf ~/devops/nginx.conf
+          cp ~/actions-runner/_work/FoodSymptomTracker/FoodSymptomTracker/docker-compose.yml ~/devops/docker-compose.yml
+          cp ~/actions-runner/_work/FoodSymptomTracker/FoodSymptomTracker/nginx/nginx.conf ~/devops/nginx.conf
 
           # Pull the latest images from Docker Hub
           docker compose pull
