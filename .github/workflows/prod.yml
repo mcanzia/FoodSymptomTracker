@@ -26,8 +26,8 @@ jobs:
       - name: Build and Push Server Image
         uses: docker/build-push-action@v5
         with:
-          context: ./server
-          file: Dockerfile
+          context: .
+          file: server/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/alimenti-server:latest
         env:
@@ -36,8 +36,8 @@ jobs:
       - name: Build and Push FrontEnd Image
         uses: docker/build-push-action@v5
         with:
-          context: ./frontend
-          file: Dockerfile
+          context: .
+          file: frontend/Dockerfile
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/alimenti-front:latest
         env:
