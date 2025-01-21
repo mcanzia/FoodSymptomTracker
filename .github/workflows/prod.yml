@@ -58,6 +58,19 @@ jobs:
         uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.PI_SSH_PRIVATE_KEY }}
+
+      - name: Print PI_IP
+        run: echo "Raspberry Pi IP ${{ secrets.PI_IP }}"
+
+      - name: Test Connectivity
+        run: |
+            ping -c 4 "${{ secrets.PI_IP }}"
+        continue-on-error: true
+  
+      - name: Test SSH Port Accessibility
+        run: |
+            nc -zv "${{ secrets.PI_IP }}" 22
+        continue-on-error: true
       - name: Add Raspberry Pi to known_hosts
         run: ssh-keyscan -H "${{ secrets.PI_IP }}" >> ~/.ssh/known_hosts
       - name: Copy docker-compose.yml to Droplet
