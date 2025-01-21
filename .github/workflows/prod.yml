@@ -57,15 +57,15 @@ jobs:
       - name: Set up SSH
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.PI_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H '${{ secrets.PI_IP }}' >> ~/.ssh/known_hosts
       - name: Copy docker-compose.yml to Droplet
         run: |
-          scp ./docker-compose.yml pi@${{ secrets.PI_IP }}:~/devops/docker-compose.yml
+          scp ./docker-compose.yml alimenti@${{ secrets.PI_IP }}:~/devops/docker-compose.yml
       - name: Copy nginx.conf to Droplet
         run: |
-          scp ./nginx/nginx.conf pi@${{ secrets.PI_IP }}:~/devops/nginx.conf
+          scp ./nginx/nginx.conf alimenti@${{ secrets.PI_IP }}:~/devops/nginx.conf
       - name: SSH and Docker Compose Up
         run: |
-          ssh pi@${{ secrets.PI_IP }} 'cd ~/devops && docker compose pull && docker compose up -d'
+          ssh alimenti@${{ secrets.PI_IP }} 'cd ~/devops && docker compose pull && docker compose up -d'
